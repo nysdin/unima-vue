@@ -40,7 +40,7 @@ export default {
     logout(){
       this.$store.dispatch('auth/logout', { auth: true, url: 'http://localhost:3000/api/v1/auth/sign_out' })
     }
-  }
+  },
 }
 </script>
 
