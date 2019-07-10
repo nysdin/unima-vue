@@ -9,11 +9,11 @@
       </el-form-item>
     </el-form>
     <el-button type="primary" plain @click="login">Login</el-button>
+    <el-button type="primary" plain @click="logout">Logout</el-button>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   data() {
@@ -29,7 +29,16 @@ export default {
   },
   methods: {
     login(){
-      
+      this.$store.dispatch('auth/login', { params: { ...this.user }, url: 'http://localhost:3000/api/v1/auth/sign_in' })
+        .then( () => {
+          console.log('loggedin')
+        })
+        .catch( () => {
+          console.log('login error')
+        })
+    },
+    logout(){
+      this.$store.dispatch('auth/logout', { auth: true, url: 'http://localhost:3000/api/v1/auth/sign_out' })
     }
   }
 }
