@@ -3,7 +3,7 @@ import request from '../../utils/api'
 const auth = {
     namespaced: true,
     state: {
-        token: localStorage.getItem('client'),
+        token: localStorage.getItem('client') || '',
         status: '',
     },
     getters: {
