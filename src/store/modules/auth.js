@@ -24,6 +24,7 @@ const auth = {
                 request.post(options.url, options)
                     .then( response => {
                         console.log(response.data.data)
+                        commit('user/setUser', response.data.data, { root: true })
                         const headers = response.headers
                         localStorage.setItem('access-token', headers['access-token'])
                         localStorage.setItem('client', headers['client'])
