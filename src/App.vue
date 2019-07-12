@@ -1,14 +1,32 @@
 <template>
   <div id="app">
-    <router-view />
+    <div v-loading.fullscreen.lock="loading"
+        element-loading-background="rgba(255, 255, 255, 1.0)"
+    ></div>
+    <router-view v-show="!loading"/>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
+  computed: {
+    loading(){
+      return true
+    }
+  },
   created(){
-    
+    if(localStorage.getItem('access-token')){
+      console.log('created')
+      this.$store.dispatch('auth/validateToken')
+        .then( () => {
+          this.$router.push('/')
+        })
+        .catch( () => {
+          this.$router.push('/login')
+        })
+    }
   },
   methods: {
 

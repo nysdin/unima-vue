@@ -3,7 +3,7 @@ import request from '../../utils/api'
 const auth = {
     namespaced: true,
     state: {
-        token: localStorage.getItem('client') || '',
+        token: '',
         status: '',
     },
     getters: {
@@ -28,6 +28,14 @@ const auth = {
         //認証apiの失敗
         authError(state){
             state.status = 'error'
+        },
+        //アクセストークンのセット
+        setToken(state, token){
+            state.token = token
+        },
+        //アクセストークンを削除
+        removeToken(state){
+            state.token = ''
         }
     },
     actions: {
@@ -45,6 +53,7 @@ const auth = {
                         localStorage.setItem('access-token', headers['access-token'])
                         localStorage.setItem('client', headers['client'])
                         localStorage.setItem('uid', headers['uid'])
+                        commit('setToken', headers['access-token'])
                         //認証apiの成功
                         commit('authSuccess')
                         resolve()
@@ -61,6 +70,7 @@ const auth = {
             return new Promise( (resolve, reject) => {
                 request.delete(options.url, options)
                     .then( response => {
+                        commit('removeToken')
                         localStorage.removeItem('access-token')
                         localStorage.removeItem('client')
                         localStorage.removeItem('uid')
@@ -72,6 +82,23 @@ const auth = {
                     })
             }) 
         },
+        //認証トークンが有効か期限切れでないかを確認
+        validateToken({ commit }){
+            return new Promise( (resolve, reject) => {
+                request.get('http://localhost:3000/api/v1/auth/validate_token', { auth: true })
+                    .then( response => {
+                        commit('setToken', response.headers['access-token'])
+                        commit('user/setUser', response.data.data, { root: true })
+                        resolve()
+                    })
+                    .catch( () => {
+                        localStorage.removeItem('access-token')
+                        localStorage.removeItem('client')
+                        localStorage.removeItem('uid')
+                        reject()
+                    })
+            })
+        }
     }
 }
 

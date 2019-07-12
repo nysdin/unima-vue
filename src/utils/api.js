@@ -31,7 +31,6 @@ export default {
         return this.request('get', url, options)
     },
     post(url, options){
-        console.log('post')
         return this.request('post', url, options)
     },
     patch(url, options){

@@ -6,6 +6,7 @@ import Home from './views/Home.vue'
 Vue.use(Router)
 
 const ifNotAuthenticated = (to, from, next) => {
+  console.log('ifNotAuthenticated')
   if(!store.getters['auth/isAuthenticated']){
     next()
     return
@@ -14,6 +15,7 @@ const ifNotAuthenticated = (to, from, next) => {
 }
 
 const ifAuthenticated = (to, from , next) => {
+  console.log('ifAuthenticated')
   if(store.getters['auth/isAuthenticated']){
     next()
     return 
