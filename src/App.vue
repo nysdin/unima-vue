@@ -28,8 +28,12 @@ export default {
           this.$router.push('/')
         })
         .catch( () => {
+          this.initLoading = false
           this.$router.push('/login')
         })
+    }else{
+      console.log('not acess-token created')
+      this.initLoading = false
     }
   },
   methods: {

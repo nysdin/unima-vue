@@ -14,15 +14,6 @@ const ifNotAuthenticated = (to, from, next) => {
   next('/')
 }
 
-const ifAuthenticated = (to, from , next) => {
-  console.log('ifAuthenticated')
-  if(store.getters['auth/isAuthenticated']){
-    next()
-    return 
-  }
-  next('/login')
-}
-
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -31,7 +22,7 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home,
-      beforeEnter: ifAuthenticated
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -43,6 +34,18 @@ const router = new Router({
       beforeEnter: ifNotAuthenticated
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)){
+    if(store.getters['auth/isAuthenticated']){
+      next()
+    }else{
+      next('/login')
+    }
+  }else{
+    next()
+  }
 })
 
 export default router
