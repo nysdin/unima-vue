@@ -4,7 +4,7 @@ const auth = {
     namespaced: true,
     state: {
         token: '',
-        status: '',
+        loading: true,
     },
     getters: {
         //ログインの真偽
@@ -12,22 +12,18 @@ const auth = {
             return !!state.token
         },
         //authenticationに関するAPIの状態、loading or success or error
-        authStatus(state){
-            return state.status
+        authLoading(state){
+            return state.loading
         }
     },
     mutations: {
         //認証apiの通信中
         authRequest(state){
-            state.status = 'loading'
+            state.loading = true
         },
-        //認証apiの成功
-        authSuccess(state){
-            state.status = 'success'
-        },
-        //認証apiの失敗
-        authError(state){
-            state.status = 'error'
+        //認証api通信の完了
+        authCompleted(state){
+            state.loading = false
         },
         //アクセストークンのセット
         setToken(state, token){
@@ -55,13 +51,13 @@ const auth = {
                         localStorage.setItem('uid', headers['uid'])
                         commit('setToken', headers['access-token'])
                         //認証apiの成功
-                        commit('authSuccess')
+                        commit('authCompleted')
                         resolve()
                     })
                     .catch( error => {
                         //認証apiの失敗
-                        commit('authError')
                         console.log(error)
+                        commit('authCompleted')
                         reject()
                     })
             })
@@ -85,16 +81,19 @@ const auth = {
         //認証トークンが有効か期限切れでないかを確認
         validateToken({ commit }){
             return new Promise( (resolve, reject) => {
+                commit('authRequest')
                 request.get('http://localhost:3000/api/v1/auth/validate_token', { auth: true })
                     .then( response => {
                         commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
+                        commit('authCompleted')
                         resolve()
                     })
                     .catch( () => {
                         localStorage.removeItem('access-token')
                         localStorage.removeItem('client')
                         localStorage.removeItem('uid')
+                        commit('authCompleted')
                         reject()
                     })
             })
