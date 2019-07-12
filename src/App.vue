@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div v-loading.fullscreen.lock="loading"
+    <div v-loading.fullscreen.lock="initLoading"
         element-loading-background="rgba(255, 255, 255, 1.0)"
     ></div>
-    <router-view v-show="!loading"/>
+    <router-view v-show="!initLoading"/>
   </div>
 </template>
 
@@ -11,9 +11,12 @@
 import axios from 'axios'
 
 export default {
+  data(){
+    return { initLoading: true}
+  },
   computed: {
     loading(){
-      return true
+      return this.$store.getters['auth/authLoading']
     }
   },
   created(){
@@ -21,6 +24,7 @@ export default {
       console.log('created')
       this.$store.dispatch('auth/validateToken')
         .then( () => {
+          this.initLoading = false
           this.$router.push('/')
         })
         .catch( () => {
@@ -42,17 +46,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
