@@ -5,6 +5,7 @@ const auth = {
     state: {
         token: '',
         loading: true,
+        init: false
     },
     getters: {
         //ログインの真偽
@@ -14,6 +15,10 @@ const auth = {
         //authenticationに関するAPIの状態、loading or success or error
         authLoading(state){
             return state.loading
+        },
+        //初期表示のフラグ
+        init(state){
+            return state.init
         }
     },
     mutations: {
@@ -32,6 +37,9 @@ const auth = {
         //アクセストークンを削除
         removeToken(state){
             state.token = ''
+        },
+        initialized(state){
+            state.init = true
         }
     },
     actions: {
@@ -79,24 +87,26 @@ const auth = {
             }) 
         },
         //認証トークンが有効か期限切れでないかを確認
-        validateToken({ commit }){
-            return new Promise( (resolve, reject) => {
+        initialize({ commit }, token){
+            if(token){
                 commit('authRequest')
                 request.get('http://localhost:3000/api/v1/auth/validate_token', { auth: true })
                     .then( response => {
                         commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
+                        commit('initialized')
                         commit('authCompleted')
-                        resolve()
                     })
                     .catch( () => {
                         localStorage.removeItem('access-token')
                         localStorage.removeItem('client')
                         localStorage.removeItem('uid')
+                        commit('initialized')
                         commit('authCompleted')
-                        reject()
                     })
-            })
+            }else{
+                commit('initialized')
+            }
         }
     }
 }

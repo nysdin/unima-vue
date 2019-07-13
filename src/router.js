@@ -14,6 +14,15 @@ const ifNotAuthenticated = (to, from, next) => {
   next('/')
 }
 
+const ifAuthenticated = (to, from, next) => {
+  console.log('ifAuthenticated')
+  if(store.getters['auth/isAuthenticated']){
+    next() 
+    return 
+  }
+  next('/login')
+}
+
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -31,20 +40,28 @@ const router = new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
-      beforeEnter: ifNotAuthenticated
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)){
-    if(store.getters['auth/isAuthenticated']){
-      next()
-    }else{
-      next('/login')
-    }
+  console.log('beforeEach')
+
+  if(!store.getters['auth/init']){
+    const unwatch = store.watch( (state, getters) => getters['auth/init'], () => {
+      unwatch()
+      if(to.matched.some(record => record.meta.requiresAuth)){
+        ifAuthenticated(to, from, next)
+      }else{
+        ifNotAuthenticated(to, from, next)
+      }
+    })
   }else{
-    next()
+    if(to.matched.some(record => record.meta.requiresAuth)){
+      ifAuthenticated(to, from, next)
+    }else{
+      ifNotAuthenticated(to, from, next)
+    }
   }
 })
 

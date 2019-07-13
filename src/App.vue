@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div v-loading.fullscreen.lock="initLoading"
+    <div v-loading.fullscreen.lock="!initLoading"
         element-loading-background="rgba(255, 255, 255, 1.0)"
     ></div>
-    <router-view v-show="!initLoading"/>
+    <router-view v-show="initLoading"/>
   </div>
 </template>
 
@@ -11,33 +11,13 @@
 import axios from 'axios'
 
 export default {
-  data(){
-    return { initLoading: true}
-  },
   computed: {
-    loading(){
-      return this.$store.getters['auth/authLoading']
+    initLoading(){
+      return this.$store.getters['auth/init']
     }
   },
   created(){
-    if(localStorage.getItem('access-token')){
-      console.log('created')
-      this.$store.dispatch('auth/validateToken')
-        .then( () => {
-          this.initLoading = false
-          this.$router.push('/')
-        })
-        .catch( () => {
-          this.initLoading = false
-          this.$router.push('/login')
-        })
-    }else{
-      console.log('not acess-token created')
-      this.initLoading = false
-    }
-  },
-  methods: {
-
+    this.$store.dispatch('auth/initialize', localStorage.getItem('access-token'))
   },
 }
 </script>
