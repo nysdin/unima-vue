@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <h1>Unima</h1>
+    <router-link to='/sell'>出品</router-link>
     <el-button type="primary" plain @click="logout">Logout</el-button>
   </div>
 </template>
