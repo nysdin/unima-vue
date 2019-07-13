@@ -23,6 +23,14 @@ const ifAuthenticated = (to, from, next) => {
   next('/login')
 }
 
+const nextAuth = (to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)){
+    ifAuthenticated(to, from, next)
+  }else{
+    ifNotAuthenticated(to, from, next)
+  }
+}
+
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -48,20 +56,13 @@ router.beforeEach((to, from, next) => {
   console.log('beforeEach')
 
   if(!store.getters['auth/init']){
+    //初期表示なら認証チェックした後にフックを確率
     const unwatch = store.watch( (state, getters) => getters['auth/init'], () => {
       unwatch()
-      if(to.matched.some(record => record.meta.requiresAuth)){
-        ifAuthenticated(to, from, next)
-      }else{
-        ifNotAuthenticated(to, from, next)
-      }
+      nextAuth(to, from, next)
     })
   }else{
-    if(to.matched.some(record => record.meta.requiresAuth)){
-      ifAuthenticated(to, from, next)
-    }else{
-      ifNotAuthenticated(to, from, next)
-    }
+    nextAuth(to, from,next)
   }
 })
 
