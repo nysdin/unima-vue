@@ -1,6 +1,6 @@
 <template>
     <div id="sell">
-        <h1>商品追加</h1>
+        <h1>商品編集</h1>
         <el-form label-position="right" label-width="100px" :model="product">
             <el-form-item label="商品名">
                 <el-input v-model="product.name"></el-input>
@@ -58,4 +58,3 @@ export default {
     }
 }
 </script>
-
