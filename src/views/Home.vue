@@ -18,6 +18,10 @@ export default {
           this.$router.push('/login')
         })
     }
+  },
+  created(){
+    console.log('created')
+    this.$store.dispatch('product/setProducts')
   }
 }
 </script>
