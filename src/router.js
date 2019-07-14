@@ -26,6 +26,8 @@ const ifAuthenticated = (to, from, next) => {
 const nextAuth = (to, from, next) => {
   if(to.matched.some(record => record.meta.requiresAuth)){
     ifAuthenticated(to, from, next)
+  }else if(to.matched.some(record => record.meta.public)){
+    next()
   }else{
     ifNotAuthenticated(to, from, next)
   }
@@ -39,7 +41,7 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/login',
@@ -54,6 +56,12 @@ const router = new Router({
       name: 'sell',
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "sell" */ './views/Sell.vue')
+    },
+    {
+      path: '/sell/:id/edit',
+      name: 'sellEdit',
+      meta: { public: true },
+      component: () => import(/* webpackChunkName: "sellEdit" */ './views/SellEdit.vue')
     }
   ]
 })
