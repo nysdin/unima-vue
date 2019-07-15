@@ -15,7 +15,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="カテゴリー">
+            <el-form-item label="使用状態">
                 <el-select v-model="product.state" placeholder="please select state">
                     <el-option v-for="state in states"
                                 :key="state.value" :label="state.label" :value="state.value">
@@ -26,22 +26,18 @@
                 <el-input v-model="product.price"></el-input>
             </el-form-item>
         </el-form>
-        <el-button type="primary" plain @click="sell">出品</el-button>
+        <el-button type="primary" plain @click="sell">編集</el-button>
     </div>
 </template>
 
 <script>
+import request from '../utils/api.js'
+
 export default {
     name: 'sell',
     data(){
         return{
-            product: {
-                name: '',
-                description: '',
-                price: '',
-                state: '',
-                category: '',
-            },
+            product: {},
             categoris: ['general', 'humanity', 'science'],
             states: [
                 {value: 'new', label: '新品、未使用'},
@@ -55,6 +51,13 @@ export default {
         sell(){
             console.log('sell')
         }
+    },
+    created(){
+        request.get(`/api/v1/products/${this.$route.params.id}`, {})
+            .then( response => {
+                console.log(response.data)
+                this.product = response.data
+            })
     }
 }
 </script>

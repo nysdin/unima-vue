@@ -15,7 +15,7 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="カテゴリー">
+            <el-form-item label="使用状態">
                 <el-select v-model="product.state" placeholder="please select state">
                     <el-option v-for="state in states"
                                 :key="state.value" :label="state.label" :value="state.value">
