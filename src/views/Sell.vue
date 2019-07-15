@@ -55,7 +55,13 @@ export default {
     },
     methods: {
         sell(){
-
+            request.post('/api/v1/products', { params: this.product, auth: true })
+                .then( response => {
+                    this.$router.push({ path: `/product/${response.data.id}`})
+                })
+                .catch( error => {
+                    console.log(error)
+                })
         }
     }
 }
