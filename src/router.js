@@ -62,6 +62,12 @@ const router = new Router({
       name: 'sellEdit',
       meta: { public: true },
       component: () => import(/* webpackChunkName: "sellEdit" */ './views/SellEdit.vue')
+    },
+    {
+      path: '/product/:id',
+      name: 'productShow',
+      meta: { public: true },
+      component: () => import(/* webpackChunkName: "productShow" */ './views/ProductShow.vue')
     }
   ]
 })

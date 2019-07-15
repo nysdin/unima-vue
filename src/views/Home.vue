@@ -5,7 +5,7 @@
     <el-button type="primary" plain @click="logout">Logout</el-button>
     <el-row :gutter="20">
       <el-col :span="6" v-for="item in items" :key="item.id">
-        <el-card :body-style="{ padding: '0px' }">
+        <el-card :body-style="{ padding: '0px' }" @click.native="showProduct(item.id)">
           <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
           <div style="padding: 14px;">
             <span>{{ item.name }}</span>
@@ -36,7 +36,10 @@ export default {
         .then( () => {
           this.$router.push('/login')
         })
-    }
+    },
+    showProduct(id){
+      this.$router.push({ path: `/product/${id}`})
+    },
   },
   created(){
     console.log('created')
