@@ -60,7 +60,7 @@ const router = new Router({
     {
       path: '/sell/:id/edit',
       name: 'sellEdit',
-      meta: { public: true },
+      meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "sellEdit" */ './views/SellEdit.vue')
     },
     {

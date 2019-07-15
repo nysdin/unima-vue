@@ -28,6 +28,7 @@
         </el-form>
         <el-button type="primary" plain @click="update">編集</el-button>
         <el-button type="danger" plain @click="destroy">削除</el-button>
+        <router-link to="/">ホームへ戻る</router-link>
     </div>
 </template>
 
@@ -69,10 +70,17 @@ export default {
         }
     },
     created(){
+        this.$store.commit('auth/apiRequest')
         request.get(`/api/v1/products/${this.$route.params.id}`, {})
             .then( response => {
-                console.log(response.data)
-                this.product = response.data
+                if(this.$store.state.user.user.id === response.data.user_id){
+                    console.log(response.data)
+                    this.product = response.data
+                    this.$store.commit('auth/apiCompleted')
+                }else{
+                    this.$router.push('/')
+                    this.$store.commit('auth/apiCompleted')
+                }
             })
     }
 }

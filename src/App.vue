@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div v-loading.fullscreen.lock="!initLoading"
+    <div v-loading.fullscreen.lock="!initLoading　|| loading"
         element-loading-background="rgba(255, 255, 255, 1.0)"
     ></div>
-    <router-view v-show="initLoading"/>
+    <router-view v-show="initLoading && !loading"/>
   </div>
 </template>
 
@@ -13,6 +13,9 @@ export default {
   computed: {
     initLoading(){
       return this.$store.getters['auth/init']
+    },
+    loading(){
+      return this.$store.getters['auth/loading']
     }
   },
   created(){

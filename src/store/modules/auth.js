@@ -12,8 +12,8 @@ const auth = {
         isAuthenticated(state){
             return !!state.token
         },
-        //authenticationに関するAPIの状態、loading or success or error
-        authLoading(state){
+        //APIの通信中かどうか
+        loading(state){
             return state.loading
         },
         //初期表示のフラグ
@@ -22,12 +22,12 @@ const auth = {
         }
     },
     mutations: {
-        //認証apiの通信中
-        authRequest(state){
+        //apiの通信中
+        apiRequest(state){
             state.loading = true
         },
-        //認証api通信の完了
-        authCompleted(state){
+        //api通信の完了
+        apiCompleted(state){
             state.loading = false
         },
         //アクセストークンのセット
@@ -46,7 +46,7 @@ const auth = {
         login({ commit }, options){
             return new Promise( (resolve, reject) => {
                 //api通信中に設定
-                commit('authRequest')
+                commit('apiRequest')
                 //認証api通信
                 request.post(options.url, options)
                     .then( response => {
@@ -59,13 +59,13 @@ const auth = {
                         localStorage.setItem('uid', headers['uid'])
                         commit('setToken', headers['access-token'])
                         //認証apiの成功
-                        commit('authCompleted')
+                        commit('apiCompleted')
                         resolve()
                     })
                     .catch( error => {
                         //認証apiの失敗
                         console.log(error)
-                        commit('authCompleted')
+                        commit('apiCompleted')
                         reject()
                     })
             })
@@ -89,20 +89,20 @@ const auth = {
         //認証トークンが有効か期限切れでないかを確認
         initialize({ commit }, token){
             if(token){
-                commit('authRequest')
+                commit('apiRequest')
                 request.get('/api/v1/auth/validate_token', { auth: true })
                     .then( response => {
                         commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
                         commit('initialized')
-                        commit('authCompleted')
+                        commit('apiCompleted')
                     })
                     .catch( () => {
                         localStorage.removeItem('access-token')
                         localStorage.removeItem('client')
                         localStorage.removeItem('uid')
                         commit('initialized')
-                        commit('authCompleted')
+                        commit('apiCompleted')
                     })
             }else{
                 commit('initialized')

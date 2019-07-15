@@ -27,6 +27,7 @@
             </el-form-item>
         </el-form>
         <el-button type="primary" plain @click="sell">出品</el-button>
+        <router-link to="/">ホームへ戻る</router-link>
     </div>
 </template>
 
