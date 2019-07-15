@@ -1,5 +1,9 @@
 import axios from 'axios'
 
+const http = axios.create({
+    baseURL: 'http://localhost:3000'
+})
+
 export default {
     request(method, url, options){
         var promise = null
@@ -19,7 +23,7 @@ export default {
             headers = authorizationHeader
         }
 
-        promise = axios({
+        promise = http({
             method,
             url,
             data: params,

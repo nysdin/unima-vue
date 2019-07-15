@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import request from '../utils/api.js'
+
 export default {
     name: 'sell',
     data(){
@@ -53,7 +55,7 @@ export default {
     },
     methods: {
         sell(){
-            console.log('sell')
+
         }
     }
 }

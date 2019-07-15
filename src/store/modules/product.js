@@ -15,7 +15,7 @@ const product = {
     },
     actions: {
         setProducts({ commit }){
-            request.get('http://localhost:3000/api/v1/products', {})
+            request.get('/api/v1/products', {})
                 .then( response => {
                     commit('setProducts', response.data)
                 })

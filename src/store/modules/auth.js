@@ -90,7 +90,7 @@ const auth = {
         initialize({ commit }, token){
             if(token){
                 commit('authRequest')
-                request.get('http://localhost:3000/api/v1/auth/validate_token', { auth: true })
+                request.get('/api/v1/auth/validate_token', { auth: true })
                     .then( response => {
                         commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
