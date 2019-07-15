@@ -26,7 +26,7 @@
                 <el-input v-model="product.price"></el-input>
             </el-form-item>
         </el-form>
-        <el-button type="primary" plain @click="sell">編集</el-button>
+        <el-button type="primary" plain @click="update">編集</el-button>
     </div>
 </template>
 
@@ -48,9 +48,14 @@ export default {
         }
     },
     methods: {
-        sell(){
-            console.log('sell')
-        }
+        update(){
+            request.patch(`/api/v1/products/${this.$route.params.id}`, { params: this.product, auth: true})
+                .then( response => {
+                    this.$router.push({ path: `/product/${response.data.id}` })
+                }).catch( error => {
+                    console.log('error')
+                })
+        },
     },
     created(){
         request.get(`/api/v1/products/${this.$route.params.id}`, {})
