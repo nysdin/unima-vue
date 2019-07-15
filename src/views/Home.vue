@@ -42,7 +42,6 @@ export default {
     },
   },
   created(){
-    console.log('created')
     this.$store.dispatch('product/setProducts')
   }
 }
