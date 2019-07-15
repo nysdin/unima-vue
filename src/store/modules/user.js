@@ -6,6 +6,7 @@ const user = {
             email: '',
             provider: '',
             uid: '',
+            id: 0,
         }
     },
     getters: {
@@ -13,8 +14,8 @@ const user = {
     },
     mutations: {
         setUser(state, userData){
-            const { name, email, provider, uid } = userData
-            state.user = { name, email, provider, uid }
+            const { name, email, provider, uid, id } = userData
+            state.user = { name, email, provider, uid, id }
         }
     },
     actions: {

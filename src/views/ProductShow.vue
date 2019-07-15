@@ -2,7 +2,7 @@
     <div id="show">
         <p>{{ item.name }}</p>
         <router-link to="/">ホームへ戻る</router-link><br/>
-        <router-link :to="`/sell/${this.$route.params.id}/edit`">商品の編集</router-link>
+        <router-link :to="`/sell/${this.$route.params.id}/edit`" v-if="correctUser">商品の編集</router-link>
     </div>
 </template>
 
@@ -14,6 +14,11 @@ export default {
     data(){
         return {
             item: {}
+        }
+    },
+    computed: {
+        correctUser(){
+            return this.$store.state.user.user.id === this.item.user_id
         }
     },
     created(){
