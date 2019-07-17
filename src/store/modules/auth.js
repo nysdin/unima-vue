@@ -106,6 +106,7 @@ const auth = {
                     })
             }else{
                 commit('initialized')
+                commit('apiCompleted')
             }
         }
     }
