@@ -1,12 +1,29 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <div v-loading.fullscreen.lock="!initLoading　|| loading"
+        element-loading-background="rgba(255, 255, 255, 1.0)"
+    ></div>
+    <router-view v-show="initLoading && !loading"/>
   </div>
 </template>
+
+<script>
+
+export default {
+  computed: {
+    initLoading(){
+      return this.$store.getters['auth/init']
+    },
+    loading(){
+      return this.$store.getters['auth/loading']
+    }
+  },
+  created(){
+    this.$store.dispatch('auth/initialize', localStorage.getItem('access-token'))
+  },
+}
+</script>
+
 
 <style>
 #app {
@@ -15,17 +32,5 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
