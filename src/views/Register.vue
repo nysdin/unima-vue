@@ -41,9 +41,20 @@ export default {
                 .then( () => {
                     this.$router.push('/')
                 })
-                .catch( () => {
-                    console.log('failed to sign up')
+                .catch( errors => {
+                    errors.forEach(error => {
+                        setTimeout( () => {
+                            this.renderError(error)
+                        }, 0)
+                    })
                 })
+        },
+        renderError(error){
+            this.$notify({
+                title: 'Warning',
+                message: error,
+                type: 'warning'
+            });
         }
     },
     

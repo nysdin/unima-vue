@@ -19,11 +19,8 @@
 export default {
     data() {
         return {
-            user: { email: 'ysthon@gmail.com', password: 'password'}
+            user: { email: 'ysthon@gmail.com', password: 'password'},
         }
-    },
-    created(){
-        
     },
     methods: {
         login(){
@@ -31,11 +28,23 @@ export default {
             .then( () => {
                 this.$router.push('/')
             })
-            .catch( () => {
+            .catch( errors => {
+                errors.forEach(error => {
+                    setTimeout( () => {
+                        this.renderError(error)
+                    },500)
+                })
             })
         },
         toRegister(){
             this.$router.push('/register')
+        },
+        renderError(error){
+            this.$notify({
+                title: 'Warning',
+                message: error,
+                type: 'warning'
+            });
         }
     },
     
