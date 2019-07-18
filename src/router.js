@@ -5,6 +5,10 @@ import Home from './views/Home.vue'
 
 Vue.use(Router)
 
+//{ requiresAuth: true } => ログイン必須、していない場合は/loginへ飛ばす
+//{ public: true } => そのまま遷移を許可する
+//meta情報なし　=> ログインユーザーがアクセスすることを禁止 rootURLへ飛ばす
+
 const ifNotAuthenticated = (to, from, next) => {
   console.log('ifNotAuthenticated')
   if(!store.getters['auth/isAuthenticated']){
@@ -41,7 +45,7 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home,
-      meta: { requiresAuth: true },
+      meta: { public: true },
     },
     {
       path: '/login',
