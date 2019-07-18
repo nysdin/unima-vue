@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     logout(){
-      this.$store.dispatch('auth/logout', { auth: true, url: '/api/v1/auth/sign_out' })
+      this.$store.dispatch('auth/logout', { auth: true })
         .then( () => {
           this.$router.push('/login')
         })

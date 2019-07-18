@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import request from '../utils/api.js'
 
 export default {
     name: 'productShow',
@@ -24,7 +24,7 @@ export default {
     },
     created(){
         //商品情報を取得
-        axios.get(`http://localhost:3000/api/v1/products/${this.$route.params.id}`)
+        request.get(`/api/v1/products/${this.$route.params.id}`)
             .then( response => {
                 console.log(response)
                 this.item = response.data

@@ -43,12 +43,12 @@ const auth = {
         }
     },
     actions: {
-        login({ commit }, options){
+        login({ commit }, user){
             return new Promise( (resolve, reject) => {
                 //api通信中に設定
                 commit('apiRequest')
                 //認証api通信
-                request.post(options.url, options)
+                request.post('/api/v1/auth/sign_in', { params: user })
                     .then( response => {
                         //返ってきたuser情報をstoreにセットするcommit
                         commit('user/setUser', response.data.data, { root: true })
@@ -72,7 +72,7 @@ const auth = {
         },
         logout({ commit }, options){
             return new Promise( (resolve, reject) => {
-                request.delete(options.url, options)
+                request.delete('/api/v1/auth/sign_out', options)
                     .then( response => {
                         commit('removeToken')
                         localStorage.removeItem('access-token')

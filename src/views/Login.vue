@@ -25,7 +25,7 @@ export default {
     },
     methods: {
         login(){
-        this.$store.dispatch('auth/login', { params: { ...this.user }, url: 'http://localhost:3000/api/v1/auth/sign_in' })
+        this.$store.dispatch('auth/login', { ...this.user })
             .then( () => {
                 this.$router.push('/')
             })
