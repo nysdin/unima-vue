@@ -64,6 +64,26 @@ const auth = {
                     })
                     .catch( error => {
                         //認証apiの失敗
+                        //Object.keys(error).forEach( value => console.log(value))
+                        commit('apiCompleted')
+                        reject(error.response.data.errors)
+                    })
+            })
+        },
+        register({ commit }, user){
+            return new Promise( (resolve, reject) => {
+                commit('apiRequest')
+                request.post('/api/v1/auth', { params: user })
+                    .then(response => {
+                        commit('set/User', response.data.data, { root: true })
+                        localStorage.setItem('access-token', headers['access-token'])
+                        localStorage.setItem('client', headers['client'])
+                        localStorage.setItem('uid', headers['uid'])
+                        commit('setToken', headers['access-token'])
+                        commit('apiCompleted')
+                        resolve()
+                    })
+                    .catch( error => {
                         console.log(error)
                         commit('apiCompleted')
                         reject()

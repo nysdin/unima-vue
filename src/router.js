@@ -48,6 +48,11 @@ const router = new Router({
       meta: { public: true },
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
+    },
+    {
       path: '/login',
       name: 'login',
       // route level code-splitting

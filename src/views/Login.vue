@@ -1,5 +1,6 @@
 <template>
     <div id="login-container">
+        <h1>ログイン</h1>
         <el-form label-position="right" label-width="100px" :model="user">
             <el-form-item label="Email">
                 <el-input v-model="user.email"></el-input>
@@ -9,6 +10,7 @@
             </el-form-item>
         </el-form>
         <el-button type="primary" plain @click="login">Login</el-button>
+        <el-button type="primary" plain @click="toRegister">Register</el-button>
     </div>
 </template>
 
@@ -31,6 +33,9 @@ export default {
             })
             .catch( () => {
             })
+        },
+        toRegister(){
+            this.$router.push('/register')
         }
     },
     
