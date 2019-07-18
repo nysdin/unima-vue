@@ -32,7 +32,7 @@ export default {
                 errors.forEach(error => {
                     setTimeout( () => {
                         this.renderError(error)
-                    },500)
+                    }, 0)
                 })
             })
         },

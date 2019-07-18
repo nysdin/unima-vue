@@ -15,6 +15,7 @@
                 <el-input v-model="user.password_confirmation"></el-input>
             </el-form-item>
         </el-form>
+        <el-button type="primary" plain @click="toLogin">Login</el-button>
         <el-button type="primary" plain @click="register">Register</el-button>
     </div>
 </template>
@@ -55,6 +56,9 @@ export default {
                 message: error,
                 type: 'warning'
             });
+        },
+        toLogin(){
+            this.$router.push('/login')
         }
     },
     
