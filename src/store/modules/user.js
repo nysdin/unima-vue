@@ -10,7 +10,12 @@ const user = {
         }
     },
     getters: {
-
+        name(state){
+            return state.user.name 
+        },
+        email(state){
+            return state.user.email
+        }
     },
     mutations: {
         setUser(state, userData){

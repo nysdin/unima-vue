@@ -10,7 +10,6 @@ Vue.use(Router)
 //meta情報なし　=> ログインユーザーがアクセスすることを禁止 rootURLへ飛ばす
 
 const ifNotAuthenticated = (to, from, next) => {
-  console.log('ifNotAuthenticated')
   if(!store.getters['auth/isAuthenticated']){
     next()
     return
@@ -19,7 +18,6 @@ const ifNotAuthenticated = (to, from, next) => {
 }
 
 const ifAuthenticated = (to, from, next) => {
-  console.log('ifAuthenticated')
   if(store.getters['auth/isAuthenticated']){
     next() 
     return 
@@ -45,6 +43,12 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: Home,
+      meta: { public: true },
+    },
+    {
+      path: '/mypage',
+      name: 'mypage',
+      component: () => import(/* webpackChunkName: "mypage" */ './views/MyPage.vue'),
       meta: { public: true },
     },
     {
@@ -82,10 +86,8 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('beforeEach')
-
   if(!store.getters['auth/init']){
-    //初期表示なら認証チェックした後にフックを確率
+    //初期表示なら認証チェックした後にフックを確立
     const unwatch = store.watch( (state, getters) => getters['auth/init'], () => {
       unwatch()
       nextAuth(to, from, next)

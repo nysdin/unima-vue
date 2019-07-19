@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <h1>Unima</h1>
+    <router-link to="/mypage">プロフィール</router-link>
     <router-link to='/sell'>出品</router-link>
     <el-button type="primary" plain @click="logout" v-if="loggedIn">Logout</el-button>
     <el-row :gutter="20">
