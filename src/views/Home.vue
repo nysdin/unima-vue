@@ -2,7 +2,7 @@
   <div class="home">
     <h1>Unima</h1>
     <router-link to='/sell'>出品</router-link>
-    <el-button type="primary" plain @click="logout">Logout</el-button>
+    <el-button type="primary" plain @click="logout" v-if="loggedIn">Logout</el-button>
     <el-row :gutter="20">
       <el-col :span="6" v-for="item in items" :key="item.id">
         <el-card :body-style="{ padding: '0px' }" @click.native="showProduct(item.id)">
@@ -17,6 +17,11 @@
         </el-card>
       </el-col>
     </el-row>
+    <template v-if="!loggedIn">
+      <router-link to='/login'>ログイン</router-link>
+      <router-link to='/register'>新規登録</router-link>
+    </template>
+    
   </div>
 </template>
 
@@ -28,6 +33,9 @@ export default {
   computed: {
     items(){
       return this.$store.state.product.products
+    },
+    loggedIn(){
+      return this.$store.state.auth.token
     }
   },
   methods: {

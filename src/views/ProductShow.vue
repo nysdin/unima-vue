@@ -24,7 +24,7 @@ export default {
     },
     created(){
         //商品情報を取得
-        request.get(`/api/v1/products/${this.$route.params.id}`)
+        request.get(`/api/v1/products/${this.$route.params.id}`, {})
             .then( response => {
                 console.log(response)
                 this.item = response.data
