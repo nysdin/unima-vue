@@ -1,7 +1,7 @@
 import axios from 'axios'
-//'https://unima-rails-api.herokuapp.com'
+
 const http = axios.create({
-    baseURL: 'http://localhost:3000'
+    baseURL: process.env.VUE_APP_API_ENDPOINT
 })
 
 export default {
