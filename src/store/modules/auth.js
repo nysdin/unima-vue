@@ -75,7 +75,7 @@ const auth = {
                 commit('apiRequest')
                 request.post('/api/v1/auth', { params: user })
                     .then(response => {
-                        commit('set/User', response.data.data, { root: true })
+                        commit('user/setUser', response.data.data, { root: true })
                         localStorage.setItem('access-token', headers['access-token'])
                         localStorage.setItem('client', headers['client'])
                         localStorage.setItem('uid', headers['uid'])

@@ -1,3 +1,5 @@
+import request from '../../utils/api'
+
 const user = {
     namespaced: true,
     state: {
@@ -29,7 +31,20 @@ const user = {
         }
     },
     actions: {
-
+        editUser({ commit }, user){
+            return new Promise( (resolve, reject) => {
+                request.patch('/api/v1/auth', { params: { ...user }, auth: true })
+                .then( response => {
+                    commit('setUser', response.data.data)
+                    console.log(response)
+                    resolve()
+                })
+                .catch( error => {
+                    console.log(error.response)
+                    reject()
+                })
+            })
+        }
     }
 }
 

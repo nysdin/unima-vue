@@ -2,6 +2,7 @@
     <div id="mypage">
         <p>{{ this.name }}</p>
         <p>{{ this.email }}</p>
+        <el-button type="primary" plain @click="editUser">プロフィール変更</el-button>
         <el-form label-position="right" label-width="100px">
             <el-form-item label="Password">
                 <el-input v-model="password"></el-input>
@@ -36,6 +37,9 @@ export default {
                 }, auth: true })
                 .then(response => console.log(response))
                 .catch(error => console.log(error.response.data))
+        },
+        editUser(){
+            this.$router.push('/u/edit')
         }
     }
 }
