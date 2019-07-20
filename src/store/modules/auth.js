@@ -94,6 +94,7 @@ const auth = {
                 request.delete('/api/v1/auth/sign_out', options)
                     .then( response => {
                         commit('removeToken')
+                        commit('user/removeUser', null, { root: true})
                         localStorage.removeItem('access-token')
                         localStorage.removeItem('client')
                         localStorage.removeItem('uid')

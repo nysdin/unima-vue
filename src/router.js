@@ -49,7 +49,7 @@ const router = new Router({
       path: '/mypage',
       name: 'mypage',
       component: () => import(/* webpackChunkName: "mypage" */ './views/MyPage.vue'),
-      meta: { public: true },
+      meta: { requiresAuth: true },
     },
     {
       path: '/register',
