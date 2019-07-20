@@ -14,13 +14,16 @@ export default {
             //リクエストのパラメータをセット
             params = options.params
         }
+        if(options.headers){
+            headers = options.headers
+        }
         //トークン認証が必要な場合Headersに情報を付加
         if(options.auth){
             const accessToken = localStorage.getItem('access-token')
             const uid = localStorage.getItem('uid')
             const client = localStorage.getItem('client')
             const authorizationHeader = { 'access-token': accessToken, 'uid': uid, 'client': client}
-            headers = authorizationHeader
+            headers = Object.assign(headers, authorizationHeader)
         }
 
         promise = http({

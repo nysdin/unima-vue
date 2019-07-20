@@ -25,7 +25,7 @@ export default {
             request.post('/api/v1/auth/password', {
                 params: {
                     email: this.email,
-                    redirect_url: process.env.VUE_APP_CLIENT_URL + '/pasword/edit'
+                    redirect_url: process.env.VUE_APP_CLIENT_URL + '/password/edit'
                 }
             })
             .then( () => console.log('success'))
