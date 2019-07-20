@@ -10,13 +10,16 @@
             </el-form-item>
         </el-form>
         <el-button type="primary" plain @click="login">Login</el-button>
-        <el-button type="primary" plain @click="toRegister">Register</el-button>
+        <el-button type="primary" plain @click="toRegister">Register</el-button><br/>
+        <el-button type="primary" plain @click="toResetPassword">パスワードを忘れた方はこちら</el-button>
     </div>
 </template>
 
 <script>
+import request from '../utils/api.js'
 
 export default {
+    name: 'login',
     data() {
         return {
             user: { email: 'ysthon@gmail.com', password: 'password'},
@@ -39,13 +42,16 @@ export default {
         toRegister(){
             this.$router.push('/register')
         },
+        toResetPassword(){
+            this.$router.push('/password_reset')
+        },
         renderError(error){
             this.$notify({
                 title: 'Warning',
                 message: error,
                 type: 'warning'
             });
-        }
+        },
     },
     
 }

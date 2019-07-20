@@ -65,6 +65,11 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
     },
     {
+      path: '/password_reset',
+      name: 'passwordReset',
+      component: () => import(/* webpackChunkName: "passwordReset" */ './views/PasswordReset.vue')
+    },
+    {
       path: '/sell',
       name: 'sell',
       meta: { requiresAuth: true },
