@@ -61,7 +61,7 @@ export default {
                     this.$router.push({ path: `/product/${response.data.id}`})
                 })
                 .catch( error => {
-                    console.log(error)
+                    console.log(error.response)
                 })
         }
     }
