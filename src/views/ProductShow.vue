@@ -3,7 +3,7 @@
         <p>{{ item.name }}</p>
         <router-link to="/">ホームへ戻る</router-link><br/>
         <router-link :to="`/sell/${this.$route.params.id}/edit`" v-if="seller">商品の編集</router-link>
-        <el-button type="success" round @click="trade" v-if="!seller">購入手続き</el-button>
+        <el-button type="success" round @click="trade" v-if="!seller && open">購入手続き</el-button>
     </div>
 </template>
 
@@ -21,6 +21,9 @@ export default {
         //ログイン中のユーザーの商品かどうか
         seller(){
             return this.$store.state.user.user.id === this.item.seller_id
+        },
+        open(){
+            return this.item.status == "open"
         }
     },
     created(){
