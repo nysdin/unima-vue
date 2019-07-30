@@ -1,6 +1,7 @@
 <template>
     <div id="show">
         <p>{{ item.name }}</p>
+        <p>出品者 {{ item.seller.name }}</p>
         <router-link to="/">ホームへ戻る</router-link><br/>
         <router-link :to="`/sell/${this.$route.params.id}/edit`" v-if="seller">商品の編集</router-link>
         <router-link :to="`/product/${this.$route.params.id}/trade`" v-if="(seller || buyer) && trading">取引画面へ</router-link><br>
@@ -17,7 +18,9 @@ export default {
     name: 'productShow',
     data(){
         return {
-            item: {},
+            item: {
+                seller: ''
+            },
             liked: false
         }
     },
