@@ -27,10 +27,13 @@ const ifAuthenticated = (to, from, next) => {
 
 const nextAuth = (to, from, next) => {
   if(to.matched.some(record => record.meta.requiresAuth)){
+    //ログインしていない人が入れないようにしている
     ifAuthenticated(to, from, next)
   }else if(to.matched.some(record => record.meta.public)){
+    //誰でも閲覧可能
     next()
   }else{
+    //ログインしている人が入れないようにしている
     ifNotAuthenticated(to, from, next)
   }
 }
@@ -97,6 +100,12 @@ const router = new Router({
       name: 'productShow',
       meta: { public: true },
       component: () => import(/* webpackChunkName: "productShow" */ './views/ProductShow.vue')
+    },
+    {
+      path: '/trade/:id',
+      name: 'Trade',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "trade" */ './views/Trade.vue')
     }
   ]
 })
