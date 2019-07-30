@@ -102,7 +102,7 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "productShow" */ './views/ProductShow.vue')
     },
     {
-      path: '/trade/:id',
+      path: '/product/:id/trade',
       name: 'Trade',
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "trade" */ './views/Trade.vue')
