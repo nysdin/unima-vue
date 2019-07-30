@@ -1,6 +1,7 @@
 <template>
     <div id="trading">
         <p>{{ item.name }}</p>
+        <el-button plain @click="finish">取引終了</el-button>
         <router-link to="/">ホームへ戻る</router-link><br/>
     </div>
 </template>
@@ -33,11 +34,13 @@ export default {
             })
     },
     methods: {
-        trade(){
-            request.post(`/api/v1/products/${this.item.id}/trade`, { auth: true })
-                .then( response => console.log("success"))
-                .catch( errors => console.log("error"))
-        },
+        finish(){
+            request.post(`/api/v1/products/${this.item.id}/complete`, { auth: true })
+                .then( response => { console.log('finish')})
+                .catch( error => {
+                    console.log('error')
+                })
+        }
     }
 }
 </script>
