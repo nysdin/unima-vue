@@ -10,6 +10,16 @@
         <el-button plain @click="like" v-if="!liked">いいね</el-button>
         <el-button plain @click="unlike" v-if="liked">いいね取り消し</el-button>
         <el-button circle>{{ item.likes_count }}</el-button>
+
+        <el-card class="box-card">
+            <p style="text-align: left;" v-for="comment in comments" :key="comment.id">
+                <span style="margin-right: 10px;">{{ comment.user.name }}</span>
+                {{ comment.content }}
+            </p>
+        </el-card>
+        <el-input type="textarea" :rows="2" placeholder="Please input" v-model="content">
+        </el-input>
+        <el-button plain @click="comment">コメント</el-button>
     </div>
 </template>
 
@@ -23,7 +33,9 @@ export default {
             item: {
                 seller: ''
             },
-            liked: false
+            liked: false,
+            content: '',
+            comments: []
         }
     },
     computed: {
@@ -54,6 +66,7 @@ export default {
                 console.log(response)
                 this.item = response.data.product
                 this.liked = response.data.like
+                this.comments = response.data.comments
             })
             .catch( error => {
                 console.log('error')
@@ -82,6 +95,15 @@ export default {
                     console.log(response.data)
                     this.item.likes_count = response.data.likes_count
                     this.liked = false
+                })
+                .catch(error => {
+                    console.log('error')
+                })
+        },
+        comment(){
+            request.post(`/api/v1/products/${this.item.id}/comments`, { auth: true, params: { content: this.content} })
+                .then( response => {
+                    this.comments.push(response.data.comments)
                 })
                 .catch(error => {
                     console.log('error')
