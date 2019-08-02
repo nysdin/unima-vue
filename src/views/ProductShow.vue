@@ -20,7 +20,7 @@
         </el-card>
         <el-input type="textarea" :rows="2" placeholder="Please input" v-model="content">
         </el-input>
-        <el-button plain @click="comment">コメント</el-button>
+        <el-button plain @click="comment" :disabled="!open">コメント</el-button>
     </div>
 </template>
 
@@ -104,6 +104,7 @@ export default {
         comment(){
             request.post(`/api/v1/products/${this.item.id}/comments`, { auth: true, params: { content: this.content} })
                 .then( response => {
+                    this.content = ''
                     this.comments.push(response.data.comments)
                 })
                 .catch(error => {
