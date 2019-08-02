@@ -12,9 +12,10 @@
         <el-button circle>{{ item.likes_count }}</el-button>
 
         <el-card class="box-card">
-            <p style="text-align: left;" v-for="comment in comments" :key="comment.id">
+            <p style="text-align: left;" v-for="(comment, index) in comments" :key="comment.id">
                 <span style="margin-right: 10px;">{{ comment.user.name }}</span>
                 {{ comment.content }}
+                <i class="el-icon-delete" v-if="seller" style="cursor: pointer;" @click="deleteComment(comment.id, index)"></i>
             </p>
         </el-card>
         <el-input type="textarea" :rows="2" placeholder="Please input" v-model="content">
@@ -104,6 +105,15 @@ export default {
             request.post(`/api/v1/products/${this.item.id}/comments`, { auth: true, params: { content: this.content} })
                 .then( response => {
                     this.comments.push(response.data.comments)
+                })
+                .catch(error => {
+                    console.log('error')
+                })
+        },
+        deleteComment(id, index){
+            request.delete(`/api/v1/products/${this.item.id}/comments/${id}`, { auth: true })
+                .then( response => {
+                    this.comments.splice(index, 1)
                 })
                 .catch(error => {
                     console.log('error')
