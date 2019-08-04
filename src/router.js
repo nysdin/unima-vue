@@ -63,6 +63,7 @@ const router = new Router({
     {
       path: '/mypage/purchase',
       name: 'mypagePurchase',
+      component: () => import(/* webpackChunkName: "mypageSell" */ './views/MyPagePurchase.vue'),
       meta: { requiresAuth: true }
     },
     {
