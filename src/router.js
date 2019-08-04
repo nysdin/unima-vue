@@ -55,6 +55,17 @@ const router = new Router({
       meta: { requiresAuth: true },
     },
     {
+      path: '/mypage/sell',
+      name: 'mypageSell',
+      component: () => import(/* webpackChunkName: "mypageSell" */ './views/MyPageSell.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/mypage/purchase',
+      name: 'mypagePurchase',
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/register',
       name: 'register',
       component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
