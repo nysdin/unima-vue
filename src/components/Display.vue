@@ -21,6 +21,11 @@
 <script>
 export default {
     name: 'display',
-    props: ['items']
+    props: ['items'],
+    methods:{
+        showProduct(id){
+            this.$router.push({ path: `/product/${id}`})
+        },
+    }
 }
 </script>

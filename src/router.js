@@ -63,7 +63,13 @@ const router = new Router({
     {
       path: '/mypage/purchase',
       name: 'mypagePurchase',
-      component: () => import(/* webpackChunkName: "mypageSell" */ './views/MyPagePurchase.vue'),
+      component: () => import(/* webpackChunkName: "mypagePurchase" */ './views/MyPagePurchase.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/mypage/like',
+      name: 'mypageLike',
+      component: () => import(/* webpackChunkName: "mypageLike" */ './views/MyPageLike.vue'),
       meta: { requiresAuth: true }
     },
     {
