@@ -112,6 +112,7 @@ const auth = {
                 commit('apiRequest')
                 request.get('/api/v1/auth/validate_token', { auth: true })
                     .then( response => {
+                        console.log(response)
                         commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
                         commit('initialized')

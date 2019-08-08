@@ -2,6 +2,7 @@
     <div id="mypage">
         <p>{{ this.name }}</p>
         <p>{{ this.email }}</p>
+        <img :src="avatar.url">
         <router-link to="/mypage/sell">出品した商品</router-link>
         <router-link to="/mypage/purchase">購入した商品</router-link>
         <router-link to="/mypage/like">いいねした商品</router-link>
@@ -30,7 +31,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('user', ['name', 'email'])
+        ...mapGetters('user', ['name', 'email', 'avatar'])
     },
     methods: {
         passwordReset(){

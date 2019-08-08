@@ -10,6 +10,7 @@ const user = {
             client: '',
             uid: '',
             id: 0,
+            avatar: { url: '' }
         }
     },
     getters: {
@@ -18,12 +19,15 @@ const user = {
         },
         email(state){
             return state.user.email
+        },
+        avatar(state){
+            return state.user.avatar
         }
     },
     mutations: {
         setUser(state, userData){
-            const { name, email, provider, client, uid, id } = userData
-            state.user = { name, email, provider, client, uid, id }
+            const { name, email, provider, client, uid, id, avatar } = userData
+            state.user = { name, email, provider, client, uid, id, avatar }
         },
         removeUser(state){
             const user = { name: '', email: '', provider: '', client: '', uid: '', id: 0 }
@@ -32,8 +36,12 @@ const user = {
     },
     actions: {
         editUser({ commit }, user){
+            const FD = new FormData()
+            FD.append('name', user.name)
+            FD.append('email', user.email)
+            FD.append('avatar', user.avatar)
             return new Promise( (resolve, reject) => {
-                request.patch('/api/v1/auth', { params: { ...user }, auth: true })
+                request.patch('/api/v1/auth', { params: FD, auth: true })
                 .then( response => {
                     commit('setUser', response.data.data)
                     console.log(response)

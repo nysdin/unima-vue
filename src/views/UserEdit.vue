@@ -8,6 +8,9 @@
             <el-form-item label="Email">
                 <el-input v-model="email"></el-input>
             </el-form-item>
+            <el-form-item label="Avatar">
+                <input type="file" @change="selectedFile">
+            </el-form-item>
         </el-form>
         <el-button type="primary" plain @click="editUser">変更</el-button>
     </div>
@@ -17,13 +20,17 @@
 export default {
     name: 'userEdit',
     data(){
-        return { name: '', email: '' }
+        return { name: '', email: '', uploadFile: null }
     },
     methods: {
         editUser(){
-            this.$store.dispatch('user/editUser', { name: this.name, email: this.email })
+            this.$store.dispatch('user/editUser', { name: this.name, email: this.email, avatar: this.uploadFile })
                 .then( () => this.$router.push('/mypage'))
                 .catch( () => console.log('failed'))
+        },
+        selectedFile(e){
+            e.preventDefault()
+            this.uploadFile = e.target.files[0]
         }
     },
     created(){
