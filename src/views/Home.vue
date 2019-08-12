@@ -1,28 +1,22 @@
 <template>
   <div class="home">
-    <h1>Unima</h1>
-    <router-link to="/mypage">プロフィール</router-link>
-    <router-link to='/sell'>出品</router-link>
-    <el-button type="primary" plain @click="logout" v-if="loggedIn">Logout</el-button>
-    <el-row :gutter="20">
-      <el-col :span="6" v-for="item in items" :key="item.id">
-        <el-card :body-style="{ padding: '0px' }" @click.native="showProduct(item.id)">
-          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-          <div style="padding: 14px;">
-            <span>{{ item.name }}</span>
-            <div class="bottom clearfix">
-              <p>{{ item.description }}</p>
-              <p>{{ item.price }}</p>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    <v-container fluid grid-list-md>
+      <v-layout wrap>
+        <v-flex v-for="item in items" :key="item.id" xs4>
+          <v-card flat class="product" @click="showProduct(item.id)">
+            <v-img height="200px" 
+              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+            ></v-img>
+            <v-card-title>{{ item.name }}</v-card-title>
+            <v-card-text>{{ item.price }}</v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
     <template v-if="!loggedIn">
       <router-link to='/login'>ログイン</router-link>
       <router-link to='/register'>新規登録</router-link>
     </template>
-    
   </div>
 </template>
 
@@ -57,28 +51,9 @@ export default {
 </script>
 
 <style>
-  .el-row {
-    margin-bottom: 20px;
+  .product{
+    cursor: pointer;
   }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
+
 </style>
 
