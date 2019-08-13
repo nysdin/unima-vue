@@ -40,6 +40,12 @@ export default {
         request.get('/api/v1/user/purchase', { auth: true })
             .then(response => this.products = response.data)
             .catch(error => console.log('error'))
+    },
+    mounted(){
+        const status = this.$route.query.status
+        if(['trade', 'close'].includes(status)){
+            this.status = status
+        }
     }
 }
 </script>

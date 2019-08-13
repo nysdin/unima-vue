@@ -3,12 +3,15 @@ import App from './App.vue'
 import router from './router'
 import store from './store/'
 import ElementUI from 'element-ui'
+import Croppa from 'vue-croppa'
 import 'element-ui/lib/theme-chalk/index.css';
+import 'vue-croppa/dist/vue-croppa.css'
 import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
+Vue.use(Croppa)
 
 new Vue({
   router,

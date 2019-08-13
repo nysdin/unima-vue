@@ -37,7 +37,7 @@ export default {
                 }
             })
             .then(response => this.$route.push('/'))
-            .catch(error => console.log(error.response))
+            .catch(error => console.log(error))
         }
     },
     created(){

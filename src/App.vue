@@ -9,11 +9,11 @@
             <v-navigation-drawer v-model="drawer" fixed temporary  >
                 <v-list-item>
                     <v-list-item-avatar>
-                        <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+                        <v-img :src="$store.state.user.user.avatar.url" class="avatar"></v-img>
                     </v-list-item-avatar>
 
                     <v-list-item-content>
-                    <v-list-item-title>John Leider</v-list-item-title>
+                    <v-list-item-title>{{$store.state.user.user.name}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -33,12 +33,10 @@
                 </v-list>
             </v-navigation-drawer>
 
-            <v-container>
-                <div v-loading.fullscreen.lock="!initLoading　|| loading"
-                    element-loading-background="rgba(255, 255, 255, 1.0)" class="main"
-                ></div>
-                <router-view v-show="initLoading && !loading"/>
-            </v-container>
+            <div v-loading.fullscreen.lock="!initLoading　|| loading"
+                element-loading-background="rgba(255, 255, 255, 1.0)" class="main"
+            ></div>
+            <router-view v-show="initLoading && !loading"/>
         </v-app>
     </div>
 </template>
@@ -97,5 +95,9 @@ export default {
 
 .main{
     margin-top: 60px;
+}
+
+.avatar{
+    border: 2px solid #b9b9b9;
 }
 </style>

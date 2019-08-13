@@ -28,6 +28,7 @@ const user = {
         setUser(state, userData){
             const { name, email, provider, client, uid, id, avatar } = userData
             state.user = { name, email, provider, client, uid, id, avatar }
+            state.user.avatar.url = avatar.url
         },
         removeUser(state){
             const user = { name: '', email: '', provider: '', client: '', uid: '', id: 0 }
@@ -39,17 +40,19 @@ const user = {
             const FD = new FormData()
             FD.append('name', user.name)
             FD.append('email', user.email)
-            FD.append('avatar', user.avatar)
             return new Promise( (resolve, reject) => {
-                request.patch('/api/v1/auth', { params: FD, auth: true })
-                .then( response => {
-                    commit('setUser', response.data.data)
-                    console.log(response)
-                    resolve()
-                })
-                .catch( error => {
-                    console.log(error.response)
-                    reject()
+                user.avatar.generateBlob( (blob) => {
+                    FD.append('avatar', blob, user.filename)
+                    request.patch('/api/v1/auth', { params: FD, auth: true })
+                        .then( response => {
+                            commit('setUser', response.data.data)
+                            console.log(response)
+                            resolve()
+                        })
+                        .catch( error => {
+                            console.log(error.response)
+                            reject()
+                        })
                 })
             })
         }

@@ -24,7 +24,7 @@ export default {
         }
     },
     computed: {
-        //スクロールで情報を更新するなどしたい
+        //スクロールで情報を更新するなどしたい 取引状態に応じた商品を返す
         situatedProduct(){
             return this.products.filter(product => product.status === this.status)
         }
@@ -45,6 +45,12 @@ export default {
         request.get('/api/v1/user/sell', { auth: true })
             .then(response => this.products = response.data)
             .catch(error => console.log('error'))
+    },
+    mounted(){
+        const status = this.$route.query.status
+        if(['open', 'trade', 'close'].includes(status)){
+            this.status = status
+        }
     }
 }
 </script>
