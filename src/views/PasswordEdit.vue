@@ -1,15 +1,21 @@
 <template>
     <div id="password-edit">
         <h1>パスワード変更</h1>
-        <el-form label-position="right" label-width="100px">
-            <el-form-item label="Password">
-                <el-input v-model="password"></el-input>
-            </el-form-item>
-            <el-form-item label="PasswordConfirmation">
-                <el-input v-model="passwordConfirmation"></el-input>
-            </el-form-item>
-        </el-form>
-        <el-button type="primary" plain @click="resetPassword">パスワード変更</el-button>
+        
+        <v-container>
+            <v-form ref="forms">
+                <v-text-field v-model="password" :append-icon="show1 ? 'visibility' : 'visibility_off'"
+                    :type="show1 ? 'text' : 'password'" label="Password" @click:append="show1 = !show1">
+                </v-text-field>
+
+                <v-text-field v-model="passwordConfirmation" :append-icon="show2 ? 'visibility' : 'visibility_off'"
+                    :type="show2 ? 'text' : 'password'" label="PasswordConfirmation" @click:append="show2 = !show2">
+                </v-text-field>
+
+                <v-btn text large @click="resetPassword">変更</v-btn>
+            </v-form>
+        </v-container>
+
     </div>
 </template>
 
@@ -20,7 +26,7 @@ export default {
     name: 'passwordEdit',
     data(){
         return {
-            password: '', passwordConfirmation: ''
+            password: '', passwordConfirmation: '', show1: false, show2: false
         }
     },
     methods: {
@@ -37,11 +43,8 @@ export default {
                 }
             })
             .then(response => this.$route.push('/'))
-            .catch(error => console.log(error))
+            .catch(error => console.log(error ))
         }
     },
-    created(){
-        console.log(this.$route.query.client)
-    }
 }
 </script>
