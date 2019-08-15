@@ -1,33 +1,26 @@
 <template>
     <div id="sell">
         <h1>商品追加</h1>
-        <el-form label-position="right" label-width="100px" :model="product">
-            <el-form-item label="商品名">
-                <el-input v-model="product.name"></el-input>
-            </el-form-item>
-            <el-form-item label="商品説明">
-                <el-input v-model="product.description"></el-input>
-            </el-form-item>
-            <el-form-item label="カテゴリー">
-                <el-select v-model="product.category" placeholder="please select category">
-                    <el-option v-for="category in categoris"
-                                :key="category" :label="category" :value="category">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="使用状態">
-                <el-select v-model="product.state" placeholder="please select state">
-                    <el-option v-for="state in states"
-                                :key="state.value" :label="state.label" :value="state.value">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="価格">
-                <el-input v-model="product.price"></el-input>
-            </el-form-item>
-        </el-form>
-        <el-button type="primary" plain @click="sell">出品</el-button>
-        <router-link to="/">ホームへ戻る</router-link>
+        <v-container>
+            <v-form>
+                <v-row>
+                    <v-col :cols="3" v-for="(image, i) in images" :key="i">
+                        <croppa v-model="images[i]" :width="eachSize" :height="eachSize" ></croppa>
+                    </v-col>
+                </v-row>
+                <v-text-field v-model="product.name" label="商品名" placeholder="商品名" required></v-text-field>
+                <v-textarea label="商品の説明" v-model="product.description"
+                    hint="Hint text"
+                ></v-textarea>
+                <v-text-field v-model="product.price" label="商品の価格" placeholder="価格" required></v-text-field>
+                <v-select :items="categoris" v-model="product.category" label="カテゴリー"
+                ></v-select>
+                <v-select :items="states" v-model="product.state" label="商品の状態"
+                ></v-select>
+
+                <v-btn medium outlined @click="sell">Button</v-btn>
+            </v-form>
+        </v-container>
     </div>
 </template>
 
@@ -38,6 +31,9 @@ export default {
     name: 'sell',
     data(){
         return{
+            file: null,
+            size: window.innerWidth,
+            images: [{}, {}, {}, {}],
             product: {
                 name: '',
                 description: '',
@@ -45,25 +41,53 @@ export default {
                 state: '',
                 category: '',
             },
-            categoris: ['general', 'humanity', 'science'],
+            categoris: [
+                { text: '一般', value: 'general' },
+                { text: '文系', value: 'humanity' },
+                { text: '理系', value: 'science' }
+            ],
             states: [
-                {value: 'new', label: '新品、未使用'},
-                {value: 'almost_new', label: '目立った傷や汚れなし'},
-                {value: 'almost_old', label: 'やや傷れや汚れあり'},
-                {value: 'old', label: '全体的に状態が悪い'}
+                {text: '新品、未使用', value: 'new'},
+                {text: '目立った傷や汚れなし', value: 'almost_new'},
+                {text: 'やや傷れや汚れあり', value: 'almost_old'},
+                {text: '全体的に状態が悪い', value: 'old'}
             ]
         }
     },
+    computed: {
+        eachSize(){
+            return (this.size - 100 ) / 4
+        }
+    },
     methods: {
-        sell(){
-            request.post('/api/v1/products', { params: this.product, auth: true })
+        async sell(){
+            const params = new FormData()
+            Object.keys(this.product).forEach(key => {
+                params.append(key, this.product[key])
+            })
+            for(let image of this.images){
+                const blob = await image.promisedBlob()
+                const filename = image.getChosenFile().name
+                params.append('images[]', blob, filename)
+                console.log(blob)
+            }
+            request.post('/api/v1/products', { params: params, auth: true })
                 .then( response => {
                     this.$router.push({ path: `/product/${response.data.id}`})
                 })
                 .catch( error => {
-                    console.log(error.response)
+                    console.log(error)
                 })
-        }
+        },
+        handleResize(){
+            this.size = window.innerWidth
+        },
+    },
+    mounted(){
+        window.addEventListener('resize', this.handleResize)
+    },
+    beforeDestory(){
+        window.removeEventListener('resize', this.handleResize)
     }
 }
 </script>
