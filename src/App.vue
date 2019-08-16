@@ -6,7 +6,7 @@
                 <v-toolbar-title class="title" @click="toTop">Unima</v-toolbar-title>
             </v-app-bar> 
 
-            <v-navigation-drawer v-model="drawer" fixed temporary  >
+            <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav">
                 <v-list-item>
                     <v-list-item-avatar>
                         <v-img :src="$store.state.user.user.avatar.url" class="avatar"></v-img>
@@ -34,9 +34,9 @@
             </v-navigation-drawer>
 
             <div v-loading.fullscreen.lock="!initLoading　|| loading"
-                element-loading-background="rgba(255, 255, 255, 1.0)" class="main"
+                element-loading-background="rgba(255, 255, 255, 1.0)"
             ></div>
-            <router-view v-show="initLoading && !loading"/>
+            <router-view class="main" v-show="initLoading && !loading"/>
         </v-app>
     </div>
 </template>
@@ -78,10 +78,6 @@ export default {
 
 <style>
 #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
 }
 
@@ -91,13 +87,18 @@ export default {
 
 .navbar{
     position: fixed!important;
+    z-index: 1;
 }
 
 .main{
-    margin-top: 60px;
+    margin-top: 56px;
 }
 
 .avatar{
     border: 2px solid #b9b9b9;
+}
+
+.side-nav{
+    z-index: 20;
 }
 </style>

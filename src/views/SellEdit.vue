@@ -73,7 +73,8 @@ export default {
         this.$store.commit('auth/apiRequest')
         request.get(`/api/v1/products/${this.$route.params.id}`, {})
             .then( response => {
-                if(this.$store.state.user.user.id === response.data.user_id){
+                console.log(response)
+                if(this.$store.state.user.user.id === response.data.product.seller_id){
                     console.log(response.data)
                     this.product = response.data
                     this.$store.commit('auth/apiCompleted')

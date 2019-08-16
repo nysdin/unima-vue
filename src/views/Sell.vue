@@ -67,9 +67,11 @@ export default {
             })
             for(let image of this.images){
                 const blob = await image.promisedBlob()
-                const filename = image.getChosenFile().name
-                params.append('images[]', blob, filename)
-                console.log(blob)
+                const file = image.getChosenFile()
+                if(file){
+                    params.append('images[]', blob, file.name)
+                    console.log(blob)
+                }
             }
             request.post('/api/v1/products', { params: params, auth: true })
                 .then( response => {

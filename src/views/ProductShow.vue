@@ -1,26 +1,99 @@
 <template>
     <div id="show">
-        <p>{{ item.name }}</p>
-        <p>出品者 {{ item.seller.name }}</p>
-        <router-link to="/">ホームへ戻る</router-link><br/>
-        <router-link :to="`/sell/${this.$route.params.id}/edit`" v-if="seller">商品の編集</router-link>
-        <router-link :to="`/product/${this.$route.params.id}/trade`" v-if="(seller || buyer) && trading">取引画面へ</router-link><br>
-        <el-button type="success" round @click="trade" v-if="!seller && open">購入手続き</el-button>
-        <el-button type="success" round disabled v-if="soldOut">売り切れ商品</el-button><br>
-        <el-button plain @click="like" v-if="!liked">いいね</el-button>
-        <el-button plain @click="unlike" v-if="liked">いいね取り消し</el-button>
-        <el-button circle>{{ item.likes_count }}</el-button>
+        <v-card :elevation="0" class="mb-4">
+            <v-carousel :height="300" hide-delimiter-background delimiter-icon="mdi-minus" :touchless="true">
+                <v-carousel-item v-for="(image, i) in item.images" :key="i">
+                    <v-img :src="image.url" height="300"></v-img>
+                </v-carousel-item>
+            </v-carousel>
+            <v-container class="pt-0">
+                <v-card-title class="headline font-weight-medium py-2 px-0">{{ item.name }}</v-card-title>
 
-        <el-card class="box-card">
-            <p style="text-align: left;" v-for="(comment, index) in comments" :key="comment.id">
-                <span style="margin-right: 10px;">{{ comment.user.name }}</span>
-                {{ comment.content }}
-                <i class="el-icon-delete" v-if="seller" style="cursor: pointer;" @click="deleteComment(comment.id, index)"></i>
-            </p>
-        </el-card>
-        <el-input type="textarea" :rows="2" placeholder="Please input" v-model="content">
-        </el-input>
-        <el-button plain @click="comment" :disabled="!open">コメント</el-button>
+                <div class="d-flex justify-space-between mb-2">
+                    <div class="display-1">¥ {{ item.price }}</div>
+                    <div>
+                        <v-btn outlined rounded @click="like">
+                            <v-icon left :color="favoriteColor">favorite</v-icon> いいね
+                        </v-btn>
+                        <span class="ml-3">{{ item.likes_count }}</span>
+                    </div>
+                </div>
+
+                <v-btn color="error" block samll @click="trade" v-if="!seller && open">購入する</v-btn>
+                <v-btn color="error" block samll v-if="seller && open"
+                    @click="$router.push(`/sell/${$route.params.id}/edit`)" >
+                    商品の編集
+                </v-btn>
+                <v-btn color="error" block samll v-if="(seller || buyer) && trading"
+                    @click="$router.push(`/product/${$route.params.id}/trade`)">
+                    取引画面
+                </v-btn>
+                <v-btn color="error" block samll @click="toEdit" v-if="soldOut" disabled>売り切れ</v-btn>
+
+            </v-container>
+
+            <v-sheet tile color="grey lighten-3 d-flex align-center" height="30">
+                <p class="font-weight-bold py-0 pl-3 ma-0">商品の情報</p>
+            </v-sheet>
+            <v-simple-table>
+                <tbody>
+                    <tr>
+                        <td>商品状態</td>
+                        <td>{{ item.state }}</td>
+                    </tr>
+                    <tr>
+                        <td>カテゴリー</td>
+                        <td><v-breadcrumbs  class="px-0" :items="[{text: '一般'}, {text: '理系'}]" divider=">"></v-breadcrumbs></td>
+                    </tr>
+                </tbody>
+            </v-simple-table>
+
+            <v-sheet tile color="grey lighten-3 d-flex align-center" height="30">
+                <p class="font-weight-bold py-0 pl-3 ma-0">商品の説明</p>
+            </v-sheet>
+            <v-sheet>
+                <div class="pa-3">{{ item.description }}</div>
+            </v-sheet>
+
+            <v-sheet tile color="grey lighten-3 d-flex align-center" height="30">
+                <p class="font-weight-bold py-0 pl-3 ma-0">出品者</p>
+            </v-sheet>
+            <v-list class="pa-0" flat>
+                    <v-list-item @click="$router.push('/mypage')">
+                        <v-list-item-avatar>
+                            <v-img :src="item.seller.avatar.url"></v-img>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                            <v-list-item-title v-text="item.seller.name"></v-list-item-title>
+                        </v-list-item-content>
+                        <v-list-item-icon>
+                            <v-icon>mdi-chevron-right</v-icon>
+                        </v-list-item-icon>
+                    </v-list-item>
+            </v-list>
+        </v-card>
+
+        <v-card :elevation="0">
+            <v-container>
+                <v-card :elevation="0" v-for="comment in comments" :key="comment.id">
+                    <v-row>
+                        <v-col :cols="2">
+                            <v-avatar :size="40" class="mt-4">
+                                <img src="https://vuetifyjs.com/apple-touch-icon-180x180.png" alt="avatar">
+                            </v-avatar>
+                        </v-col>
+                        <v-col :cols="10" class="pl-0">
+                            <p class="mb-1">{{ comment.user.name }}</p>
+                            <v-sheet class="grey lighten-3 pa-2 comment">
+                                {{ comment.content }}
+                            </v-sheet>
+                        </v-col>
+                    </v-row>
+                </v-card>
+                <v-textarea v-model="content" outlined placeholder="分からないことなど質問しよう！"></v-textarea>
+                <v-btn color="error" block samll @click="comment" :disabled="!open">コメントする</v-btn>
+            </v-container>
+        </v-card>
     </div>
 </template>
 
@@ -32,11 +105,14 @@ export default {
     data(){
         return {
             item: {
-                seller: ''
+                seller: {
+                    name: '',
+                    avatar: { url: '' }
+                }
             },
             liked: false,
+            comments: [],
             content: '',
-            comments: []
         }
     },
     computed: {
@@ -58,6 +134,9 @@ export default {
         //取引終了している商品かどうか
         soldOut(){
             return this.item.status == "close"
+        },
+        favoriteColor(){
+            return this.liked ? 'red' : 'gray'
         }
     },
     created(){
@@ -80,18 +159,8 @@ export default {
                 .catch( errors => console.log("error"))
         },
         like(){
-            request.post(`/api/v1/products/${this.item.id}/likes`, { auth: true })
-                .then(response => {
-                    console.log(response.data)
-                    this.item.likes_count = response.data.likes_count
-                    this.liked = true
-                })
-                .catch(error => {
-                    console.log('error')
-                })
-        },
-        unlike(){
-            request.delete(`/api/v1/products/${this.item.id}/likes`, { auth: true })
+            if(this.liked){
+                request.delete(`/api/v1/products/${this.item.id}/likes`, { auth: true })
                 .then( response => {
                     console.log(response.data)
                     this.item.likes_count = response.data.likes_count
@@ -100,6 +169,17 @@ export default {
                 .catch(error => {
                     console.log('error')
                 })
+            }else{
+                request.post(`/api/v1/products/${this.item.id}/likes`, { auth: true })
+                .then(response => {
+                    console.log(response.data)
+                    this.item.likes_count = response.data.likes_count
+                    this.liked = true
+                })
+                .catch(error => {
+                    console.log('error')
+                })
+            }
         },
         comment(){
             request.post(`/api/v1/products/${this.item.id}/comments`, { auth: true, params: { content: this.content} })
@@ -123,4 +203,29 @@ export default {
     }
 }
 </script>
+
+<style>
+    .product-toolbar{
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+
+    .comment{
+        border-radius: 10px;
+    }
+
+.comment:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 3px; 
+    left: -19px;
+    border: 8px solid transparent;
+    border-right: 18px solid #edf1ee;
+    -webkit-transform: rotate(35deg);
+    transform: rotate(35deg);
+}
+</style>
 
