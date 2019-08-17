@@ -40,17 +40,8 @@ export default {
                 state: '',
                 category: '',
             },
-            categoris: [
-                { text: '一般', value: 'general' },
-                { text: '文系', value: 'humanity' },
-                { text: '理系', value: 'science' }
-            ],
-            states: [
-                {text: '新品、未使用', value: 'new'},
-                {text: '目立った傷や汚れなし', value: 'almost_new'},
-                {text: 'やや傷れや汚れあり', value: 'almost_old'},
-                {text: '全体的に状態が悪い', value: 'old'}
-            ]
+            categoris: [ '一般', '文系', '理系'],
+            states: ['新品、未使用', '目立った傷や汚れなし', 'やや傷れや汚れあり', '全体的に状態が悪い']
         }
     },
     computed: {
