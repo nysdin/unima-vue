@@ -1,34 +1,27 @@
 <template>
     <div id="sell">
-        <h1>商品編集</h1>
-        <el-form label-position="right" label-width="100px" :model="product">
-            <el-form-item label="商品名">
-                <el-input v-model="product.name"></el-input>
-            </el-form-item>
-            <el-form-item label="商品説明">
-                <el-input v-model="product.description"></el-input>
-            </el-form-item>
-            <el-form-item label="カテゴリー">
-                <el-select v-model="product.category" placeholder="please select category">
-                    <el-option v-for="category in categoris"
-                                :key="category" :label="category" :value="category">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="使用状態">
-                <el-select v-model="product.state" placeholder="please select state">
-                    <el-option v-for="state in states"
-                                :key="state.value" :label="state.label" :value="state.value">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="価格">
-                <el-input v-model="product.price"></el-input>
-            </el-form-item>
-        </el-form>
-        <el-button type="primary" plain @click="update">編集</el-button>
-        <el-button type="danger" plain @click="destroy">削除</el-button>
-        <router-link to="/">ホームへ戻る</router-link>
+        <h1>商品の編集</h1>
+        <v-container>
+            <v-form>
+                <v-row>
+                    <v-col :cols="3" v-for="(image, i) in images" :key="i">
+                        <croppa v-model="images[i]" :width="eachSize" :height="eachSize" ></croppa>
+                    </v-col>
+                </v-row>
+                <v-text-field v-model="product.name" label="商品名" placeholder="商品名" required></v-text-field>
+                <v-textarea label="商品の説明" v-model="product.description"
+                    hint="Hint text"
+                ></v-textarea>
+                <v-text-field v-model="product.price" label="商品の価格" placeholder="価格" required></v-text-field>
+                <v-select :items="categoris" v-model="product.category" label="カテゴリー"
+                ></v-select>{{ product.category }}{{ product.state }}
+                <v-select :items="states" v-model="product.state" label="商品の状態"
+                ></v-select>
+
+                <v-btn medium outlined @click="update">編集する</v-btn>
+                <v-btn medium outlined @click="destroy">削除する</v-btn>
+            </v-form>
+        </v-container>
     </div>
 </template>
 
@@ -39,14 +32,25 @@ export default {
     name: 'sell',
     data(){
         return{
+            size: window.innerWidth,
             product: {},
-            categoris: ['general', 'humanity', 'science'],
+            images: [{}, {}, {}, {}],
+            categoris: [
+                { text: '一般', value: 'general' },
+                { text: '文系', value: 'humanity' },
+                { text: '理系', value: 'science' }
+            ],
             states: [
-                {value: 'new', label: '新品、未使用'},
-                {value: 'almost_new', label: '目立った傷や汚れなし'},
-                {value: 'almost_old', label: 'やや傷れや汚れあり'},
-                {value: 'old', label: '全体的に状態が悪い'}
+                {text: '新品、未使用', value: 'new'},
+                {text: '目立った傷や汚れなし', value: 'almost_new'},
+                {text: 'やや傷れや汚れあり', value: 'almost_old'},
+                {text: '全体的に状態が悪い', value: 'old'}
             ]
+        }
+    },
+    computed: {
+        eachSize(){
+            return (this.size - 100 ) / 4
         }
     },
     methods: {
@@ -67,22 +71,30 @@ export default {
                 .catch( () => {
                     console.log('error')
                 })
-        }
+        },
+        handleResize(){
+            this.size = window.innerWidth
+        },
     },
     created(){
         this.$store.commit('auth/apiRequest')
         request.get(`/api/v1/products/${this.$route.params.id}`, {})
             .then( response => {
-                console.log(response)
                 if(this.$store.state.user.user.id === response.data.product.seller_id){
                     console.log(response.data)
-                    this.product = response.data
+                    this.product = response.data.product
                     this.$store.commit('auth/apiCompleted')
                 }else{
                     this.$router.push('/')
                     this.$store.commit('auth/apiCompleted')
                 }
             })
+    },
+    mounted(){
+        window.addEventListener('resize', this.handleResize)
+    },
+    beforeDestory(){
+        window.removeEventListener('resize', this.handleResize)
     }
 }
 </script>

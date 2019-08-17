@@ -31,7 +31,6 @@ export default {
     name: 'sell',
     data(){
         return{
-            file: null,
             size: window.innerWidth,
             images: [{}, {}, {}, {}],
             product: {
