@@ -2,20 +2,20 @@
     <div id="show">
         <v-card :elevation="0" class="mb-4">
             <v-carousel :height="300" hide-delimiter-background delimiter-icon="mdi-minus" :touchless="true">
-                <v-carousel-item v-for="(image, i) in item.images" :key="i">
+                <v-carousel-item v-for="(image, i) in product.images" :key="i">
                     <v-img :src="image.url" height="300"></v-img>
                 </v-carousel-item>
             </v-carousel>
             <v-container class="pt-0">
-                <v-card-title class="headline font-weight-medium py-2 px-0">{{ item.name }}</v-card-title>
+                <v-card-title class="headline font-weight-medium py-2 px-0">{{ product.name }}</v-card-title>
 
                 <div class="d-flex justify-space-between mb-2">
-                    <div class="display-1">¥ {{ item.price }}</div>
+                    <div class="display-1">¥ {{ product.price }}</div>
                     <div>
                         <v-btn outlined rounded @click="like">
                             <v-icon left :color="favoriteColor">favorite</v-icon> いいね
                         </v-btn>
-                        <span class="ml-3">{{ item.likes_count }}</span>
+                        <span class="ml-3">{{ product.likes_count }}</span>
                     </div>
                 </div>
 
@@ -39,11 +39,11 @@
                 <tbody>
                     <tr>
                         <td>商品状態</td>
-                        <td>{{ item.state }}</td>
+                        <td>{{ product.state }}</td>
                     </tr>
                     <tr>
                         <td>カテゴリー</td>
-                        <td><v-breadcrumbs  class="px-0" :items="[{text: '一般'}, {text: '理系'}]" divider=">"></v-breadcrumbs></td>
+                        <td><v-breadcrumbs  class="px-0" :items="categories" divider=">"></v-breadcrumbs></td>
                     </tr>
                 </tbody>
             </v-simple-table>
@@ -52,7 +52,7 @@
                 <p class="font-weight-bold py-0 pl-3 ma-0">商品の説明</p>
             </v-sheet>
             <v-sheet>
-                <div class="pa-3">{{ item.description }}</div>
+                <div class="pa-3">{{ product.description }}</div>
             </v-sheet>
 
             <v-sheet tile color="grey lighten-3 d-flex align-center" height="30">
@@ -61,10 +61,10 @@
             <v-list class="pa-0" flat>
                     <v-list-item @click="$router.push('/mypage')">
                         <v-list-item-avatar>
-                            <v-img :src="item.seller.avatar.url"></v-img>
+                            <v-img :src="product.seller.avatar.url"></v-img>
                         </v-list-item-avatar>
                         <v-list-item-content>
-                            <v-list-item-title v-text="item.seller.name"></v-list-item-title>
+                            <v-list-item-title v-text="product.seller.name"></v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-icon>
                             <v-icon>mdi-chevron-right</v-icon>
@@ -72,7 +72,6 @@
                     </v-list-item>
             </v-list>
         </v-card>
-
         <v-card :elevation="0">
             <v-container>
                 <v-card :elevation="0" v-for="comment in comments" :key="comment.id">
@@ -104,36 +103,48 @@ export default {
     name: 'productShow',
     data(){
         return {
-            item: {
+            product: {
                 seller: {
                     name: '',
                     avatar: { url: '' }
+                },
+                category:{
+                    name:'',
+                    path: []
                 }
             },
             liked: false,
             comments: [],
             content: '',
+            category: []
         }
     },
     computed: {
         //ログイン中のユーザーの出品商品かどうか
         seller(){
-            return this.$store.state.user.user.id === this.item.seller_id
+            return this.$store.state.user.user.id === this.product.seller_id
         },
         //ログイン中のユーザーの購入商品かどうか
         buyer(){
-            return this.$store.state.user.user.id == this.item.buyer_id
+            return this.$store.state.user.user.id == this.product.buyer_id
         },
         open(){
-            return this.item.status == "open"
+            return this.product.status == "open"
         },
         //取引中かどうか
         trading(){
-            return this.item.status == "trade"
+            return this.product.status == "trade"
         },
         //取引終了している商品かどうか
         soldOut(){
-            return this.item.status == "close"
+            return this.product.status == "close"
+        },
+        categories(){
+            const categories = []
+            this.product.category.path.forEach(c => {
+                categories.push({ text: c.name })
+            })
+            return categories
         },
         favoriteColor(){
             return this.liked ? 'red' : 'gray'
@@ -141,12 +152,14 @@ export default {
     },
     created(){
         //商品情報を取得
-        request.get(`/api/v1/products/${this.$route.params.id}`, {auth: true})
+        request.get(`/api/v1/products/${this.$route.params.id}`, {})
             .then( response => {
                 console.log(response)
-                this.item = response.data.product
-                this.liked = response.data.like
-                this.comments = response.data.comments
+                const data = response.data
+                this.product = data.product
+                this.liked = data.like
+                this.comments = data.comments
+                //this.category = data.category
             })
             .catch( error => {
                 console.log('error')
@@ -154,26 +167,26 @@ export default {
     },
     methods: {
         trade(){
-            request.post(`/api/v1/products/${this.item.id}/trade`, { auth: true })
+            request.post(`/api/v1/products/${this.product.id}/trade`, { auth: true })
                 .then( response => console.log("success"))
                 .catch( errors => console.log("error"))
         },
         like(){
             if(this.liked){
-                request.delete(`/api/v1/products/${this.item.id}/likes`, { auth: true })
+                request.delete(`/api/v1/products/${this.product.id}/likes`, { auth: true })
                 .then( response => {
                     console.log(response.data)
-                    this.item.likes_count = response.data.likes_count
+                    this.product.likes_count = response.data.likes_count
                     this.liked = false
                 })
                 .catch(error => {
                     console.log('error')
                 })
             }else{
-                request.post(`/api/v1/products/${this.item.id}/likes`, { auth: true })
+                request.post(`/api/v1/products/${this.product.id}/likes`, { auth: true })
                 .then(response => {
                     console.log(response.data)
-                    this.item.likes_count = response.data.likes_count
+                    this.product.likes_count = response.data.likes_count
                     this.liked = true
                 })
                 .catch(error => {
@@ -182,7 +195,7 @@ export default {
             }
         },
         comment(){
-            request.post(`/api/v1/products/${this.item.id}/comments`, { auth: true, params: { content: this.content} })
+            request.post(`/api/v1/products/${this.product.id}/comments`, { auth: true, params: { content: this.content} })
                 .then( response => {
                     this.content = ''
                     this.comments.push(response.data.comments)
@@ -192,7 +205,7 @@ export default {
                 })
         },
         deleteComment(id, index){
-            request.delete(`/api/v1/products/${this.item.id}/comments/${id}`, { auth: true })
+            request.delete(`/api/v1/products/${this.product.id}/comments/${id}`, { auth: true })
                 .then( response => {
                     this.comments.splice(index, 1)
                 })
