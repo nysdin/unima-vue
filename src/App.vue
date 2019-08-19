@@ -1,12 +1,30 @@
 <template>
-    <div id="app">
+    <div id="app" v-bind:class="{ overflowYHidden: drawer }">
         <v-app>
-            <v-app-bar color="red darken-1" class="navbar">
-                <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                <v-toolbar-title class="title" @click="toTop">Unima</v-toolbar-title>
-            </v-app-bar> 
+            <v-card :elevation="0" color="#FAFAFA">
+                <v-app-bar hide-on-scroll fixed　:elevation="0">
+                    <template v-if="!searched">
+                        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                        <v-toolbar-title class="title" @click="toTop">Unima</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon>
+                            <v-icon @click="searched = !searched">search</v-icon>
+                        </v-btn>
+                    </template>
+                    <template v-if="searched">
+                        <v-icon @click="searched = !searched">mdi-arrow-left-thick</v-icon>
+                            <v-text-field placeholder="商品を検索" append-icon="search"
+                                hide-details single-line></v-text-field>
+                    </template>
+                </v-app-bar>
+                <div v-loading.fullscreen.lock="!initLoading　|| loading"
+                    element-loading-background="rgba(255, 255, 255, 1.0)"
+                ></div>
+                <router-view class="main" v-show="initLoading && !loading"/>
+            </v-card>
+            
 
-            <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav">
+            <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav overflow-hidden">
                 <v-list-item>
                     <v-list-item-avatar>
                         <v-img :src="$store.state.user.user.avatar.url" class="avatar"></v-img>
@@ -33,10 +51,7 @@
                 </v-list>
             </v-navigation-drawer>
 
-            <div v-loading.fullscreen.lock="!initLoading　|| loading"
-                element-loading-background="rgba(255, 255, 255, 1.0)"
-            ></div>
-            <router-view class="main" v-show="initLoading && !loading"/>
+            
         </v-app>
     </div>
 </template>
@@ -46,11 +61,12 @@
 export default {
     data(){
         return {
-        drawer: false,
-        menus: [
-            { title: 'アカウント', icon: 'mdi-account', url: 'mypage'},
-            { title: '出品', url: 'sell'},
-        ]
+            drawer: false,
+            searched: false,
+            menus: [
+                { title: 'アカウント', icon: 'mdi-account', url: 'mypage'},
+                { title: '出品', url: 'sell'},
+            ]
         }
     },
     computed: {
@@ -100,5 +116,9 @@ export default {
 
 .side-nav{
     z-index: 20;
+}
+
+.overflow-y-hidden{
+    overflow-y: hidden;
 }
 </style>
