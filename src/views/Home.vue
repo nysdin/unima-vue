@@ -1,17 +1,24 @@
 <template>
   <div class="home">
     <v-container fluid grid-list-md>
-      <v-layout wrap>
-        <v-flex v-for="item in items" :key="item.id" xs4>
-          <v-card flat class="product" @click="showProduct(item.id)">
-            <v-img height="200px" 
-              src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+      <v-row dense>
+        <v-col :cols="4" v-for="product in products" :key="product.id">
+          <v-card flat class="product" @click="showProduct(product.id)">
+            <v-img  aspect-ratio="1"
+              :src="product.images[0].url"
             ></v-img>
-            <v-card-title>{{ item.name }}</v-card-title>
-            <v-card-text>{{ item.price }}</v-card-text>
+            <v-card-title class="pa-0 title font-weight-regular">{{ product.name }}</v-card-title>
+            <div class="d-flex justify-space-between">
+              <div class="pa-0 font-weight-light subtitle-1">¥ {{ product.price }}</div>
+              <div>
+                <v-icon :size="16" color="red" v-if="product.likes_count">favorite</v-icon>
+                <span class="ml-1">{{ product.likes_count }}</span>
+              </div>
+            </div>
           </v-card>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
+      
     </v-container>
     <template v-if="!loggedIn">
       <router-link to='/login'>ログイン</router-link>
@@ -22,9 +29,15 @@
 
 <script>
 // @ is an alias to /src
+import request from '../utils/api.js'
 
 export default {
   name: 'home',
+  data(){
+    return {
+      products: []
+    }
+  },
   computed: {
     items(){
       return this.$store.state.product.products
@@ -45,7 +58,13 @@ export default {
     },
   },
   created(){
-    this.$store.dispatch('product/setProducts')
+    this.$store.commit('auth/apiRequest')
+    request.get('/api/v1/products', {})
+      .then( response => {
+        console.log(response)
+        this.products = response.data
+        this.$store.commit('auth/apiCompleted')
+      })
   }
 }
 </script>
