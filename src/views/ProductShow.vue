@@ -3,7 +3,7 @@
         <v-card :elevation="0" class="mb-4">
             <v-carousel :height="300" hide-delimiter-background delimiter-icon="mdi-minus" :touchless="true">
                 <v-carousel-item v-for="(image, i) in product.images" :key="i">
-                    <v-img :src="image.url" height="300"></v-img>
+                    <v-img :src="image.url" height="300" aspect-ratio="1" contain></v-img>
                 </v-carousel-item>
             </v-carousel>
             <v-container class="pt-0">
@@ -147,19 +147,18 @@ export default {
             return categories
         },
         favoriteColor(){
-            return this.liked ? 'red' : 'gray'
+            return this.liked ? 'red' : 'grey'
         }
     },
     created(){
         //商品情報を取得
-        request.get(`/api/v1/products/${this.$route.params.id}`, {})
+        request.get(`/api/v1/products/${this.$route.params.id}`, {auth: true})
             .then( response => {
                 console.log(response)
                 const data = response.data
                 this.product = data.product
                 this.liked = data.like
                 this.comments = data.comments
-                //this.category = data.category
             })
             .catch( error => {
                 console.log('error')
