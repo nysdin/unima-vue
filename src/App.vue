@@ -13,8 +13,12 @@
                     </template>
                     <template v-if="searched">
                         <v-icon @click="searched = !searched">mdi-arrow-left-thick</v-icon>
-                            <v-text-field placeholder="商品を検索" append-icon="search"
-                                hide-details single-line></v-text-field>
+                        <v-text-field placeholder="商品を検索"
+                            hide-details single-line v-model="query.name_cont">
+                        </v-text-field>
+                        <v-btn icon @click="search">
+                            <v-icon>search</v-icon>
+                        </v-btn>
                     </template>
                 </v-app-bar>
                 <div v-loading.fullscreen.lock="!initLoading　|| loading"
@@ -57,12 +61,17 @@
 </template>
 
 <script>
+import axios from 'axios'
+import qs from 'qs'
 
 export default {
     data(){
         return {
             drawer: false,
             searched: false,
+            query: {
+                name_cont: '',
+            },
             menus: [
                 { title: 'アカウント', icon: 'mdi-account', url: 'mypage'},
                 { title: '出品', url: 'sell'},
@@ -86,6 +95,23 @@ export default {
         },
         toLink(url){
             this.$router.push(`/${url}`)
+        },
+        search(){
+            axios.get('/api/v1/products/search', {
+                baseURL: process.env.VUE_APP_API_ENDPOINT,
+                params:{
+                    q: this.query
+                },
+                paramsSerializer(params){
+                    return qs.stringify(params, {arrayFormat: 'brackets'})
+                }
+            })
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
         }
     }
 }
