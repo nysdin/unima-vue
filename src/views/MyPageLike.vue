@@ -1,6 +1,6 @@
 <template>
     <div class="mypage-sell">
-        <Display :items="situatedProduct" />
+        <Display :products="situatedProduct" />
     </div>
 </template>
 

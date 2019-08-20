@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <v-container fluid grid-list-md>
+    <v-container fluid>
       <v-row dense>
         <v-col :cols="4" v-for="product in products" :key="product.id">
           <v-card flat class="product" @click="showProduct(product.id)">
@@ -18,7 +18,6 @@
           </v-card>
         </v-col>
       </v-row>
-      
     </v-container>
     <template v-if="!loggedIn">
       <router-link to='/login'>ログイン</router-link>

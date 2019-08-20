@@ -3,7 +3,7 @@
         <el-button type="primary" @click="open">出品中</el-button>
         <el-button type="primary" @click="trade">取引中</el-button>
         <el-button type="primary" @click="close">取引終了</el-button>
-        <Display :items="situatedProduct" />
+        <Display :products="situatedProduct" />
     </div>
 </template>
 

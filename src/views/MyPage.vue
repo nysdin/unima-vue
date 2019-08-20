@@ -14,13 +14,13 @@
 
         <v-list>
             <v-subheader>商品</v-subheader>
-            <v-list-group v-for="item in products" :key="item.title" prepend-icon="mdi-account" no-action>
+            <v-list-group v-for="product in products" :key="product.title" prepend-icon="mdi-account" no-action>
                 <template v-slot:activator>
                     <v-list-item-content>
-                        <v-list-item-title v-text="item.title"></v-list-item-title>
+                        <v-list-item-title v-text="product.title"></v-list-item-title>
                     </v-list-item-content>
                 </template>
-                <v-list-item v-for="subItem in item.items" :key="subItem.title" @click="toProduct(subItem.status)">
+                <v-list-item v-for="subItem in product.items" :key="subItem.title" @click="toProduct(subItem.status, product.url)">
                     <v-list-item-content>
                         <v-list-item-title v-text="subItem.title"></v-list-item-title>
                     </v-list-item-content>
@@ -57,14 +57,18 @@ export default {
             password_confirmation: '',
             products: [
                 {
-                    title: '出品', items: [
+                    title: '出品',
+                    url: 'sell',
+                    items: [
                         { title: '出品中の商品', status: 'open' },
                         { title: '取引中の商品', status: 'trade' },
                         { title: '終了した商品', status: 'close' }
                     ]
                 },
                 {
-                    title: '購入品', items: [
+                    title: '購入品',
+                    url: 'purchase',
+                    items: [
                         { title: '取引中の商品', status: 'trade' },
                         { title: '終了した商品', status: 'close' }
                     ]
@@ -87,12 +91,9 @@ export default {
         editUser(){
             this.$router.push('/u/edit')
         },
-        toProduct(status){
-            this.$router.push({ path: '/mypage/sell', query: { status: status }})
+        toProduct(status, url){
+            this.$router.push({ path: `/mypage/${url}`, query: { status: status }})
         },
-        toPurchase(status){
-            this.$router.push({ path: '/mypage/purchase', query: { status: status }})
-        }
     }
 }
 </script>
