@@ -1,5 +1,8 @@
 <template>
     <div class="mypage-purchase">
+        <v-sheet tile color="grey lighten-3" class="d-flex align-center justify-center" height="40">
+            <div class="font-weight-bold">購入した商品</div>
+        </v-sheet>
         <v-tabs grow v-model="activeTab">
             <v-tab class="mx-0" @click="trade">取引中</v-tab>
             <v-tab @click="close">取引終了</v-tab>

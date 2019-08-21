@@ -1,5 +1,8 @@
 <template>
     <div class="mypage-sell">
+        <v-sheet tile color="grey lighten-3" class="d-flex align-center justify-center" height="40">
+            <div class="font-weight-bold">いいねした商品</div>
+        </v-sheet>
         <Display :products="situatedProduct" />
     </div>
 </template>
