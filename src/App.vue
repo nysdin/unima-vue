@@ -29,20 +29,28 @@
             
 
             <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav overflow-hidden">
-                <v-list-item>
-                    <v-list-item-avatar>
-                        <v-img :src="$store.state.user.user.avatar.url" class="avatar"></v-img>
-                    </v-list-item-avatar>
+                <template v-if="isLoggedIn">
+                    <v-list-item>
+                        <v-list-item-avatar>
+                            <v-img :src="$store.state.user.user.avatar.url" class="avatar"></v-img>
+                        </v-list-item-avatar>
 
-                    <v-list-item-content>
-                    <v-list-item-title>{{$store.state.user.user.name}}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                        <v-list-item-content>
+                            <v-list-item-title>{{$store.state.user.user.name}}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
+                <template v-else>
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-list-item-title>Unima</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </template>
 
                 <v-divider></v-divider>
 
                 <v-list dense>
-
                     <v-list-item v-for="menu in menus" :key="menu.title" link @click="toLink(menu.url)">
                     <v-list-item-icon>
                         <v-icon>{{ menu.icon }}</v-icon>
@@ -53,8 +61,14 @@
                     </v-list-item-content>
                     </v-list-item>
                 </v-list>
-            </v-navigation-drawer>
 
+                <template v-slot:append>
+                    <div class="pa-2">
+                        <v-btn block :elevation="2" @click="logout">Logout</v-btn>
+                    </div>
+                </template>
+
+            </v-navigation-drawer>
             
         </v-app>
     </div>
@@ -85,6 +99,9 @@ export default {
         loading(){
             return this.$store.getters['auth/loading']
         },
+        isLoggedIn(){
+            return !!this.$store.state.auth.token
+        }
     },
     created(){
         this.$store.dispatch('auth/initialize', localStorage.getItem('access-token'))
@@ -95,6 +112,15 @@ export default {
         },
         toLink(url){
             this.$router.push(`/${url}`)
+        },
+        logout(){
+            this.$store.dispatch('auth/logout')
+                .then(() => {
+                    this.$router.push('/login')
+                })
+                .catch(() => {
+                    console.log('sign out failed')
+                })
         },
         search(){
             axios.get('/api/v1/products/search', {
