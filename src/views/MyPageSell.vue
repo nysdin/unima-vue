@@ -1,8 +1,14 @@
 <template>
     <div class="mypage-sell">
-        <el-button type="primary" @click="open">出品中</el-button>
-        <el-button type="primary" @click="trade">取引中</el-button>
-        <el-button type="primary" @click="close">取引終了</el-button>
+        <v-sheet tile color="grey lighten-3" class="d-flex align-center justify-center" height="40">
+            <div class="font-weight-bold">出品した商品</div>
+        </v-sheet>
+        <v-tabs grow v-model="activeTab">
+            <v-tab class="mx-0" @click="open">出品中</v-tab>
+            <v-tab @click="trade">取引中</v-tab>
+            <v-tab @click="close">取引終了</v-tab>
+        </v-tabs>
+
         <Display :products="situatedProduct" />
     </div>
 </template>
@@ -18,6 +24,7 @@ export default {
     },
     data(){
         return {
+            activeTab: null,
             products: [],
             status: 'open'
             
@@ -31,7 +38,6 @@ export default {
     },
     methods: {
         open(){
-            console.log(this.situatedProduct)
             this.status = 'open'
         },
         trade(){
@@ -43,14 +49,21 @@ export default {
     },
     created(){
         request.get('/api/v1/user/sell', { auth: true })
-            .then(response => this.products = response.data)
-            .catch(error => console.log('error'))
+            .then(response => {
+                this.products = response.data
+                const status = this.$route.query.status
+                const conditions = ['open', 'trade', 'close']
+                conditions.forEach( (element, index) => {
+                    if(element === status){
+                        this.status = status
+                        this.activeTab = index
+                    }
+                })
+            })
+            .catch(error => console.log(error))
     },
     mounted(){
-        const status = this.$route.query.status
-        if(['open', 'trade', 'close'].includes(status)){
-            this.status = status
-        }
+        
     }
 }
 </script>

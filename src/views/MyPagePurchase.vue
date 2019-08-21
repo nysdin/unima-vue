@@ -1,7 +1,9 @@
 <template>
     <div class="mypage-purchase">
-        <el-button type="primary" @click="trade">取引中</el-button>
-        <el-button type="primary" @click="close">取引終了</el-button>
+        <v-tabs grow v-model="activeTab">
+            <v-tab class="mx-0" @click="trade">取引中</v-tab>
+            <v-tab @click="close">取引終了</v-tab>
+        </v-tabs>
         <Display :products="situatedProduct" />
     </div>
 </template>
@@ -17,6 +19,7 @@ export default {
     },
     data(){
         return {
+            activeTab: null,
             products: [],
             status: 'trade'
             
@@ -38,14 +41,18 @@ export default {
     },
     created(){
         request.get('/api/v1/user/purchase', { auth: true })
-            .then(response => this.products = response.data)
+            .then(response => {
+                this.products = response.data
+                const status = this.$route.query.status
+                const conditions = ['trade', 'close']
+                conditions.forEach( (element, index) => {
+                    if(element === status){
+                        this.status = status
+                        this.activeTab = index
+                    }
+                })
+            })
             .catch(error => console.log('error'))
-    },
-    mounted(){
-        const status = this.$route.query.status
-        if(['trade', 'close'].includes(status)){
-            this.status = status
-        }
     }
 }
 </script>
