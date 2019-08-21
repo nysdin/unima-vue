@@ -89,9 +89,9 @@ const auth = {
                     })
             })
         },
-        logout({ commit }, options){
+        logout({ commit }){
             return new Promise( (resolve, reject) => {
-                request.delete('/api/v1/auth/sign_out', options)
+                request.delete('/api/v1/auth/sign_out', {auth: true})
                     .then( response => {
                         commit('removeToken')
                         commit('user/removeUser', null, { root: true})
