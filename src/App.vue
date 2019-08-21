@@ -5,11 +5,15 @@
                 <v-app-bar hide-on-scroll fixed　:elevation="0">
                     <template v-if="!searched">
                         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                        <v-toolbar-title class="title" @click="toTop">Unima</v-toolbar-title>
+                        <v-toolbar-title class="title px-0" @click="toTop">Unima</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn icon>
                             <v-icon @click="searched = !searched">search</v-icon>
                         </v-btn>
+                        <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
+                        class="mr-1" outlined :minHeight="30">新規登録</v-btn>
+                        <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
+                        outlined :minHeight="30">ログイン</v-btn>
                     </template>
                     <template v-if="searched">
                         <v-icon @click="searched = !searched">mdi-arrow-left-thick</v-icon>
