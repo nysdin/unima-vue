@@ -11,9 +11,10 @@
                             <v-icon @click="searched = !searched">search</v-icon>
                         </v-btn>
                         <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
-                        class="mr-1" outlined :minHeight="30">新規登録</v-btn>
+                        class="mr-1" outlined :minHeight="30"
+                        @click="$router.push('/register')">新規登録</v-btn>
                         <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
-                        outlined :minHeight="30">ログイン</v-btn>
+                        outlined :minHeight="30" @click="$router.push('/login')">ログイン</v-btn>
                     </template>
                     <template v-if="searched">
                         <v-icon @click="searched = !searched">mdi-arrow-left-thick</v-icon>
