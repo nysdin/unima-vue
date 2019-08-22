@@ -5,7 +5,8 @@
             <v-form>
                 <v-row>
                     <v-col :cols="3" v-for="(image, i) in images" :key="i">
-                        <croppa v-model="images[i]" :width="eachSize" :height="eachSize" ></croppa>
+                        <croppa v-model="images[i]" :width="eachSize" :height="eachSize" 
+                            :placeholder="`画像${i+1}`"></croppa>
                     </v-col>
                 </v-row>
                 <v-text-field v-model="product.name" label="商品名" placeholder="商品名" required></v-text-field>
@@ -18,7 +19,9 @@
                 <v-select :items="states" v-model="product.state" label="商品の状態"
                 ></v-select>
 
-                <v-btn medium outlined @click="sell">Button</v-btn>
+                <div class="d-flex justify-center">
+                    <v-btn medium outlined @click="sell">出品する</v-btn>
+                </div>
             </v-form>
         </v-container>
     </div>
