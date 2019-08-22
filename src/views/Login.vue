@@ -1,17 +1,17 @@
 <template>
     <div id="login-container">
-        <h1>ログイン</h1>
-        <el-form label-position="right" label-width="100px" :model="user">
-            <el-form-item label="Email">
-                <el-input v-model="user.email"></el-input>
-            </el-form-item>
-            <el-form-item label="Password">
-                <el-input v-model="user.password"></el-input>
-            </el-form-item>
-        </el-form>
-        <el-button type="primary" plain @click="login">Login</el-button>
-        <el-button type="primary" plain @click="toRegister">Register</el-button><br/>
-        <el-button type="primary" plain @click="toResetPassword">パスワードを忘れた方はこちら</el-button>
+        <h1 class="text-center">ログイン</h1>
+        <v-container>
+            <v-form>
+                <v-text-field v-model="user.email" label="メールアドレス" placeholder="test@example.com" required></v-text-field>
+                <v-text-field v-model="user.password" :append-icon="show ? 'visibility' : 'visibility_off'"
+                label="パスワード" required :type="show ? 'text' : 'password'"
+                @click:append="show = !show"></v-text-field>
+
+                <v-btn medium outlined @click="login">ログイン</v-btn>
+                <v-btn small text color="primary" @click="toResetPassword">パスワードを忘れた方はこちら</v-btn>
+            </v-form>
+        </v-container>
     </div>
 </template>
 
@@ -22,22 +22,23 @@ export default {
     name: 'login',
     data() {
         return {
+            show: false,
             user: { email: 'ysthon@gmail.com', password: 'password'},
         }
     },
     methods: {
         login(){
-        this.$store.dispatch('auth/login', { ...this.user })
-            .then( () => {
-                this.$router.push('/')
-            })
-            .catch( errors => {
-                errors.forEach(error => {
-                    setTimeout( () => {
-                        this.renderError(error)
-                    }, 0)
+            this.$store.dispatch('auth/login', { ...this.user })
+                .then( () => {
+                    this.$router.push('/')
                 })
-            })
+                .catch( errors => {
+                    errors.forEach(error => {
+                        setTimeout( () => {
+                            this.renderError(error)
+                        }, 0)
+                    })
+                })
         },
         toRegister(){
             this.$router.push('/register')
