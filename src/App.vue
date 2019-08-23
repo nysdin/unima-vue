@@ -19,7 +19,7 @@
                     <template v-if="searched">
                         <v-icon @click="searched = !searched">mdi-arrow-left-thick</v-icon>
                         <v-text-field placeholder="商品を検索"
-                            hide-details single-line v-model="query.name_cont">
+                            hide-details single-line v-model="keyword">
                         </v-text-field>
                         <v-btn icon @click="search">
                             <v-icon>search</v-icon>
@@ -88,9 +88,7 @@ export default {
         return {
             drawer: false,
             searched: false,
-            query: {
-                name_cont: '',
-            },
+            keyword: '',
             menus: [
                 { title: 'アカウント', icon: 'mdi-account', url: 'mypage'},
                 { title: '出品', url: 'sell'},
@@ -128,21 +126,9 @@ export default {
                 })
         },
         search(){
-            axios.get('/api/v1/products/search', {
-                baseURL: process.env.VUE_APP_API_ENDPOINT,
-                params:{
-                    q: this.query
-                },
-                paramsSerializer(params){
-                    return qs.stringify(params, {arrayFormat: 'brackets'})
-                }
-            })
-            .then(response => {
-                console.log(response)
-            })
-            .catch(error => {
-                console.log(error)
-            })
+            this.$router.push({ path: '/search', query: {keyword: this.keyword} })
+            this.keyword = ''
+            this.searched = false
         }
     }
 }
