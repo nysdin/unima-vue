@@ -5,8 +5,28 @@
             <v-form>
                 <v-row>
                     <v-col :cols="3" v-for="(image, i) in images" :key="i">
-                        <croppa v-model="images[i]" :width="eachSize" :height="eachSize" 
-                            :placeholder="`画像${i+1}`"></croppa>
+                        <v-dialog v-model="dialogs[i].dialog"
+                            :key="i" :width="500">
+                            <template v-slot:activator="{ on }">
+                                <croppa v-model="images[i]" 
+                                passive :placeholder="`画像${i+1}`" class="images">
+                                    <div class="append" v-on="on"></div>
+                                </croppa>
+                            </template>
+                            <v-card>
+                                <div class="d-flex justify-center">
+                                    <v-card-title>商品画像を追加</v-card-title>
+                                </div>
+                                <div class="d-flex justify-center" ref="modalView">
+                                    <croppa v-model="images[i]" :width="modalImageSize" :height="modalImageSize"
+                                    :placeholder="`画像${i+1}`"></croppa>
+                                </div>
+                                <v-card-actions class="d-flex justify-center">
+                                    <v-btn text @click="cancelImage(i)">キャンセル</v-btn>
+                                    <v-btn text @click="dialogs[i].dialog = false">追加</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
                     </v-col>
                 </v-row>
                 <v-text-field v-model="product.name" label="商品名" placeholder="商品名" required></v-text-field>
@@ -23,6 +43,7 @@
                     <v-btn medium outlined @click="sell">出品する</v-btn>
                 </div>
             </v-form>
+
         </v-container>
     </div>
 </template>
@@ -34,6 +55,12 @@ export default {
     name: 'sell',
     data(){
         return{
+            dialogs: [
+                {dialog: false},
+                {dialog: false},
+                {dialog: false},
+                {dialog: false}
+            ],
             size: window.innerWidth,
             images: [{}, {}, {}, {}],
             product: {
@@ -50,6 +77,9 @@ export default {
     computed: {
         eachSize(){
             return (this.size - 100 ) / 4
+        },
+        modalImageSize(){
+            return (window.innerWidth - 48) * 0.8
         }
     },
     methods: {
@@ -59,11 +89,13 @@ export default {
                 params.append(key, this.product[key])
             })
             for(let image of this.images){
-                const blob = await image.promisedBlob()
-                const file = image.getChosenFile()
-                if(file){
+                if(Object.keys(image).length){
+                    const blob = await image.promisedBlob()
+                    const file = image.getChosenFile()
+                    if(file){
                     params.append('images[]', blob, file.name)
                     console.log(blob)
+                }
                 }
             }
             request.post('/api/v1/products', { params: params, auth: true })
@@ -73,6 +105,11 @@ export default {
                 .catch( error => {
                     console.log(error)
                 })
+        },
+        cancelImage(index){
+            this.dialogs[index].dialog = false
+            let image = this.images[index]
+            image.remove()
         },
         handleResize(){
             this.size = window.innerWidth
@@ -87,3 +124,23 @@ export default {
 }
 </script>
 
+
+<style>
+
+.images canvas{
+    width: 100%!important;
+    height: 100%!important;
+}
+
+.append{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    cursor: pointer;
+}
+
+.append:hover{
+    opacity: 0.6;
+}
+</style>
