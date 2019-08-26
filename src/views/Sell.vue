@@ -5,13 +5,8 @@
             <v-form>
                 <v-row>
                     <v-col :cols="3" v-for="(image, i) in images" :key="i" class="pb-0">
-                        <v-dialog v-model="dialogs[i].dialog"
-                            :key="i" :width="500">
+                        <v-dialog v-model="dialogs[i].dialog" :key="i">
                             <template v-slot:activator="{ on }">
-                                <!-- <croppa v-model="images[i]" 
-                                passive :placeholder="`画像${i+1}`" class="images">
-                                    <div class="append" v-on="on"></div>
-                                </croppa> -->
                                 <v-sheet :width="eachSize" :height="eachSize"
                                     @click="dialogs[i].dialog = true" style="cursor: pointer;">
                                         <v-icon class="camera-icon">mdi-camera</v-icon>
