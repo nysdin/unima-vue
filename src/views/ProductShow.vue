@@ -78,7 +78,7 @@
                     <v-row>
                         <v-col :cols="2">
                             <v-avatar :size="40" class="mt-4">
-                                <img src="https://vuetifyjs.com/apple-touch-icon-180x180.png" alt="avatar">
+                                <img :src="comment.user.avatar.url" alt="avatar">
                             </v-avatar>
                         </v-col>
                         <v-col :cols="10" class="pl-0">
