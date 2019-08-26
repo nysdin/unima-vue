@@ -4,14 +4,20 @@
         <v-container>
             <v-form>
                 <v-row>
-                    <v-col :cols="3" v-for="(image, i) in images" :key="i">
+                    <v-col :cols="3" v-for="(image, i) in images" :key="i" class="pb-0">
                         <v-dialog v-model="dialogs[i].dialog"
                             :key="i" :width="500">
                             <template v-slot:activator="{ on }">
-                                <croppa v-model="images[i]" 
+                                <!-- <croppa v-model="images[i]" 
                                 passive :placeholder="`画像${i+1}`" class="images">
                                     <div class="append" v-on="on"></div>
-                                </croppa>
+                                </croppa> -->
+                                <v-sheet :width="eachSize" :height="eachSize"
+                                    @click="dialogs[i].dialog = true" style="cursor: pointer;">
+                                        <v-icon class="camera-icon">mdi-camera</v-icon>
+                                    <v-img :width="eachSize" :hight="eachSize" v-if="!previewImages[i]"
+                                        contain :src="previewImages[i]"></v-img>
+                                </v-sheet>
                             </template>
                             <v-card>
                                 <div class="d-flex justify-center">
@@ -22,8 +28,9 @@
                                     :placeholder="`画像${i+1}`"></croppa>
                                 </div>
                                 <v-card-actions class="d-flex justify-center">
-                                    <v-btn text @click="cancelImage(i)">キャンセル</v-btn>
-                                    <v-btn text @click="dialogs[i].dialog = false">追加</v-btn>
+                                    <v-btn text @click="removeImage(i)" v-if="previewImages[i]">削除</v-btn>
+                                    <v-btn text @click="cancelImage(i)" v-if="!previewImages[i]">キャンセル</v-btn>
+                                    <v-btn text @click="addImage(i)">追加</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
@@ -49,6 +56,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import request from '../utils/api.js'
 
 export default {
@@ -63,6 +71,7 @@ export default {
             ],
             size: window.innerWidth,
             images: [{}, {}, {}, {}],
+            previewImages: ['', '', '', ''],
             product: {
                 name: '',
                 description: '',
@@ -106,10 +115,22 @@ export default {
                     console.log(error)
                 })
         },
+        addImage(index){
+            this.dialogs[index].dialog = false
+            let image = this.images[index]
+            let url = image.generateDataUrl()
+            Vue.set(this.previewImages, index, url)
+        },
         cancelImage(index){
             this.dialogs[index].dialog = false
             let image = this.images[index]
             image.remove()
+        },
+        removeImage(index){
+            this.dialogs[index].dialog = false
+            let image = this.images[index]
+            image.remove()
+            Vue.set(this.previewImages, index, '')
         },
         handleResize(){
             this.size = window.innerWidth
@@ -142,5 +163,13 @@ export default {
 
 .append:hover{
     opacity: 0.6;
+}
+
+.camera-icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    -webkit-transform: translateY(-50%) translateX(-50%);
 }
 </style>
