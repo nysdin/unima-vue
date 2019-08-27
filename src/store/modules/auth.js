@@ -52,7 +52,6 @@ const auth = {
                     .then( response => {
                         console.log('53')
                         //返ってきたuser情報をstoreにセットするcommit
-                        commit('user/setUser', response.data.data, { root: true })
                         console.log('56')
                         const headers = response.headers
                         console.log('58')
@@ -66,6 +65,7 @@ const auth = {
                         console.log('66')
                         //認証apiの成功
                         console.log('68')
+                        commit('user/setUser', response.data.data, { root: true })
                         commit('apiCompleted')
                         resolve()
                     })
