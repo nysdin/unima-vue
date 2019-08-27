@@ -101,7 +101,6 @@ const router = new Router({
       path: '/password_reset',
       name: 'passwordReset',
       component: () => import(/* webpackChunkName: "passwordReset" */ './views/PasswordReset.vue'),
-      meta: { requiresAuth: true }
     },
     {
       path: '/password/edit',

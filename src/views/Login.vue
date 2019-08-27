@@ -9,7 +9,10 @@
                 @click:append="show = !show"></v-text-field>
 
                 <v-btn medium outlined @click="login">ログイン</v-btn>
-                <v-btn small text color="primary" @click="toResetPassword">パスワードを忘れた方はこちら</v-btn>
+                <v-btn small text color="primary" class="ml-2"
+                    @click="$router.push('/password_reset')">
+                    パスワードを忘れた方はこちら
+                </v-btn>
             </v-form>
         </v-container>
     </div>
@@ -40,11 +43,10 @@ export default {
                     })
                 })
         },
-        toRegister(){
-            this.$router.push('/register')
-        },
         toResetPassword(){
-            this.$router.push('/password_reset')
+            console.log('ok')
+            this.$router.push('/password/edit')
+            console.log('no')
         },
         renderError(error){
             this.$notify({

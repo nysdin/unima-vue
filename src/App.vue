@@ -67,7 +67,7 @@
                     </v-list-item>
                 </v-list>
 
-                <template v-slot:append>
+                <template v-slot:append v-if="isLoggedIn"> 
                     <div class="pa-2">
                         <v-btn block :elevation="2" @click="logout">Logout</v-btn>
                     </div>

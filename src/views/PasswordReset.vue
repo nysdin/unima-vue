@@ -1,12 +1,19 @@
 <template>
     <div id="password-reset">
-        <h1>パスワード変更用メールアドレス</h1>
-        <el-form label-position="right" label-width="100px">
-            <el-form-item label="Email">
-                <el-input v-model="email"></el-input>
-            </el-form-item>
-        </el-form>
-        <el-button type="primary" plain @click="sendEmail">送信する</el-button>
+        <h1 class="title text-center">パスワード変更用メールアドレス</h1>
+        
+        <v-container>
+            <v-form ref="forms">
+                <v-text-field v-model="email" 
+                    label="メールアドレス" @click:append="show1 = !show1">
+                </v-text-field>
+
+                <div class="d-flex justify-center">
+                    <v-btn text large outlined @click="sendEmail">送信する</v-btn>
+                </div>
+            </v-form>
+        </v-container>
+
     </div>
 </template>
 

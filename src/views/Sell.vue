@@ -10,7 +10,7 @@
                                 <v-sheet :width="eachSize" :height="eachSize"
                                     @click="dialogs[i].dialog = true" style="cursor: pointer;">
                                         <v-icon class="camera-icon">mdi-camera</v-icon>
-                                    <v-img :width="eachSize" :hight="eachSize" v-if="!previewImages[i]"
+                                    <v-img :width="eachSize" :hight="eachSize" v-if="previewImages[i]"
                                         contain :src="previewImages[i]"></v-img>
                                 </v-sheet>
                             </template>
