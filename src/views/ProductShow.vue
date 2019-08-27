@@ -28,7 +28,7 @@
                     @click="$router.push(`/product/${$route.params.id}/trade`)">
                     取引画面
                 </v-btn>
-                <v-btn color="error" block samll @click="toEdit" v-if="soldOut" disabled>売り切れ</v-btn>
+                <v-btn color="error" block samll v-if="soldOut" disabled>売り切れ</v-btn>
 
             </v-container>
 
