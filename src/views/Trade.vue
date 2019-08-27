@@ -19,7 +19,8 @@
                     </div>
                 </div>
 
-                <v-btn color="error" block samll @click="finish">取引終了</v-btn>
+                <v-btn color="error" block samll @click="finish" v-if="product.status === 'trade'">受け取りを完了する</v-btn>
+                <v-btn color="error" block small disabled v-if="product.status === 'close'">取引終了</v-btn>
 
             </v-container>
 
@@ -81,7 +82,7 @@
                     </v-row>
                 </v-card>
                 <v-textarea v-model="content" outlined placeholder="分からないことなど質問しよう！"></v-textarea>
-                <v-btn color="error" block samll @click="comment">取引連絡をする</v-btn>
+                <v-btn color="error" block samll disabled="product.status === 'close'" @click="comment">取引連絡をする</v-btn>
             </v-container>
         </v-card>
     </div>
@@ -122,7 +123,7 @@ export default {
                 categories.push({ text: c.name })
             })
             return categories
-        },
+        }
     },
     created(){
         //商品情報を取得
@@ -145,7 +146,9 @@ export default {
     methods: {
         finish(){
             request.post(`/api/v1/products/${this.product.id}/complete`, { auth: true })
-                .then( response => { console.log('finish')})
+                .then(response => {
+                    this.product.status = "close"
+                })
                 .catch( error => {
                     console.log('error')
                 })
