@@ -19,10 +19,6 @@
         </v-col>
       </v-row>
     </v-container>
-    <template v-if="!loggedIn">
-      <router-link to='/login'>ログイン</router-link>
-      <router-link to='/register'>新規登録</router-link>
-    </template>
   </div>
 </template>
 
