@@ -115,7 +115,9 @@ export default {
             },
             liked: false,
             comments: [],
+            //commentの内容
             content: '',
+            //breadcrumbsリスト用の配列
             category: []
         }
     },
