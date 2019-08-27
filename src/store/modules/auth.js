@@ -50,22 +50,15 @@ const auth = {
                 //認証api通信
                 request.post('/api/v1/auth/sign_in', { params: user })
                     .then( response => {
-                        console.log('53')
                         //返ってきたuser情報をstoreにセットするcommit
-                        console.log('56')
+                        commit('user/setUser', response.data.data, { root: true })
                         const headers = response.headers
-                        console.log('58')
                         //localStorageにheadersの情報をセット
                         localStorage.setItem('access-token', headers['access-token'])
-                        console.log('61')
                         localStorage.setItem('client', headers['client'])
                         localStorage.setItem('uid', headers['uid'])
-                        console.log('64')
                         commit('setToken', headers['access-token'])
-                        console.log('66')
                         //認証apiの成功
-                        console.log('68')
-                        commit('user/setUser', response.data.data, { root: true })
                         commit('apiCompleted')
                         resolve()
                     })
