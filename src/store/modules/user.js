@@ -27,8 +27,11 @@ const user = {
         setUser(state, userData){
             console.log(userData, 'userData')
             const { name, email, provider, uid, id, avatar } = userData
+            console.log(name, email, provider, uid, id, avatar)
             state.user = { name, email, provider, uid, id, avatar }
+            console.log(state.user)
             state.user.avatar.url = avatar.url
+            console.log(state.user.avatar.url)
         },
         removeUser(state){
             const user = { name: '', email: '', provider: '', uid: '', id: 0 }
