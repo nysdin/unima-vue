@@ -30,7 +30,7 @@ const user = {
             state.user.avatar.url = avatar.url
         },
         removeUser(state){
-            const user = { name: '', email: '', provider: '', uid: '', id: 0 }
+            const user = { name: '', email: '', provider: '', uid: '', id: 0, avatar: { url: '' } }
             state.user = user
         }
     },
