@@ -1,39 +1,45 @@
 <template>
-    <div id="app" v-bind:class="{ overflowYHidden: drawer }">
+    <div id="app">
         <v-app>
-            <v-card :elevation="0" color="#FAFAFA">
-                <v-app-bar hide-on-scroll fixed　:elevation="0">
-                    <template v-if="!searched">
-                        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                        <v-toolbar-title class="title px-0" @click="toTop">Unima</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon>
-                            <v-icon @click="searched = !searched">search</v-icon>
-                        </v-btn>
-                        <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
-                        class="mr-1" outlined :minHeight="30"
-                        @click="$router.push('/register')">新規登録</v-btn>
-                        <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
-                        outlined :minHeight="30" @click="$router.push('/login')">ログイン</v-btn>
-                    </template>
-                    <template v-if="searched">
-                        <v-icon @click="searched = !searched">mdi-arrow-left-thick</v-icon>
-                        <v-text-field placeholder="商品を検索"
-                            hide-details single-line v-model="keyword">
-                        </v-text-field>
-                        <v-btn icon @click="search">
-                            <v-icon>search</v-icon>
-                        </v-btn>
-                    </template>
-                </v-app-bar>
-                <div v-loading.fullscreen.lock="!initLoading　|| loading"
-                    element-loading-background="rgba(255, 255, 255, 1.0)"
-                ></div>
-                <router-view class="main" v-show="initLoading && !loading"/>
-            </v-card>
-            
+            <v-app-bar :elevation="0" hide-on-scroll fixed>
+                <template v-if="searched">
+                    <v-icon @click="searched = false">mdi-arrow-left-thick</v-icon>
+                    <v-text-field placeholder="商品を検索"
+                        hide-details single-line v-model="keyword">
+                    </v-text-field>
+                    <v-btn icon @click="search" :key="0">
+                        <v-icon>search</v-icon>
+                    </v-btn>
+                </template>
+                <template v-else>
+                    <v-toolbar-title class="title px-0" @click="toTop">Unima</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn icon class="mr-1" :key="1">
+                        <v-icon @click="searched = true">search</v-icon>
+                    </v-btn>
+                    <v-btn icon class="mr-1">
+                        <v-icon @click="$router.push('/sell')">mdi-camera-plus</v-icon>
+                    </v-btn>
+                    <v-btn icon @click="$router.push('/mypage')" v-if="isLoggedIn">
+                        <v-avatar :size="42">
+                            <v-img :src="$store.state.user.user.avatar.url" class="avatar"></v-img>
+                        </v-avatar>
+                    </v-btn>
+                    <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
+                    class="mr-1" outlined :minHeight="30"
+                    @click="$router.push('/register')">新規登録</v-btn>
+                    <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
+                    outlined :minHeight="30" @click="$router.push('/login')">ログイン</v-btn>
+                </template>
+            </v-app-bar>
 
-            <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav overflow-hidden">
+            <div v-loading.fullscreen.lock="!initLoading　|| loading"
+                element-loading-background="rgba(255, 255, 255, 1.0)"
+            ></div>
+            <router-view class="main" v-show="initLoading && !loading"/>
+        </v-app>
+
+            <!-- <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav overflow-hidden">
                 <template v-if="isLoggedIn">
                     <v-list-item>
                         <v-list-item-avatar>
@@ -73,9 +79,7 @@
                     </div>
                 </template>
 
-            </v-navigation-drawer>
-            
-        </v-app>
+            </v-navigation-drawer> -->
     </div>
 </template>
 
@@ -113,18 +117,6 @@ export default {
         toTop(){
             this.$router.push('/')
         },
-        toLink(url){
-            this.$router.push(`/${url}`)
-        },
-        logout(){
-            this.$store.dispatch('auth/logout')
-                .then(() => {
-                    this.$router.push('/login')
-                })
-                .catch(() => {
-                    console.log('sign out failed')
-                })
-        },
         search(){
             this.$router.push({ path: '/search', query: {keyword: this.keyword} })
             this.keyword = ''
@@ -147,10 +139,6 @@ export default {
 .navbar{
     position: fixed!important;
     z-index: 1;
-}
-
-.main{
-    margin-top: 56px;
 }
 
 .avatar{
