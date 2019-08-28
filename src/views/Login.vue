@@ -31,7 +31,7 @@ export default {
     },
     methods: {
         login(){
-            this.$store.dispatch('auth/login', { ...this.user })
+            this.$store.dispatch('auth/login', this.user)
                 .then( () => {
                     this.$router.push('/')
                 })
