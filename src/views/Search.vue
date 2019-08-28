@@ -34,6 +34,11 @@ export default {
             products: []
         }
     },
+    methods: {
+        showProduct(id){
+            this.$router.push({ path: `/product/${id}`})
+        },
+    },
     created(){
         axios.get('/api/v1/products/search', {
                 baseURL: process.env.VUE_APP_API_ENDPOINT,
