@@ -26,6 +26,7 @@ const user = {
     },
     mutations: {
         setUser(state, userData){
+            console.log('setUser')
             const { name, email, provider, client, uid, id, avatar } = userData
             state.user = { name, email, provider, client, uid, id, avatar }
             state.user.avatar.url = avatar.url
