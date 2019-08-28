@@ -1,16 +1,19 @@
 <template>
     <div id="mypage">
-        <v-layout wrap>
-            <v-flex xs3>
-                <v-avatar :size="80">
-                    <img :src="$store.state.user.user.avatar.url">
-                </v-avatar>
-            </v-flex>
-            <v-flex xs9>
-                <p>{{ name }}</p>
-                <router-link to="/u/edit">プロフィール変更</router-link>
-            </v-flex>
-        </v-layout>
+        <v-container class="py-0">
+            <v-row>
+                <v-col :cols="3">
+                    <v-avatar :size="80">
+                        <img :src="avatarUrl">
+                    </v-avatar>
+
+                </v-col>
+                <v-col :cols="9">
+                    <p class="mt-2 subtitle-1 font-weight-bold">{{ name }}</p>
+                    <router-link to="/u/edit">プロフィール変更</router-link>
+                </v-col>
+            </v-row>
+        </v-container>
 
         <v-list>
             <v-subheader>商品</v-subheader>
@@ -31,14 +34,17 @@
             </v-list-item>
         </v-list>
 
-        
-        
         <v-list>
             <v-subheader>設定</v-subheader>
             <v-list-item-group>
                 <v-list-item @click="$router.push('/password/edit')">
                     <v-list-item-content>
                         <v-list-item-title v-text="'パスワードの再設定'"></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item @click="logout">
+                    <v-list-item-content>
+                        <v-list-item-title v-text="'ログアウト'"></v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list-item-group>
@@ -77,7 +83,14 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('user', ['name', 'email', 'avatar'])
+        ...mapGetters('user', ['name', 'email', 'avatar']),
+        avatarUrl(){
+            if(this.avatar.url){
+                return this.avatar.url
+            }else{
+                return ''
+            }
+        }
     },
     methods: {
         passwordReset(){
@@ -94,6 +107,15 @@ export default {
         toProduct(status, url){
             this.$router.push({ path: `/mypage/${url}`, query: { status: status }})
         },
+        logout(){
+            this.$store.dispatch('auth/logout')
+                .then(() => {
+                    this.$router.push('/login')
+                })
+                .catch(() => {
+                    console.log('sign out failed')
+                })
+        }
     }
 }
 </script>
