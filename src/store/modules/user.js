@@ -7,7 +7,6 @@ const user = {
             name: '',
             email: '',
             provider: '',
-            client: '',
             uid: '',
             id: 0,
             avatar: { url: '' }
@@ -26,13 +25,13 @@ const user = {
     },
     mutations: {
         setUser(state, userData){
-            console.log('setUser')
-            const { name, email, provider, client, uid, id, avatar } = userData
-            state.user = { name, email, provider, client, uid, id, avatar }
+            console.log(userData, 'userData')
+            const { name, email, provider, uid, id, avatar } = userData
+            state.user = { name, email, provider, uid, id, avatar }
             state.user.avatar.url = avatar.url
         },
         removeUser(state){
-            const user = { name: '', email: '', provider: '', client: '', uid: '', id: 0 }
+            const user = { name: '', email: '', provider: '', uid: '', id: 0 }
             state.user = user
         }
     },
