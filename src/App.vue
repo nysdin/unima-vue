@@ -17,7 +17,7 @@
                     <v-btn icon class="mr-1" :key="1">
                         <v-icon @click="searched = true">search</v-icon>
                     </v-btn>
-                    <v-btn icon class="mr-1">
+                    <v-btn icon class="mr-1" v-if="isLoggedIn">
                         <v-icon @click="$router.push('/sell')">mdi-camera-plus</v-icon>
                     </v-btn>
                     <v-btn icon @click="$router.push('/mypage')" v-if="isLoggedIn">
@@ -134,6 +134,10 @@ export default {
 
 .title{
     cursor: pointer;
+}
+
+.main{
+    margin-top: 56px;
 }
 
 .navbar{
