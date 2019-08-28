@@ -99,7 +99,7 @@ export default {
                     if(file){
                     params.append('images[]', blob, file.name)
                     console.log(blob)
-                }
+                    }
                 }
             }
             request.post('/api/v1/products', { params: params, auth: true })
@@ -107,7 +107,7 @@ export default {
                     this.$router.push({ path: `/product/${response.data.id}`})
                 })
                 .catch( error => {
-                    console.log(error)
+                    console.log(error.response)
                 })
         },
         addImage(index){
