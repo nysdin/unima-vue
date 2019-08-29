@@ -13,7 +13,7 @@
                 @click:append="show2 = !show2"></v-text-field>
 
                 <div class="d-flex justify-center">
-                    <v-btn medium outlined @click="register">新規登録</v-btn>
+                    <v-btn medium outlined @click="register" :loading="loading" :disabled="loading">新規登録</v-btn>
                 </div>
             </v-form>
         </v-container>
@@ -27,6 +27,7 @@ export default {
         return {
             show1: false,
             show2: false,
+            loading: false,
             user: {
                 name: '',
                 email: '',
@@ -37,11 +38,14 @@ export default {
     },
     methods: {
         register(){
+            this.loading = true
             this.$store.dispatch('auth/register', { ...this.user })
                 .then( () => {
+                    this.loading = false
                     this.$router.push('/')
                 })
                 .catch( errors => {
+                    this.loading = false
                     errors.forEach(error => {
                         setTimeout( () => {
                             this.renderError(error)
