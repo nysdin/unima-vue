@@ -17,7 +17,7 @@
 
         <v-list>
             <v-subheader>商品</v-subheader>
-            <v-list-group v-for="product in products" :key="product.title" prepend-icon="mdi-account" no-action>
+            <v-list-group v-for="product in products" :key="product.title" no-action>
                 <template v-slot:activator>
                     <v-list-item-content>
                         <v-list-item-title v-text="product.title"></v-list-item-title>
@@ -30,9 +30,11 @@
                 </v-list-item>
             </v-list-group>
             <v-list-item @click="$router.push('/mypage/like')">
-                <v-list-item-title>いいね</v-list-item-title>
+                <v-list-item-title>いいねした商品</v-list-item-title>
             </v-list-item>
         </v-list>
+
+        <v-divider></v-divider>
 
         <v-list>
             <v-subheader>設定</v-subheader>
@@ -63,7 +65,7 @@ export default {
             password_confirmation: '',
             products: [
                 {
-                    title: '出品',
+                    title: '出品した商品',
                     url: 'sell',
                     items: [
                         { title: '出品中の商品', status: 'open' },
@@ -72,7 +74,7 @@ export default {
                     ]
                 },
                 {
-                    title: '購入品',
+                    title: '購入した商品',
                     url: 'purchase',
                     items: [
                         { title: '取引中の商品', status: 'trade' },
