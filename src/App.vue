@@ -33,10 +33,15 @@
                 </template>
             </v-app-bar>
 
-            <div v-loading.fullscreen.lock="!initLoading　|| loading"
-                element-loading-background="rgba(255, 255, 255, 1.0)"
-            ></div>
-            <router-view class="main" v-show="initLoading && !loading"/>
+            <div class="init-loading" v-if="!initialized">
+                <v-container fill-height>
+                    <v-layout row justify-center align-center>
+                        <v-progress-circular indeterminate :size="70" :width="7" color="primary"></v-progress-circular>
+                    </v-layout>
+                </v-container>
+            </div>
+
+            <router-view class="main" v-if="initialized"/>
         </v-app>
 
             <!-- <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav overflow-hidden">
@@ -100,7 +105,7 @@ export default {
         }
     },
     computed: {
-        initLoading(){
+        initialized(){
             return this.$store.getters['auth/init']
         },
         loading(){
@@ -156,4 +161,17 @@ export default {
 .overflow-y-hidden{
     overflow-y: hidden;
 }
+
+.init-loading{
+    overflow-y: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+}
+
 </style>
