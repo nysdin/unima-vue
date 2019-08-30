@@ -2,16 +2,6 @@
     <div id="app">
         <v-app>
             <v-app-bar :elevation="0" hide-on-scroll fixed>
-                <template v-if="searched">
-                    <v-icon @click="searched = false">mdi-arrow-left-thick</v-icon>
-                    <v-text-field placeholder="商品を検索"
-                        hide-details single-line v-model="keyword">
-                    </v-text-field>
-                    <v-btn icon @click="search" :key="0">
-                        <v-icon>search</v-icon>
-                    </v-btn>
-                </template>
-                <template v-else>
                     <v-toolbar-title class="title px-0" @click="toTop">Unima</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon class="mr-1" :key="1">
@@ -30,7 +20,6 @@
                     @click="$router.push('/register')">新規登録</v-btn>
                     <v-btn v-if="!isLoggedIn" x-small :elevation="0" 
                     outlined :minHeight="30" @click="$router.push('/login')">ログイン</v-btn>
-                </template>
             </v-app-bar>
 
             <div class="init-loading" v-if="!initialized">
@@ -43,6 +32,42 @@
 
             <router-view class="main" v-if="initialized"/>
         </v-app>
+
+        <v-dialog v-model="searched" scrollable>
+            <v-card>
+                <v-card-title>商品を検索</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="12" class="pa-0">
+                                <v-text-field outlined label="キーワード" v-model="keyword"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" class="pa-0">
+                                <v-select outlined :items="categoris" label="カテゴリー" v-model="category"></v-select>
+                            </v-col>
+                            <v-col cols="12" class="pa-0">
+                                <v-select outlined :items="states" label="商品の状態" v-model="state"></v-select>
+                            </v-col>
+                            <v-col cols="5" class="pa-0">
+                                <v-text-field outlined label="最小価格" v-model="minPrice"></v-text-field>
+                            </v-col>
+                            <v-col cols="2" class="pa-0 justify-center align-center d-flex">
+                                <p>〜</p>
+                            </v-col>
+                            <v-col cols="5" class="pa-0">
+                                <v-text-field outlined label="最大価格" v-model="maxPrice"></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn color="blue darken-1" text @click="searched = false">キャンセル</v-btn>
+                    <v-btn color="blue darken-1" text @click="search">検索する</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
 
             <!-- <v-navigation-drawer v-model="drawer" fixed temporary class="side-nav overflow-hidden">
                 <template v-if="isLoggedIn">
@@ -95,13 +120,14 @@ import qs from 'qs'
 export default {
     data(){
         return {
-            drawer: false,
             searched: false,
             keyword: '',
-            menus: [
-                { title: 'アカウント', icon: 'mdi-account', url: 'mypage'},
-                { title: '出品', url: 'sell'},
-            ]
+            category: '',
+            state: '',
+            minPrice: null,
+            maxPrice: null,
+            categoris: [ '一般', '文系', '理系'],
+            states: ['新品、未使用', '目立った傷や汚れなし', 'やや傷れや汚れあり', '全体的に状態が悪い']
         }
     },
     computed: {
@@ -123,8 +149,16 @@ export default {
             this.$router.push('/')
         },
         search(){
-            this.$router.push({ path: '/search', query: {keyword: this.keyword} })
-            this.keyword = ''
+            this.$router.push({
+                path: '/search',
+                query: {
+                    keyword: this.keyword,
+                    category: this.category,
+                    state: this.state,
+                    min_price: this.minPrice,
+                    max_price: this.maxPrice
+                }
+            })
             this.searched = false
         }
     }
