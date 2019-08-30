@@ -39,12 +39,42 @@ export default {
             this.$router.push({ path: `/product/${id}`})
         },
     },
+    watch: {
+        '$route' (to, from){
+            axios.get('/api/v1/products/search', {
+                baseURL: process.env.VUE_APP_API_ENDPOINT,
+                params:{
+                    q: {
+                        name_cont: to.query.keyword,
+                        state_eq: to.query.state,
+                        price_gteq: to.query.min_price,
+                        price_lteq: to.query.max_price,
+                        category_name_cont: to.query.category
+                    }
+                },
+                paramsSerializer(params){
+                    return qs.stringify(params, {arrayFormat: 'brackets'})
+                }
+            })
+            .then(response => {
+                console.log(response)
+                this.products = response.data
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        }
+    },
     created(){
         axios.get('/api/v1/products/search', {
                 baseURL: process.env.VUE_APP_API_ENDPOINT,
                 params:{
                     q: {
-                        name_cont: this.$route.query.keyword
+                        name_cont: this.$route.query.keyword,
+                        state_eq: this.$route.query.state,
+                        price_gteq: this.$route.query.min_price,
+                        price_lteq: this.$route.query.max_price,
+                        category_name_cont: this.$route.query.category
                     }
                 },
                 paramsSerializer(params){
