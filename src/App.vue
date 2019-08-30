@@ -41,7 +41,7 @@
                     <v-container>
                         <v-row>
                             <v-col cols="12" class="pa-0">
-                                <v-text-field outlined label="キーワード" v-model="keyword"></v-text-field>
+                                <v-text-field outlined label="キーワード" v-model="keyword" clearable></v-text-field>
                             </v-col>
                             <v-col cols="12" class="pa-0">
                                 <v-select outlined :items="categoris" label="カテゴリー" v-model="category"></v-select>
