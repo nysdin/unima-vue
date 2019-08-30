@@ -42,7 +42,7 @@
                 ></v-select>
 
                 <div class="d-flex justify-center">
-                    <v-btn medium outlined @click="sell">出品する</v-btn>
+                    <v-btn medium outlined @click="sell" :loading="loading" :disabled="loading">出品する</v-btn>
                 </div>
             </v-form>
 
@@ -58,6 +58,7 @@ export default {
     name: 'sell',
     data(){
         return{
+            loading: false,
             dialogs: [
                 {dialog: false},
                 {dialog: false},
@@ -88,6 +89,7 @@ export default {
     },
     methods: {
         async sell(){
+            this.loading = true
             const params = new FormData()
             Object.keys(this.product).forEach(key => {
                 params.append(key, this.product[key])
@@ -104,9 +106,11 @@ export default {
             }
             request.post('/api/v1/products', { params: params, auth: true })
                 .then( response => {
+                    this.loading = false
                     this.$router.push({ path: `/product/${response.data.id}`})
                 })
                 .catch( error => {
+                    this.loading = false
                     console.log(error.response)
                 })
         },
