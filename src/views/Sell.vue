@@ -3,6 +3,7 @@
         <h1>商品追加</h1>
         <v-container>
             <v-form>
+                
                 <v-row>
                     <v-col :cols="3" v-for="(image, i) in images" :key="i" class="pb-0">
                         <v-dialog v-model="dialogs[i].dialog" :key="i">
@@ -31,11 +32,12 @@
                         </v-dialog>
                     </v-col>
                 </v-row>
-                <v-text-field v-model="product.name" label="商品名" placeholder="商品名" required></v-text-field>
+
+                <v-text-field v-model="product.name" label="商品名" placeholder="商品名" required clearable></v-text-field>
                 <v-textarea label="商品の説明" v-model="product.description"
-                    hint="Hint text"
+                    clearable
                 ></v-textarea>
-                <v-text-field v-model="product.price" label="商品の価格" placeholder="価格" required></v-text-field>
+                <v-text-field v-model="product.price" label="商品の価格" placeholder="価格" required clearable></v-text-field>
                 <v-select :items="categoris" v-model="product.category" label="カテゴリー"
                 ></v-select>
                 <v-select :items="states" v-model="product.state" label="商品の状態"

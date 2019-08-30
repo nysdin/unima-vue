@@ -50,13 +50,13 @@
                                 <v-select outlined :items="states" label="商品の状態" v-model="state"></v-select>
                             </v-col>
                             <v-col cols="5" class="pa-0">
-                                <v-text-field outlined label="最小価格" v-model="minPrice"></v-text-field>
+                                <v-text-field outlined label="最小価格" v-model="minPrice" clearable></v-text-field>
                             </v-col>
                             <v-col cols="2" class="pa-0 justify-center align-center d-flex">
                                 <p>〜</p>
                             </v-col>
                             <v-col cols="5" class="pa-0">
-                                <v-text-field outlined label="最大価格" v-model="maxPrice"></v-text-field>
+                                <v-text-field outlined label="最大価格" v-model="maxPrice" clearable></v-text-field>
                             </v-col>
                         </v-row>
                     </v-container>
