@@ -126,8 +126,8 @@ export default {
             state: '',
             minPrice: null,
             maxPrice: null,
-            categoris: [ '一般', '文系', '理系'],
-            states: ['新品、未使用', '目立った傷や汚れなし', 'やや傷れや汚れあり', '全体的に状態が悪い']
+            categoris: [ 'すべて', '一般', '文系', '理系'],
+            states: ['すべて', '新品、未使用', '目立った傷や汚れなし', 'やや傷れや汚れあり', '全体的に状態が悪い']
         }
     },
     computed: {
