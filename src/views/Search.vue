@@ -41,15 +41,23 @@ export default {
     },
     watch: {
         '$route' (to, from){
+            let category = to.query.category
+            let state = to.query.state
+            if(category === 'すべて'){
+                category = ''
+            }
+            if(state === 'すべて'){
+                state = ''
+            }
             axios.get('/api/v1/products/search', {
                 baseURL: process.env.VUE_APP_API_ENDPOINT,
                 params:{
                     q: {
                         name_cont: to.query.keyword,
-                        state_eq: to.query.state,
                         price_gteq: to.query.min_price,
                         price_lteq: to.query.max_price,
-                        category_name_cont: to.query.category
+                        state_eq: state,
+                        category_name_cont: category
                     }
                 },
                 paramsSerializer(params){
@@ -66,15 +74,23 @@ export default {
         }
     },
     created(){
+        let category = this.$route.query.category
+        let state = this.$route.query.state
+        if(category === 'すべて'){
+            category = ''
+        }
+        if(state === 'すべて'){
+            state = ''
+        }
         axios.get('/api/v1/products/search', {
                 baseURL: process.env.VUE_APP_API_ENDPOINT,
                 params:{
                     q: {
                         name_cont: this.$route.query.keyword,
-                        state_eq: this.$route.query.state,
                         price_gteq: this.$route.query.min_price,
                         price_lteq: this.$route.query.max_price,
-                        category_name_cont: this.$route.query.category
+                        state_eq: state,
+                        category_name_eq: category
                     }
                 },
                 paramsSerializer(params){
