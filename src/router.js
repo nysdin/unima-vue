@@ -137,6 +137,12 @@ const router = new Router({
       name: 'BankAccount',
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "bankAccount" */ './views/BankAccount.vue')
+    },
+    {
+      path: '/settings/pay',
+      name: 'Payment',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "bankAccount" */ './views/Payment.vue')
     }
   ]
 })
