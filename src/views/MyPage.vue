@@ -49,6 +49,11 @@
                         <v-list-item-title v-text="'銀行口座の登録'"></v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-list-item @click="$router.push('/settings/pay')">
+                    <v-list-item-content>
+                        <v-list-item-title v-text="'お支払い方法'"></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
                 <v-list-item @click="logout">
                     <v-list-item-content>
                         <v-list-item-title v-text="'ログアウト'"></v-list-item-title>
