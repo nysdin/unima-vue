@@ -44,6 +44,11 @@
                         <v-list-item-title v-text="'パスワードの再設定'"></v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-list-item @click="$router.push('/settings/bank')">
+                    <v-list-item-content>
+                        <v-list-item-title v-text="'銀行口座の登録'"></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
                 <v-list-item @click="logout">
                     <v-list-item-content>
                         <v-list-item-title v-text="'ログアウト'"></v-list-item-title>
