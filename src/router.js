@@ -131,6 +131,12 @@ const router = new Router({
       name: 'Trade',
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "trade" */ './views/Trade.vue')
+    },
+    {
+      path: '/settings/bank',
+      name: 'BankAccount',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "bankAccount" */ './views/BankAccount.vue')
     }
   ]
 })
