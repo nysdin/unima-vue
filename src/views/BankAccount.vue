@@ -44,6 +44,7 @@ export default {
     },
     methods: {
         async registerBankAccount(){
+            this.loading = true
             const {token, error} = await stripe.createToken('bank_account', {
                 country: 'JP',
                 currency: 'jpy',
@@ -54,13 +55,16 @@ export default {
             })
 
             if(error){
+                this.loading = false
                 console.log(error)
             }else{
                 request.post('/api/v1/user/bank', {params: {stripe_bank_token: token.id}, auth: true})
                     .then( response => {
+                        this.loading = false
                         console.log('sucess')
                     })
                     .catch( error => {
+                        this.loading = false
                         console.log(error)
                     })
             }
