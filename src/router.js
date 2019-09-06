@@ -143,6 +143,12 @@ const router = new Router({
       name: 'Card',
       meta: { requiresAuth: true },
       component: () => import(/* webpackChunkName: "bankAccount" */ './views/Card.vue')
+    },
+    {
+      path: '/settings/card/create',
+      name: 'CardCreate',
+      meta: { requiresAuth: true },
+      component: () => import(/* webpackChunkName: "bankAccount" */ './views/CardCreate.vue')
     }
   ]
 })
