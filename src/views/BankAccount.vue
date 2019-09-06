@@ -2,25 +2,55 @@
     <div id="bank">
         <v-container>
             <v-form>
-                    <v-text-field v-model="bank.bank_code" label="金融機関コード" placeholder="1110(4ケタ)"></v-text-field>
-                    <v-text-field v-model="bank.branch_code" label="支店コード" placeholder="000(3ケタ)"></v-text-field>
-                    <v-text-field v-model="bank.account_number" label="口座番号" placeholder="0001234"></v-text-field>
+                    <v-text-field v-model="bank_name" label="銀行" readonly></v-text-field>
+                    <v-text-field v-model="branch_code" label="支店コード" readonly></v-text-field>
+                    <v-text-field v-model="last4" label="口座番号" readonly></v-text-field>
                     <v-row>
                         <v-col :cols="6">
-                            <v-text-field v-model="bank.last_name" label="名義人（姓）" placeholder="ヤマダ"></v-text-field>
+                            <v-text-field v-model="last_name" label="名義人（姓）" readonly></v-text-field>
                         </v-col>
                         <v-col :cols="6">
-                            <v-text-field v-model="bank.first_name" label="名義人（名）" placeholder="タロウ"></v-text-field>
+                            <v-text-field v-model="first_name" label="名義人（名）" readonly></v-text-field>
                         </v-col>
                     </v-row>
                 
                     <div class="d-flex justify-center">
-                        <v-btn medium outlined @click="registerBankAccount" :loading=loading :disabled="loading">
-                            登録する
-                        </v-btn>
+                        <v-btn medium outlined @click="dialog = true" class="ml-2">変更する</v-btn>
                     </div>
                 </v-form>
         </v-container>
+
+        <v-dialog v-model="dialog">
+            <v-card>
+                <v-card-title>
+                    振込先口座の変更
+                </v-card-title>
+                <v-card-text>
+                    <v-container>
+                        <v-form>
+                            <v-text-field v-model="bank.bank_code" label="金融機関コード" placeholder="1110(4ケタ)"></v-text-field>
+                            <v-text-field v-model="bank.branch_code" label="支店コード" placeholder="000(3ケタ)"></v-text-field>
+                            <v-text-field v-model="bank.account_number" label="口座番号" placeholder="0001234"></v-text-field>
+                            <v-row>
+                                <v-col :cols="6">
+                                    <v-text-field v-model="bank.last_name" label="名義人（姓）" placeholder="ヤマダ"></v-text-field>
+                                </v-col>
+                                <v-col :cols="6">
+                                    <v-text-field v-model="bank.first_name" label="名義人（名）" placeholder="タロウ"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        
+                            <div class="d-flex justify-center">
+                                <v-btn medium outlined @click="registerBankAccount" :loading=loading :disabled="loading">
+                                    変更する
+                                </v-btn>
+                                <v-btn medium outlined @click="dialog = false" class="ml-2">キャンセル</v-btn>
+                            </div>
+                        </v-form>
+                    </v-container>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -33,6 +63,13 @@ export default {
     data(){
         return {
             loading: false,
+            dialog: false,
+            bank_name: '',
+            bank_code: '',
+            branch_code: '',
+            last4: '',
+            first_name: '',
+            last_name: '',
             bank: {
                 bank_code: '',
                 branch_code: '',
@@ -58,9 +95,11 @@ export default {
                 this.loading = false
                 console.log(error)
             }else{
-                request.post('/api/v1/user/bank', {params: {stripe_bank_token: token.id}, auth: true})
+                request.patch('/api/v1/bank_account', {params: {stripe_bank_token: token.id}, auth: true})
                     .then( response => {
                         this.loading = false
+                        this.displayBankAccount(response)
+                        this.dialog = false
                         console.log('sucess')
                     })
                     .catch( error => {
@@ -68,7 +107,35 @@ export default {
                         console.log(error)
                     })
             }
+        },
+        displayBankAccount(response){
+            console.log(response)
+            const data = response.data
+            const name_length = data.full_name.length
+            const full_name = data.full_name
+            let space = 0
+            for(let i = 0; i < name_length; i++){
+                if(full_name[i] === ' '){
+                    space = i
+                    break
+                }
+            }
+            this.last_name = full_name.slice(0, space)
+            this.first_name = full_name.slice(space + 1)
+            this.bank_name = data.bank_name
+            this.last4 = '***' + data.last4
+            this.bank_code = data.routing_number.slice(0,4)
+            this.branch_code = data.routing_number.slice(4)
         }
+    },
+    created(){
+        request.get('/api/v1/bank_account/', { auth: true })
+            .then(response => {
+                this.displayBankAccount(response)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 }
 </script>
