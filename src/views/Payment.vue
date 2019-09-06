@@ -16,6 +16,7 @@
                     </div>
                     
                     <v-btn medium outlined @click.stop.prevent="registerCregitCard">登録</v-btn>
+                    <v-btn medium outlined @click.stop.prevent="deleteCregitCard">削除</v-btn>
                 </form>
 
                 </v-card>
@@ -56,7 +57,7 @@ export default {
                 const errorElement = document.getElementById('card-errors')
                 errorElement.textContent = error.message
             } else {
-                request.post('/api/v1/user/cregit', {params: {stripe_cregit_token: token.id}, auth: true})
+                request.patch('/api/v1/card', {params: {stripe_cregit_token: token.id}, auth: true})
                     .then(response => {
                         this.loading = false
                         this.$router.push('/mypage')
@@ -67,9 +68,17 @@ export default {
                         console.log('error')
                     })
             }
+        },
+        deleteCregitCard(){
+            request.delete('/api/v1/card', { auth: true })
+                .then(response => console.log('success'))
+                .catch(error => console.log('error'))
         }
     },
     mounted(){
+        request.get('/api/v1/bank_account', { auth: true})
+            .then(response => console.log(response))
+            .catch(error => console.log(error))
         card.mount('#card-element')
 
         card.addEventListener('change', ({error}) => {
