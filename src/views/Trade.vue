@@ -82,7 +82,7 @@
                     </v-row>
                 </v-card>
                 <v-textarea v-model="content" outlined placeholder="分からないことなど質問しよう！"></v-textarea>
-                <v-btn color="error" block samll disabled="product.status === 'close'" @click="comment">取引連絡をする</v-btn>
+                <v-btn color="error" block samll :disabled="product.status === 'close'" @click="comment">取引連絡をする</v-btn>
             </v-container>
         </v-card>
     </div>
@@ -131,11 +131,17 @@ export default {
         request.get(`/api/v1/products/${this.$route.params.id}/trade`, { auth: true })
             .then( response => {
                 console.log(response)
-                this.$store.commit('auth/apiCompleted')
-                this.product = response.data.product
-                this.liked = response.data.like
-                this.messages = response.data.messages
-                this.$store.commit('auth/apiCompleted')
+                const product = response.data.product
+                const user_id = this.$store.state.user.user.id
+                if(user_id === product.buyer_id || user_id === product.seller_id){
+                    this.product = product
+                    this.liked = response.data.like
+                    this.messages = response.data.messages
+                    this.$store.commit('auth/apiCompleted')
+                }else{
+                    this.$router.push('/')
+                    this.$store.commit('auth/apiCompleted')
+                }
             })
             .catch( error => {
                 this.$router.push('/')
