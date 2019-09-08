@@ -19,7 +19,7 @@
                     </div>
                 </div>
 
-                <v-btn color="error" block samll @click="trade" v-if="!seller && open">購入する</v-btn>
+                <v-btn color="error" block samll @click="$router.push(`/payment/${product.id}`)" v-if="!seller && open">購入手続きへ進む</v-btn>
                 <v-btn color="error" block samll v-if="seller && open"
                     @click="$router.push(`/sell/${$route.params.id}/edit`)" >
                     商品の編集
@@ -150,7 +150,7 @@ export default {
         },
         favoriteColor(){
             return this.liked ? 'red' : 'grey'
-        }
+        },
     },
     created(){
         //商品情報を取得
@@ -213,7 +213,7 @@ export default {
                 .catch(error => {
                     console.log('error')
                 })
-        }
+        },
     }
 }
 </script>
