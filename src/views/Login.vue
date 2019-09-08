@@ -3,7 +3,8 @@
         <h1 class="text-center">ログイン</h1>
         <v-container>
             <v-form>
-                <v-text-field v-model="user.email" label="メールアドレス" placeholder="test@example.com" required></v-text-field>
+                <v-text-field v-model="user.email" label="メールアドレス" 
+                    placeholder="test@example.com" required clearable></v-text-field>
                 <v-text-field v-model="user.password" :append-icon="show ? 'visibility' : 'visibility_off'"
                 label="パスワード" required :type="show ? 'text' : 'password'"
                 @click:append="show = !show"></v-text-field>
