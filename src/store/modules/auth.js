@@ -51,6 +51,7 @@ const auth = {
                 request.post('/api/v1/auth/sign_in', { params: user })
                     .then( response => {
                         //返ってきたuser情報をstoreにセットするcommit
+                        console.log(response)
                         commit('user/setUser', response.data.data, { root: true })
                         const headers = response.headers
                         //localStorageにheadersの情報をセット
@@ -70,11 +71,13 @@ const auth = {
                     })
             })
         },
-        register({ commit }, user){
+        register({ commit }, params){
+            console.log(params)
             return new Promise( (resolve, reject) => {
                 commit('apiRequest')
-                request.post('/api/v1/auth', { params: user })
+                request.post('/api/v1/auth', { params: params })
                     .then(response => {
+                        console.log(response)
                         commit('user/setUser', response.data.data, { root: true })
                         const headers = response.headers
                         localStorage.setItem('access-token', headers['access-token'])
