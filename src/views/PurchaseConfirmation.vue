@@ -99,17 +99,20 @@ export default {
             .then(response => {
                 const product = response.data.product
                 const card = response.data.card
-                this.product.id = product.id
-                this.product.image = product.images[0].url
-                this.product.name = product.name
-                this.product.price = product.price
-                if(card){
-                    this.card.brand = card.brand
-                    this.card.last4 = '**** **** **** ' + card.last4
-                    this.card.exp_month = card.exp_month
-                    this.card.exp_year = card.exp_year
+                if(product.state === 'open'){
+                    this.product.id = product.id
+                    this.product.image = product.images[0].url
+                    this.product.name = product.name
+                    this.product.price = product.price
+                    if(card){
+                        this.card.brand = card.brand
+                        this.card.last4 = '**** **** **** ' + card.last4
+                        this.card.exp_month = card.exp_month
+                        this.card.exp_year = card.exp_year
+                    }
+                }else{
+                    this.$router.push('/')
                 }
-                console.log(response)
             })
             .catch(error => {
                 console.log(error)
