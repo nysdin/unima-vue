@@ -31,7 +31,7 @@
                         </div>
                         <div class="d-flex align-self-center flex-column">
                             <v-btn text small color="primary" class="inline-block"
-                            @click="$router.push('/settings/card/create')">
+                            @click="toCard">
                                 変更
                             </v-btn>
                         </div>
@@ -39,7 +39,7 @@
                 </template>
                 <template v-else>
                     <div class="d-flex justify-center">
-                        <v-btn outlined color="primary" @click="$router.push('/settings/card/create')">登録する</v-btn>
+                        <v-btn outlined color="primary" @click="toCard">登録する</v-btn>
                     </div>
                 </template>
             </v-card-text>
@@ -92,6 +92,9 @@ export default {
                 .catch(error => {
                     console.log('error')
                 })
+        },
+        toCard(){
+            this.$router.push({ path: '/settings/card/create', query: { back: 'true' }})
         }
     },
     created(){
@@ -99,7 +102,7 @@ export default {
             .then(response => {
                 const product = response.data.product
                 const card = response.data.card
-                if(product.state === 'open'){
+                if(product.status === 'open'){
                     this.product.id = product.id
                     this.product.image = product.images[0].url
                     this.product.name = product.name
