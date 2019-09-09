@@ -1,7 +1,9 @@
 <template>
     <div id="show">
         <v-card :elevation="0" class="mb-4">
-            <v-carousel :height="300" hide-delimiter-background delimiter-icon="mdi-minus" :touchless="true">
+            <v-carousel :height="300" hide-delimiter-background 
+                delimiter-icon="mdi-minus" :touchless="true"
+                :show-arrows="isHidden">
                 <v-carousel-item v-for="(image, i) in product.images" :key="i">
                     <v-img :src="image.url" height="300" aspect-ratio="1" contain></v-img>
                 </v-carousel-item>
@@ -103,6 +105,7 @@ export default {
     name: 'productShow',
     data(){
         return {
+            isHidden: true,
             product: {
                 seller: {
                     name: '',
@@ -150,7 +153,7 @@ export default {
         },
         favoriteColor(){
             return this.liked ? 'red' : 'grey'
-        },
+        }
     },
     created(){
         //商品情報を取得
@@ -158,6 +161,9 @@ export default {
             .then( response => {
                 console.log(response)
                 const data = response.data
+                if(!(data.product.images.length === 1)){
+                    this.isHidden = false
+                }
                 this.product = data.product
                 this.liked = data.like
                 this.comments = data.comments
