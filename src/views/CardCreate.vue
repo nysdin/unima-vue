@@ -17,7 +17,10 @@
                         </div>
 
                         <div class="d-flex justify-center">
-                            <v-btn outlined @click.stop.prevent="registerCregitCard">登録する</v-btn>
+                            <v-btn outlined :loading="loading" :disabled="loading"
+                            @click.stop.prevent="registerCregitCard">
+                            登録する
+                            </v-btn>
                         </div>
                     </form>
                 </v-container>
@@ -45,19 +48,31 @@ const card = elements.create('card', {style, hidePostalCode: true})
 
 export default {
     name: 'CardCreate',
+    data(){
+        return{
+            loading: false
+        }
+    },
     methods: {
         async registerCregitCard(){
+            this.loading = true
             const {token, error} = await stripe.createToken(card)
             if (error) {
                 const errorElement = document.getElementById('card-errors');
                 errorElement.textContent = error.message;
+                this.loading = false
             } else {
                 request.patch('/api/v1/card', {params: { stripe_cregit_token: token.id }, auth: true})
                     .then(response => {
                         console.log(response)
-                        this.$router.push('/settings/card')
+                        if(this.$route.query.back){
+                            this.$router.back()
+                        }else{
+                            this.$router.push('/settings/card')
+                        }
                     })
                     .catch(error => {
+                        this.loading = false
                         console.log(error)
                     })
             }
