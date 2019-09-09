@@ -4,7 +4,7 @@
                 <v-card :elevation='1'>
                     <v-card-title>クレジットカード</v-card-title>
                     <v-divider></v-divider>
-                    <v-card-text>
+                    <v-card-text class="card-info">
                         <template v-if="brand">
                             <div class="d-flex justify-space-between">
                                 <div>
@@ -29,6 +29,10 @@
                                 <v-btn outlined color="primary" @click="$router.push('/settings/card/create')">登録する</v-btn>
                             </div>
                         </template>
+
+                        <v-overlay :value="init" :opacity="1" color="white" absolute>
+                            <v-progress-circular indeterminate size="40" color="primary"></v-progress-circular>
+                        </v-overlay>
                     </v-card-text>
                 </v-card>
         </v-container>
@@ -42,6 +46,7 @@ export default {
     name: 'Card',
     data(){
         return {
+            init: true,
             loading: false,
             brand: '',
             exp_month: '',
@@ -97,8 +102,12 @@ export default {
                 this.exp_month = ("00" + data.exp_month).slice(-2)
                 this.exp_year = data.exp_year
                 this. last4 = '**** **** **** ' + data.last4
+                this.init = false
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+                console.log(error)
+                this.init = false
+            })
     }
 }
 </script>
@@ -131,5 +140,9 @@ export default {
 
 .StripeElement--webkit-autofill {
     background-color: #fefde5 !important;
+}
+
+.card-info{
+    position: relative;
 }
 </style>

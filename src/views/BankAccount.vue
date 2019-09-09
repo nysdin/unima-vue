@@ -1,5 +1,8 @@
 <template>
     <div id="bank">
+        <v-overlay :value="init" :opacity="1" color="#F5F5F5">
+            <v-progress-circular indeterminate size="64" color="primary"></v-progress-circular>
+        </v-overlay>
         <v-container>
             <v-form>
                     <v-text-field v-model="bank_name" label="銀行" readonly></v-text-field>
@@ -62,6 +65,7 @@ export default {
     name: 'BankAccount',
     data(){
         return {
+            init: true,
             loading: false,
             dialog: false,
             bank_name: '',
@@ -108,9 +112,8 @@ export default {
                     })
             }
         },
-        displayBankAccount(response){
-            console.log(response)
-            const data = response.data
+        displayBankAccount(data){
+            console.log(data)
             const name_length = data.full_name.length
             const full_name = data.full_name
             let space = 0
@@ -128,13 +131,18 @@ export default {
             this.branch_code = data.routing_number.slice(4)
         }
     },
-    created(){
+    mounted(){
         request.get('/api/v1/bank_account/', { auth: true })
             .then(response => {
-                this.displayBankAccount(response)
+                const data = response.data
+                if(data.last4){
+                    this.displayBankAccount(data)
+                }
+                this.init = false
             })
             .catch(error => {
                 console.log(error)
+                this.init = false
             })
     }
 }
