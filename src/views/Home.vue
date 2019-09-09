@@ -9,11 +9,15 @@
               :src="product.images[0].url"
             ></v-img>
             
-            <v-card-title class="px-1 pt-1 pb-0 font-weight-regular subtitle-2">{{ product.name }}</v-card-title>
+            <v-card-title class="px-1 pt-1 pb-0 font-weight-regular subtitle-2">
+              <p class="omission mb-0">{{ product.name }}</p>
+            </v-card-title>
 
             <v-card-text class="px-1 pt-0 pb-1">
               <div class="d-flex justify-space-between">
-                <div class="pa-0 font-weight-regular subtitle-1">¥ {{ product.price }}</div>
+                <div class="pa-0 font-weight-regular subtitle-1">
+                  ¥ {{ product.price }}
+                </div>
                 <div>
                   <v-icon :size="16" v-if="product.likes_count">favorite</v-icon>
                   <span class="ml-1" v-if="product.likes_count">{{ product.likes_count }}</span>
@@ -71,9 +75,15 @@ export default {
 </script>
 
 <style>
-  .product{
-    cursor: pointer;
-  }
+.product{
+  cursor: pointer;
+}
+
+.omission{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
 </style>
 
