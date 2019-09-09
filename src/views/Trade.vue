@@ -19,9 +19,19 @@
                     </div>
                 </div>
 
-                <v-btn color="error" block samll @click="finish" v-if="product.status === 'trade'">受け取りを完了する</v-btn>
-                <v-btn color="error" block small disabled v-if="product.status === 'close'">取引終了</v-btn>
-
+                <template v-if="product.status === 'trade'">
+                    <v-btn color="error" block samll @click="finish" :disabled="loading" :loading="loading"
+                        v-if="$store.state.user.user.id === this.product.buyer_id">
+                        受け取りを完了する
+                    </v-btn>
+                    <v-btn color="error" block samll disabled
+                        v-if="$store.state.user.user.id === this.product.seller_id">
+                        商品を発送しよう！
+                    </v-btn>
+                </template>
+                <template v-else>
+                    <v-btn color="error" block samll disabled>商品を発送しよう！</v-btn>
+                </template>
             </v-container>
 
             <v-sheet tile color="grey lighten-3 d-flex align-center" height="30">
@@ -82,7 +92,9 @@
                     </v-row>
                 </v-card>
                 <v-textarea v-model="content" outlined placeholder="分からないことなど質問しよう！"></v-textarea>
+
                 <v-btn color="error" block samll :disabled="product.status === 'close'" @click="comment">取引連絡をする</v-btn>
+                
             </v-container>
         </v-card>
     </div>
@@ -95,6 +107,7 @@ export default {
     name: 'Trade',
     data(){
         return {
+            loading: false,
             product: {
                 seller: {
                     name: '',
@@ -151,11 +164,14 @@ export default {
     },
     methods: {
         finish(){
+            this.loading = true
             request.post(`/api/v1/products/${this.product.id}/complete`, { auth: true })
                 .then(response => {
+                    this.loading = false
                     this.product.status = "close"
                 })
                 .catch( error => {
+                    this.loading = false
                     console.log('error')
                 })
         },
