@@ -57,7 +57,7 @@ export default {
     methods: {
         async registerCregitCard(){
             this.loading = true
-            const {token, error} = await stripe.createToken(card)
+            const {token, error} = await $stripe.createToken(card)
             if (error) {
                 // Inform the customer that there was an error.
                 this.loading = false

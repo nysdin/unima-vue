@@ -177,8 +177,7 @@
 </template>
 
 <script>
-const stripe = Stripe('pk_test_GRAL4nR6T1zOJHJIN9YAwGsI003jSsSSud')
-const elements = stripe.elements()
+const elements = $stripe.elements()
 
 const style = {
     base: {
@@ -267,7 +266,7 @@ export default {
             });
         },
         async createCregitToken(){
-            const {token, error} = await stripe.createToken(card)
+            const {token, error} = await $stripe.createToken(card)
             if (error) {
                 // Inform the customer that there was an error.
                 const errorElement = document.getElementById('card-errors')
@@ -279,7 +278,7 @@ export default {
             }
         },
         async createBankAccount(){
-            const {token, error} = await stripe.createToken('bank_account', {
+            const {token, error} = await $stripe.createToken('bank_account', {
                 country: 'JP',
                 currency: 'jpy',
                 routing_number: this.bank.bank_code + this.bank.branch_code,

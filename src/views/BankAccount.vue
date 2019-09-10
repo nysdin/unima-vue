@@ -58,7 +58,6 @@
 </template>
 
 <script>
-const stripe = Stripe('pk_test_GRAL4nR6T1zOJHJIN9YAwGsI003jSsSSud')
 import request from '../utils/api.js'
 
 export default {
@@ -86,7 +85,7 @@ export default {
     methods: {
         async registerBankAccount(){
             this.loading = true
-            const {token, error} = await stripe.createToken('bank_account', {
+            const {token, error} = await $stripe.createToken('bank_account', {
                 country: 'JP',
                 currency: 'jpy',
                 routing_number: this.bank.bank_code + this.bank.branch_code,

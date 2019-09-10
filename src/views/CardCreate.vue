@@ -31,10 +31,9 @@
 </template>
 
 <script>
-const stripe = Stripe('pk_test_GRAL4nR6T1zOJHJIN9YAwGsI003jSsSSud')
 import request from '../utils/api.js'
 
-const elements = stripe.elements()
+const elements = $stripe.elements()
 
 const style = {
     base: {
@@ -56,7 +55,7 @@ export default {
     methods: {
         async registerCregitCard(){
             this.loading = true
-            const {token, error} = await stripe.createToken(card)
+            const {token, error} = await $stripe.createToken(card)
             if (error) {
                 const errorElement = document.getElementById('card-errors');
                 errorElement.textContent = error.message;
