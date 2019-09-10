@@ -89,7 +89,7 @@ const auth = {
                     })
                     .catch( error => {
                         commit('apiCompleted')
-                        reject(error.response.data.errors.full_messages)
+                        reject(error.response.data)
                     })
             })
         },
