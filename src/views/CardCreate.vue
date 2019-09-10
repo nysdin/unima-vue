@@ -32,30 +32,19 @@
 
 <script>
 import request from '../utils/api.js'
-const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLIC_API_KEY)
-const elements = stripe.elements()
-
-const style = {
-    base: {
-        // Add your base input styles here. For example:
-        fontSize: '16px',
-        color: "#32325d",
-    },
-}
-
-const card = elements.create('card', {style, hidePostalCode: true})
 
 export default {
     name: 'CardCreate',
     data(){
         return{
-            loading: false
+            loading: false,
+            card: null,
         }
     },
     methods: {
         async registerCregitCard(){
             this.loading = true
-            const {token, error} = await stripe.createToken(card)
+            const {token, error} = await this.$stripe.createToken(this.card)
             if (error) {
                 const errorElement = document.getElementById('card-errors');
                 errorElement.textContent = error.message;
@@ -78,8 +67,18 @@ export default {
         }
     },
     mounted(){
-        card.mount('#card-element')
-        card.addEventListener('change', ({error}) => {
+        const elements = this.$stripe.elements()
+
+        const style = {
+            base: {
+                fontSize: '16px',
+                color: "#32325d",
+            },
+        }
+
+        this.card = elements.create('card', {style, hidePostalCode: true})
+        this.card.mount('#card-element')
+        this.card.addEventListener('change', ({error}) => {
             const displayError = document.getElementById('card-errors')
             if (error) {
                 displayError.textContent = error.message

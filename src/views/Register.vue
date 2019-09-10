@@ -92,10 +92,10 @@
             <v-stepper-content step="3">
                 <v-card>
                     <p class="caption">※こちらの入力をスキップしてアカウント登録後設定することもできます。</p>
-                    <form id="payment-form">
+                    <form id="payment-form" class="mb-3">
                         <div class="form-row">
                             <label for="card-element">
-                            Credit or debit card
+                            クレジットカード
                             </label>
                             <div id="card-element">
                             <!-- A Stripe Element will be inserted here. -->
@@ -104,8 +104,6 @@
                             <!-- Used to display Element errors. -->
                             <div id="card-errors" role="alert"></div>
                         </div>
-
-                        <button @click.stop.prevent="submit">Submit Payment</button>
                     </form>
 
                     <v-btn small @click="createCregitToken" color="primary" >次へ進む</v-btn>
@@ -181,6 +179,7 @@ export default {
     name: 'Register',
     data() {
         return {
+            card: null,
             stepper: 1,
             show1: false,
             show2: false,
@@ -254,7 +253,7 @@ export default {
             });
         },
         async createCregitToken(){
-            const {token, error} = await this.$stripe.createToken(card)
+            const {token, error} = await this.$stripe.createToken(this.card)
             if (error) {
                 // Inform the customer that there was an error.
                 const errorElement = document.getElementById('card-errors')
@@ -293,9 +292,9 @@ export default {
             },
         }
 
-        const card = elements.create('card', {style})
-        card.mount('#card-element')
-        card.addEventListener('change', ({error}) => {
+        this.card = elements.create('card', {style, hidePostalCode: true})
+        this.card.mount('#card-element')
+        this.card.addEventListener('change', ({error}) => {
             const displayError = document.getElementById('card-errors')
             if (error) {
                 displayError.textContent = error.message
