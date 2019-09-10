@@ -1,6 +1,6 @@
 {
-    "name": "unima-vue",
-    "short_name": "unima",
+    "name": "Unima",
+    "short_name": "Unima",
     "icons": [
         {
             "src": "./img/icons/android-chrome-192x192.png",
