@@ -238,11 +238,11 @@ export default {
                 })
                 .catch( errors => {
                     this.loading = false
-                    errors.forEach(error => {
-                        setTimeout( () => {
-                            this.renderError(error)
-                        }, 0)
-                    })
+                    // errors.forEach(error => {
+                    //     setTimeout( () => {
+                    //         this.renderError(error)
+                    //     }, 0)
+                    // })
                 })
         },
         renderError(error){
