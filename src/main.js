@@ -10,6 +10,8 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
+Vue.prototype.$stripe = Stripe('pk_test_GRAL4nR6T1zOJHJIN9YAwGsI003jSsSSud')
+
 Vue.use(ElementUI)
 Vue.use(Croppa)
 
