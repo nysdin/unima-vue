@@ -55,27 +55,6 @@ export default {
         }
     },
     methods: {
-        async registerCregitCard(){
-            this.loading = true
-            const {token, error} = await this.$stripe.createToken(card)
-            if (error) {
-                // Inform the customer that there was an error.
-                this.loading = false
-                const errorElement = document.getElementById('card-errors')
-                errorElement.textContent = error.message
-            } else {
-                request.patch('/api/v1/card', {params: {stripe_cregit_token: token.id}, auth: true})
-                    .then(response => {
-                        this.loading = false
-                        this.$router.push('/mypage')
-                        console.log('success')
-                    })
-                    .catch(error => {
-                        this.loading = false
-                        console.log('error')
-                    })
-            }
-        },
         deleteCregitCard(){
             this.loading = true
             request.delete('/api/v1/card', { auth: true })
@@ -113,35 +92,6 @@ export default {
 </script>
 
 <style>
-
-.StripeElement {
-    box-sizing: border-box;
-
-    height: 40px;
-
-    padding: 10px 12px;
-
-    border: 1px solid transparent;
-    border-radius: 4px;
-    background-color: white;
-
-    box-shadow: 0 1px 3px 0 #e6ebf1;
-    -webkit-transition: box-shadow 150ms ease;
-    transition: box-shadow 150ms ease;
-}
-
-.StripeElement--focus {
-    box-shadow: 0 1px 3px 0 #cfd7df;
-}
-
-.StripeElement--invalid {
-    border-color: #fa755a;
-}
-
-.StripeElement--webkit-autofill {
-    background-color: #fefde5 !important;
-}
-
 .card-info{
     position: relative;
 }
