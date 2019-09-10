@@ -33,18 +33,6 @@
 <script>
 import request from '../utils/api.js'
 
-const elements = $stripe.elements()
-
-const style = {
-    base: {
-        // Add your base input styles here. For example:
-        fontSize: '16px',
-        color: "#32325d",
-    },
-}
-
-const card = elements.create('card', {style, hidePostalCode: true})
-
 export default {
     name: 'CardCreate',
     data(){
@@ -55,7 +43,7 @@ export default {
     methods: {
         async registerCregitCard(){
             this.loading = true
-            const {token, error} = await $stripe.createToken(card)
+            const {token, error} = await this.$stripe.createToken(card)
             if (error) {
                 const errorElement = document.getElementById('card-errors');
                 errorElement.textContent = error.message;
@@ -78,6 +66,17 @@ export default {
         }
     },
     mounted(){
+        const elements = this.$stripe.elements()
+
+        const style = {
+            base: {
+                // Add your base input styles here. For example:
+                fontSize: '16px',
+                color: "#32325d",
+            },
+        }
+
+        const card = elements.create('card', {style, hidePostalCode: true})
         card.mount('#card-element')
         card.addEventListener('change', ({error}) => {
             const displayError = document.getElementById('card-errors')

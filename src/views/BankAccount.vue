@@ -85,7 +85,7 @@ export default {
     methods: {
         async registerBankAccount(){
             this.loading = true
-            const {token, error} = await $stripe.createToken('bank_account', {
+            const {token, error} = await this.$stripe.createToken('bank_account', {
                 country: 'JP',
                 currency: 'jpy',
                 routing_number: this.bank.bank_code + this.bank.branch_code,

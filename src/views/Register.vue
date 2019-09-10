@@ -177,18 +177,6 @@
 </template>
 
 <script>
-const elements = $stripe.elements()
-
-const style = {
-    base: {
-        // Add your base input styles here. For example:
-        fontSize: '16px',
-        color: "#32325d",
-    },
-}
-
-const card = elements.create('card', {style});
-
 export default {
     name: 'Register',
     data() {
@@ -266,7 +254,7 @@ export default {
             });
         },
         async createCregitToken(){
-            const {token, error} = await $stripe.createToken(card)
+            const {token, error} = await this.$stripe.createToken(card)
             if (error) {
                 // Inform the customer that there was an error.
                 const errorElement = document.getElementById('card-errors')
@@ -278,7 +266,7 @@ export default {
             }
         },
         async createBankAccount(){
-            const {token, error} = await $stripe.createToken('bank_account', {
+            const {token, error} = await this.$stripe.createToken('bank_account', {
                 country: 'JP',
                 currency: 'jpy',
                 routing_number: this.bank.bank_code + this.bank.branch_code,
@@ -296,8 +284,17 @@ export default {
         }
     },
     mounted(){
-        card.mount('#card-element')
+        const elements = this.$stripe.elements()
 
+        const style = {
+            base: {
+                fontSize: '16px',
+                color: "#32325d",
+            },
+        }
+
+        const card = elements.create('card', {style})
+        card.mount('#card-element')
         card.addEventListener('change', ({error}) => {
             const displayError = document.getElementById('card-errors')
             if (error) {
