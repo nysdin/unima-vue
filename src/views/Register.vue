@@ -1,5 +1,6 @@
 <template>
     <div id="register-container">
+        <!-- Unimaアカウントの情報 -->
 
         <v-stepper v-model="stepper" vertical>
             <v-stepper-step :complete="stepper > 1" step="1" editable>
@@ -9,19 +10,40 @@
             <v-stepper-content step="1">
                 <v-card >
                     <v-form>
-                        <v-text-field v-model="user.name" label="ニックネーム" placeholder="アカウント名" required></v-text-field>
-                        <v-text-field v-model="user.email" label="メールアドレス" placeholder="test@example.com" required></v-text-field>
-                        <v-text-field v-model="user.password" :append-icon="show1 ? 'visibility' : 'visibility_off'"
-                        label="パスワード" required :type="show1 ? 'text' : 'password'" placeholder="6文字以上"
-                        @click:append="show1 = !show1"></v-text-field>
-                        <v-text-field v-model="user.password_confirmation" :append-icon="show2 ? 'visibility' : 'visibility_off'"
-                        label="パスワード（確認）" required :type="show2 ? 'text' : 'password'" placeholder="6文字以上"
-                        @click:append="show2 = !show2"></v-text-field>
+                        <ValidationProvider name="ニックネーム" rules="required" v-slot="{ errors, valid }">
+                            <v-text-field v-model="user.name" label="ニックネーム" 
+                                placeholder="アカウント名" :success="valid" required
+                                :error-messages="errors">
+                            </v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="メールアドレス" rules="required|email" v-slot="{ errors, valid }">
+                            <v-text-field v-model="user.email" label="メールアドレス" 
+                                placeholder="test@example.com" required
+                                :success="valid" :error-messages="errors">
+                            </v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="パスワード" rules="required|min:6" v-slot="{ errors, valid }">
+                            <v-text-field v-model="user.password" label="パスワード" required
+                                :append-icon="show1 ? 'visibility' : 'visibility_off'"
+                                :type="show1 ? 'text' : 'password'" placeholder="6文字以上"
+                                :success="valid" :error-messages="errors"
+                                @click:append="show1 = !show1">
+                            </v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider name="パスワード(確認)" rules="required|password:パスワード" v-slot="{ errors, valid }">
+                            <v-text-field v-model="user.password_confirmation" label="パスワード（確認）"
+                                :append-icon="show2 ? 'visibility' : 'visibility_off'"
+                                :type="show2 ? 'text' : 'password'" placeholder="6文字以上" required
+                                :success="valid" :error-messages="errors"
+                                @click:append="show2 = !show2"></v-text-field>
+                        </ValidationProvider>
 
                         <v-btn medium @click="stepper = 2" color="primary">次へ進む</v-btn>
                     </v-form>
                 </v-card>
             </v-stepper-content>
+
+            <!-- Stripeアカウントの情報 -->
 
             <v-stepper-step :complete="stepper > 2" step="2" editable>
                 本人確認情報　<small>決済に関する必要な情報</small>
@@ -175,8 +197,35 @@
 </template>
 
 <script>
+import { ValidationProvider, extend } from 'vee-validate'
+import { required, email, min } from "vee-validate/dist/rules"
+
+extend("required", {
+    ...required,
+    message: "{_field_}を入力してください"
+})
+
+extend("email", {
+    ...email,
+    message: "有効なメールアドレスではございません."
+})
+
+extend("min", {
+    ...min,
+    message: "{_field_}は{length}文字以上で入力してください."
+})
+
+extend("password", {
+    validate: (value, { other }) => value === other,
+    message: "パスワードと一致していいません.",
+    params: [{ name: 'other', isTarget: true }]
+})
+
 export default {
     name: 'Register',
+    components: {
+        ValidationProvider
+    },
     data() {
         return {
             card: null,
