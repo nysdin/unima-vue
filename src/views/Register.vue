@@ -3,7 +3,7 @@
         <!-- Unimaアカウントの情報 -->
 
         <v-stepper v-model="stepper" vertical>
-            <v-stepper-step :complete="stepper > 1" step="1" editable>
+            <v-stepper-step :complete="stepper > 1" step="1">
                 会員情報　<small>アカウントの詳細情報</small>
             </v-stepper-step>
 
@@ -38,14 +38,17 @@
                                 @click:append="show2 = !show2"></v-text-field>
                         </ValidationProvider>
 
-                        <v-btn medium @click="stepper = 2" color="primary">次へ進む</v-btn>
+                        <v-btn medium @click="validateUser" color="primary"
+                            :loading="loading" :disabled="loading">
+                            次へ進む
+                        </v-btn>
                     </v-form>
                 </v-card>
             </v-stepper-content>
 
             <!-- Stripeアカウントの情報 -->
 
-            <v-stepper-step :complete="stepper > 2" step="2" editable>
+            <v-stepper-step :complete="stepper > 2" step="2">
                 本人確認情報　<small>決済に関する必要な情報</small>
             </v-stepper-step>
 
@@ -107,7 +110,7 @@
 
             </v-stepper-content>
 
-            <v-stepper-step step="3" :complete="stepper > 3" editable>
+            <v-stepper-step step="3" :complete="stepper > 3">
                 支払い方法<small>クレジットカード情報</small>
             </v-stepper-step>
 
@@ -135,7 +138,7 @@
 
             </v-stepper-content>
 
-            <v-stepper-step step="4" :complete="stepper > 4" editable>
+            <v-stepper-step step="4" :complete="stepper > 4">
                 銀行口座 <small>売上金の振込先情報</small>
             </v-stepper-step>
 
@@ -183,7 +186,7 @@
 
                     <div class="d-flex justify-center">
                         <v-btn medium color="primary" @click="register" :loading="loading" :disabled="loading">アカウントを登録</v-btn>
-                        <v-btn medium @click="stepper = 3" class="ml-2" text>戻る</v-btn>
+                        <v-btn medium @click="stepper = 4" class="ml-2" text>戻る</v-btn>
                     </div>
                     <p class="text-center caption mt-3">
                         アカウントを登録すると、本サービス契約と
@@ -197,6 +200,7 @@
 </template>
 
 <script>
+import request from '../utils/api.js'
 import { ValidationProvider, extend } from 'vee-validate'
 import { required, email, min } from "vee-validate/dist/rules"
 
@@ -293,6 +297,29 @@ export default {
                     //     }, 0)
                     // })
                 })
+        },
+        validateUser(){
+            this.loading = true
+            const {name, email, password, password_confirmation} = this.user
+            
+            request.post('/api/v1/user/validate', {
+                params: { name, email, password, password_confirmation }
+            })
+            .then(response => {
+                this.stepper += 1
+                this.loading = false
+                console.log('ok')
+            })
+            .catch(error => {
+                const errors = error.response.data.errors
+                errors.forEach(error => {
+                    setTimeout( () => {
+                        this.renderError(error)
+                    }, 0)
+                })
+                this.loading = false
+                console.log(error.response)
+            })
         },
         renderError(error){
             this.$notify({
