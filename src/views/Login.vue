@@ -9,7 +9,7 @@
                 label="パスワード" required :type="show ? 'text' : 'password'"
                 @click:append="show = !show"></v-text-field>
 
-                <v-btn medium outlined @click="login" 
+                <v-btn medium outlined @click="login" color="primary"
                     :loading="loading" :disabled="loading">
                     ログイン
                 </v-btn>

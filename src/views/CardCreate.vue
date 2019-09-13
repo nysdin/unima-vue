@@ -18,7 +18,7 @@
 
                         <div class="d-flex justify-center">
                             <v-btn outlined :loading="loading" :disabled="loading"
-                            @click.stop.prevent="registerCregitCard">
+                            @click.stop.prevent="registerCregitCard" color="primary">
                             登録する
                             </v-btn>
                         </div>
