@@ -11,6 +11,10 @@ extend("email", {
     message: "有効なメールアドレスではございません."
 })
 
+extend("price", {
+    validate: value => (Number(value) > 0 && Number(value) < 300000),
+    message: "不正な価格です."
+})
 extend("min", {
     ...min,
     message: "{_field_}は{length}文字以上で入力してください."
