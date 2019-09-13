@@ -54,13 +54,16 @@
                         <v-list-item-title v-text="'お支払い方法'"></v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="logout">
-                    <v-list-item-content>
-                        <v-list-item-title v-text="'ログアウト'"></v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
             </v-list-item-group>
         </v-list>
+
+        <v-container>
+            <v-btn block @click="logout" 
+                class="mt-2" color="error"
+                :loading="loading" :disabled="loading">
+                ログアウト
+            </v-btn>
+        </v-container>
     </div>
 </template>
 
@@ -71,6 +74,7 @@ export default {
     name: 'mypage',
     data(){
         return {
+            loading: false,
             password: '',
             password_confirmation: '',
             products: [
@@ -120,11 +124,14 @@ export default {
             this.$router.push({ path: `/mypage/${url}`, query: { status: status }})
         },
         logout(){
+            this.loading = true
             this.$store.dispatch('auth/logout')
                 .then(() => {
+                    this.loading = false
                     this.$router.push('/login')
                 })
                 .catch(() => {
+                    this.loading = false
                     console.log('sign out failed')
                 })
         }
