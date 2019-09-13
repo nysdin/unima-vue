@@ -4,23 +4,43 @@
             <v-progress-circular indeterminate size="64" color="primary"></v-progress-circular>
         </v-overlay>
         <v-container>
-            <v-form>
-                    <v-text-field v-model="bank_name" label="銀行" readonly></v-text-field>
-                    <v-text-field v-model="branch_code" label="支店コード" readonly></v-text-field>
-                    <v-text-field v-model="last4" label="口座番号" readonly></v-text-field>
-                    <v-row>
-                        <v-col :cols="6">
-                            <v-text-field v-model="last_name" label="名義人（姓）" readonly></v-text-field>
-                        </v-col>
-                        <v-col :cols="6">
-                            <v-text-field v-model="first_name" label="名義人（名）" readonly></v-text-field>
-                        </v-col>
-                    </v-row>
-                
-                    <div class="d-flex justify-center">
-                        <v-btn medium outlined @click="dialog = true" class="ml-2">変更する</v-btn>
-                    </div>
-                </v-form>
+            <v-card flat>
+                <v-card-title class="text-center">
+                    振込先の銀行口座
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <template v-if="last4">
+                        <v-form>
+                                <v-text-field v-model="bank_name" label="銀行" readonly></v-text-field>
+                                <v-text-field v-model="branch_code" label="支店コード" readonly></v-text-field>
+                                <v-text-field v-model="last4" label="口座番号" readonly></v-text-field>
+                                <v-row>
+                                    <v-col :cols="6">
+                                        <v-text-field v-model="last_name" label="名義人（姓）" readonly></v-text-field>
+                                    </v-col>
+                                    <v-col :cols="6">
+                                        <v-text-field v-model="first_name" label="名義人（名）" readonly></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            
+                                <div class="d-flex justify-center">
+                                    <v-btn medium outlined @click="dialog = true" class="ml-2" color="primary">
+                                        変更する
+                                    </v-btn>
+                                </div>
+                        </v-form>
+                    </template>
+                    <template v-else>
+                        <div class="d-flex justify-center">
+                            <v-btn medium outlined @click="dialog = true" class="ml-2" color="primary">
+                                登録する
+                            </v-btn>
+                        </div>
+                    </template>
+                </v-card-text>
+            </v-card>
+            
         </v-container>
 
         <v-dialog v-model="dialog">
