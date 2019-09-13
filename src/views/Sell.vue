@@ -33,15 +33,15 @@
                         </v-col>
                     </v-row>
 
-                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                    <ValidationProvider rules="required|max:40" v-slot="{ errors, valid }">
                         <v-text-field v-model="product.name" label="商品名"
-                            placeholder="商品名" required clearable
+                            placeholder="商品名" required clearable counter="40"
                             :error-messages="errors" :success="valid">
                         </v-text-field>
                     </ValidationProvider>
-                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                    <ValidationProvider rules="required|max:1000" v-slot="{ errors, valid }">
                         <v-textarea label="商品の説明" 
-                            v-model="product.description" clearable
+                            v-model="product.description" clearable counter="1000"
                             :error-messages="errors" :success="valid">
                         </v-textarea>
                     </ValidationProvider>
