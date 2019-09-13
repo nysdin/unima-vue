@@ -23,6 +23,18 @@
                                     <v-text-field v-model="first_name" label="名義人（名）" readonly></v-text-field>
                                 </v-col>
                             </v-row>
+                            <span class="caption"><a @click="dialog1 = true">※口座番号について</a></span>
+                            <v-dialog v-model="dialog1">
+                                <v-card>
+                                    <v-card-text>
+                                        口座番号が7桁未満の場合は先頭に0を付け足して7桁にしてください.<br />
+                                        また、8桁の場合は先頭の数字を外して入力してください.
+                                    </v-card-text>
+                                    <v-card-actions class="d-flex justify-center">
+                                        <v-btn color="blue darken-1" text @click="dialog1 = false">Close</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
                         
                             <div class="d-flex justify-center">
                                 <v-btn medium outlined @click="dialog = true" class="ml-2" color="primary">
@@ -120,6 +132,7 @@ export default {
             init: true,
             loading: false,
             dialog: false,
+            dialog1: false,
             bank_name: '',
             bank_code: '',
             branch_code: '',

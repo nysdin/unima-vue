@@ -296,7 +296,8 @@
                         <v-dialog v-model="dialog1">
                             <v-card>
                                 <v-card-text>
-                                    口座番号が7桁未満の場合は先頭に0を付け足して7桁にしてください.
+                                    口座番号が7桁未満の場合は先頭に0を付け足して7桁にしてください.<br />
+                                    また、8桁の場合は先頭の数字を外して入力してください.
                                 </v-card-text>
                                 <v-card-actions class="d-flex justify-center">
                                     <v-btn color="blue darken-1" text @click="dialog1 = false">Close</v-btn>
@@ -363,7 +364,7 @@ export default {
     data() {
         return {
             card: null,
-            stepper: 1,
+            stepper: 4,
             show1: false,
             show2: false,
             loading: false,
