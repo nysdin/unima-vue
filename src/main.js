@@ -8,6 +8,7 @@ import Croppa from 'vue-croppa'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'vue-croppa/dist/vue-croppa.css'
 import vuetify from './plugins/vuetify'
+import './vee-validate'
 
 Vue.config.productionTip = false
 
