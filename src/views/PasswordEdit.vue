@@ -1,19 +1,42 @@
 <template>
     <div id="password-edit">
-        <h1>パスワード変更</h1>
-        
-        <v-container>
-            <v-form ref="forms">
-                <v-text-field v-model="password" :append-icon="show1 ? 'visibility' : 'visibility_off'"
-                    :type="show1 ? 'text' : 'password'" label="Password" @click:append="show1 = !show1">
-                </v-text-field>
+        <v-container>   
+            <v-card flat>
+                <v-card-title>
+                    パスワード変更
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                    <ValidationObserver v-slot="{ invalid }">
+                        <v-form ref="forms">
+                            <ValidationProvider name="パスワード" rules="required|min:6" v-slot="{ errors, valid }">
+                                <v-text-field v-model="password" @click:append="show1 = !show1"
+                                    :append-icon="show1 ? 'visibility' : 'visibility_off'"
+                                    placeholder="6文字以上"
+                                    :type="show1 ? 'text' : 'password'" label="パスワード" 
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
 
-                <v-text-field v-model="passwordConfirmation" :append-icon="show2 ? 'visibility' : 'visibility_off'"
-                    :type="show2 ? 'text' : 'password'" label="PasswordConfirmation" @click:append="show2 = !show2">
-                </v-text-field>
+                            <ValidationProvider rules="required|password:パスワード" v-slot="{ errors, valid }">
+                                <v-text-field v-model="passwordConfirmation" 
+                                    :append-icon="show2 ? 'visibility' : 'visibility_off'"
+                                    :type="show2 ? 'text' : 'password'" placeholder="6文字以上"
+                                    label="パスワード(確認)" @click:append="show2 = !show2"
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
 
-                <v-btn text large @click="resetPassword">変更</v-btn>
-            </v-form>
+                            <div class="d-flex justify-center">
+                                <v-btn outlined medium @click="resetPassword"
+                                    color="primary" :disabled="loading || invalid">
+                                    変更する
+                                </v-btn>
+                            </div>
+                        </v-form>
+                    </ValidationObserver>
+                </v-card-text>
+            </v-card>
         </v-container>
 
     </div>
@@ -21,16 +44,26 @@
 
 <script>
 import reqest from '../utils/api.js'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
 export default {
     name: 'passwordEdit',
+    components: {
+        ValidationProvider,
+        ValidationObserver,
+    },
     data(){
         return {
-            password: '', passwordConfirmation: '', show1: false, show2: false
+            password: '',
+            passwordConfirmation: '', 
+            show1: false, 
+            show2: false,
+            loading: false,
         }
     },
     methods: {
         resetPassword(){
+            this.loading =
             reqest.patch('/api/v1/auth/password', {
                 headers: {
                     'access-token': this.$route.query.token,
@@ -42,8 +75,14 @@ export default {
                     password_confirmation: this.passwordConfirmation
                 }
             })
-            .then(response => this.$route.push('/'))
-            .catch(error => console.log(error ))
+            .then(response => {
+                this.loading = false
+                this.$router.push('/mypage')
+            })
+            .catch(error => {
+                this.loading = false
+                console.log('error')
+            })
         }
     },
 }
