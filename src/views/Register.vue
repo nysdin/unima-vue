@@ -57,156 +57,158 @@
             <v-stepper-content step="2">
                 <v-card flat>
                     <v-form>
-                        <v-row>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-text-field v-model="individual.last_name_kanji" 
-                                        label="苗字（漢字）" placeholder="山田" required
-                                        :error-messages="errors" :success="valid">
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </v-col>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-text-field v-model="individual.first_name_kanji" 
-                                        label="名前（漢字）" placeholder="太朗" required
-                                        :error-messages="errors" :success="valid">
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
-                                    <v-text-field v-model="individual.last_name_kana" 
-                                        label="苗字（カナ）" placeholder="ヤマダ" required
-                                        :error-messages="errors" :success="valid">
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </v-col>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
-                                    <v-text-field v-model="individual.first_name_kana" 
-                                        label="名前（カナ）" placeholder="タロウ" required
-                                        :error-messages="errors" :success="valid">
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-text-field v-model="phone" label="電話番号(ハイフンなし)"
-                                        placeholder="09012345678" type="number" required
-                                        :error-messages="errors" :success="valid">
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </v-col>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-select v-model="individual.gender" label="性別"
-                                        :items="[{text: '男', value: 'male'}, {text:'女', value:'female'}]"
-                                        :error-messages="errors" :success="valid">
-                                    </v-select>
-                                </ValidationProvider>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col :cols="4">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-select v-model="individual.dob.year" label="生年"
-                                        :items="years"
-                                        :error-messages="errors" :success="valid">
-                                    </v-select>
-                                </ValidationProvider>
-                            </v-col>
-                            <v-col :cols="4">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-select v-model="individual.dob.month" label="生月"
-                                        :items="months"
-                                        :error-messages="errors" :success="valid">
-                                    </v-select>
-                                </ValidationProvider>
-                            </v-col>
-                            <v-col :cols="4">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-select v-model="individual.dob.day" label="生日"
-                                        :items="days"
-                                        :error-messages="errors" :success="valid">
-                                    </v-select>
-                                </ValidationProvider>
-                            </v-col>
-                        </v-row>
-                        <ValidationProvider rules="required|postalCode" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kanji.postal_code" 
-                                label="郵便番号(ハイフンなし)" placeholder="1500001" type="number"
-                                :error-messages="errors" :success="valid" required>
+                        <ValidationObserver v-slot="{ invalid }">
+                            <v-row>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-text-field v-model="individual.last_name_kanji" 
+                                            label="苗字（漢字）" placeholder="山田" required
+                                            :error-messages="errors" :success="valid">
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-text-field v-model="individual.first_name_kanji" 
+                                            label="名前（漢字）" placeholder="太朗" required
+                                            :error-messages="errors" :success="valid">
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
+                                        <v-text-field v-model="individual.last_name_kana" 
+                                            label="苗字（カナ）" placeholder="ヤマダ" required
+                                            :error-messages="errors" :success="valid">
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
+                                        <v-text-field v-model="individual.first_name_kana" 
+                                            label="名前（カナ）" placeholder="タロウ" required
+                                            :error-messages="errors" :success="valid">
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-text-field v-model="phone" label="電話番号(ハイフンなし)"
+                                            placeholder="09012345678" type="number" required
+                                            :error-messages="errors" :success="valid">
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-select v-model="individual.gender" label="性別"
+                                            :items="[{text: '男', value: 'male'}, {text:'女', value:'female'}]"
+                                            :error-messages="errors" :success="valid">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col :cols="4">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-select v-model="individual.dob.year" label="生年"
+                                            :items="years"
+                                            :error-messages="errors" :success="valid">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col :cols="4">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-select v-model="individual.dob.month" label="生月"
+                                            :items="months"
+                                            :error-messages="errors" :success="valid">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col :cols="4">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-select v-model="individual.dob.day" label="生日"
+                                            :items="days"
+                                            :error-messages="errors" :success="valid">
+                                        </v-select>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                            <ValidationProvider rules="required|postalCode" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kanji.postal_code" 
+                                    label="郵便番号(ハイフンなし)" placeholder="1500001" type="number"
+                                    :error-messages="errors" :success="valid" required>
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kanji.state" 
+                                    label="都道府県名" placeholder="東京都" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kana.state"
+                                    label="都道府県名（カナ）" placeholder="トウキョウト" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kanji.city"
+                                    label="市区町村" placeholder="渋谷区" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kana.city"
+                                    label="市区町村（カナ）" placeholder="シブヤク" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kanji.town"
+                                    label="町名(丁目まで)" placeholder="神宮前　１丁目" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kana.town"
+                                    label="町名(カナ）" placeholder="ジングウマエ　1-" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kanji.line1"
+                                    label="番地、号" placeholder="5-8" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                <v-text-field v-model="individual.address_kana.line1"
+                                    label="番地、号（カナ）" placeholder="5-8" required
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <v-text-field v-model="individual.address_kanji.line2"
+                                label="建物・部屋番号・その他" placeholder="神宮前タワービルディング22F" 
+                                required>
                             </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kanji.state" 
-                                label="都道府県名" placeholder="東京都" required
-                                :error-messages="errors" :success="valid">
+                            <v-text-field v-model="individual.address_kana.line2"
+                                label="建物・部屋番号・その他（カナ）" placeholder="ジングウマエタワービルディングﾞ22F"
+                                required>
                             </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kana.state"
-                                label="都道府県名（カナ）" placeholder="トウキョウト" required
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kanji.city"
-                                label="市区町村" placeholder="渋谷区" required
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kana.city"
-                                label="市区町村（カナ）" placeholder="シブヤク" required
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kanji.town"
-                                label="町名(丁目まで)" placeholder="神宮前　１丁目" required
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kana.town"
-                                label="町名(カナ）" placeholder="ジングウマエ　1-" required
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kanji.line1"
-                                label="番地、号" placeholder="5-8" required
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                            <v-text-field v-model="individual.address_kana.line1"
-                                label="番地、号（カナ）" placeholder="5-8" required
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <v-text-field v-model="individual.address_kanji.line2"
-                            label="建物・部屋番号・その他" placeholder="神宮前タワービルディング22F" 
-                            required>
-                        </v-text-field>
-                        <v-text-field v-model="individual.address_kana.line2"
-                            label="建物・部屋番号・その他（カナ）" placeholder="ジングウマエタワービルディングﾞ22F"
-                            required>
-                        </v-text-field>
 
-                        <v-btn medium @click="register" color="primary"
-                            :loading="loading" :disabled="loading">
-                            次へ進む
-                        </v-btn>
-                        <p class="caption mb-0 mt-2">
-                            ※次へ進むを押したことにより、<a @click="dialog = true">利用規約</a>に同意したものとします.
-                        </p>
+                            <v-btn medium @click="register" color="primary"
+                                :loading="loading" :disabled="loading || invalid">
+                                次へ進む
+                            </v-btn>
+                            <p class="caption mb-0 mt-2">
+                                ※次へ進むを押したことにより、<a @click="dialog = true">利用規約</a>に同意したものとします.
+                            </p>
+                        </ValidationObserver>
                     </v-form>
                 </v-card>
 
@@ -407,7 +409,7 @@ export default {
     data() {
         return {
             card: null,
-            stepper: 4,
+            stepper: 1,
             show1: false,
             show2: false,
             loading: false,
@@ -475,7 +477,7 @@ export default {
                     this.loading = false
                 })
                 .catch(error => {
-                    console.log('failed')
+                    this.renderError('アカウントを登録し直すか、ログインを行ってください.')
                     this.loading = false
                 })
         },
