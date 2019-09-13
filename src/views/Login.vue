@@ -30,7 +30,7 @@ export default {
     data() {
         return {
             show: false,
-            user: { email: 'yamada@gmail.com', password: 'password'},
+            user: { email: 'yamada@example.com', password: 'password'},
             loading: false,
         }
     },
