@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <v-app>
-            <v-app-bar :elevation="0" hide-on-scroll fixed>
+            <v-app-bar elevate-on-scroll fixed>
                     <v-toolbar-title class="title px-0" @click="toTop">Unima</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon class="mr-1" :key="1">
