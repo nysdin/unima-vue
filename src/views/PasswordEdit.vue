@@ -28,8 +28,9 @@
                             </ValidationProvider>
 
                             <div class="d-flex justify-center">
-                                <v-btn outlined medium @click="resetPassword"
-                                    color="primary" :disabled="loading || invalid">
+                                <v-btn outlined medium color="primary"
+                                    @click="resetPassword"
+                                    :loading="loading" :disabled="loading || invalid">
                                     変更する
                                 </v-btn>
                             </div>
@@ -43,7 +44,7 @@
 </template>
 
 <script>
-import reqest from '../utils/api.js'
+import request from '../utils/api.js'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
 export default {
@@ -63,20 +64,28 @@ export default {
     },
     methods: {
         resetPassword(){
-            this.loading =
-            reqest.patch('/api/v1/auth/password', {
-                headers: {
-                    'access-token': this.$route.query.token,
-                    'client': this.$route.query.client,
-                    'uid': this.$route.query.uid
-                },
-                params: {
-                    password: this.password,
-                    password_confirmation: this.passwordConfirmation
-                }
+            this.loading = true
+            const auth = true
+            const params = {
+                password: this.password,
+                password_confirmation: this.passwordConfirmation,
+            }
+            const headers = {}
+            if(this.$route.query.token){
+                auth = false
+                const query = this.$route.query
+                headers['access-token'] = query.token
+                headers['client'] = query.client
+                headers['uid'] = query.uid
+            }
+            request.patch('api/v1/auth/password', {
+                auth,
+                params,
+                headers
             })
             .then(response => {
                 this.loading = false
+                console.log('success')
                 this.$router.push('/mypage')
             })
             .catch(error => {
