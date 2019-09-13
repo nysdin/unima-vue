@@ -3,49 +3,73 @@
         <h1>商品追加</h1>
         <v-container>
             <v-form>
-                
-                <v-row>
-                    <v-col :cols="3" v-for="(image, i) in images" :key="i" class="pb-0">
-                        <v-dialog v-model="dialogs[i].dialog" :key="i">
-                            <template v-slot:activator="{ on }">
-                                <v-sheet :width="eachSize" :height="eachSize"
-                                    @click="dialogs[i].dialog = true" style="cursor: pointer;">
-                                        <v-icon class="camera-icon">mdi-camera</v-icon>
-                                    <v-img :width="eachSize" :hight="eachSize" v-if="previewImages[i]"
-                                        contain :src="previewImages[i]"></v-img>
-                                </v-sheet>
-                            </template>
-                            <v-card>
-                                <div class="d-flex justify-center">
-                                    <v-card-title>商品画像を追加</v-card-title>
-                                </div>
-                                <div class="d-flex justify-center" ref="modalView">
-                                    <croppa v-model="images[i]" :width="modalImageSize" :height="modalImageSize"
-                                    :placeholder="`画像${i+1}`"></croppa>
-                                </div>
-                                <v-card-actions class="d-flex justify-center">
-                                    <v-btn text @click="removeImage(i)" v-if="previewImages[i]">削除</v-btn>
-                                    <v-btn text @click="cancelImage(i)" v-if="!previewImages[i]">キャンセル</v-btn>
-                                    <v-btn text @click="addImage(i)">追加</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                    </v-col>
-                </v-row>
+                <ValidationObserver v-slot="{ invalid }">
+                    <v-row>
+                        <v-col :cols="3" v-for="(image, i) in images" :key="i" class="pb-0">
+                            <v-dialog v-model="dialogs[i].dialog" :key="i">
+                                <template v-slot:activator="{ on }">
+                                    <v-sheet :width="eachSize" :height="eachSize"
+                                        @click="dialogs[i].dialog = true" style="cursor: pointer;">
+                                            <v-icon class="camera-icon">mdi-camera</v-icon>
+                                        <v-img :width="eachSize" :hight="eachSize" v-if="previewImages[i]"
+                                            contain :src="previewImages[i]"></v-img>
+                                    </v-sheet>
+                                </template>
+                                <v-card>
+                                    <div class="d-flex justify-center">
+                                        <v-card-title>商品画像を追加</v-card-title>
+                                    </div>
+                                    <div class="d-flex justify-center" ref="modalView">
+                                        <croppa v-model="images[i]" :width="modalImageSize" :height="modalImageSize"
+                                        :placeholder="`画像${i+1}`"></croppa>
+                                    </div>
+                                    <v-card-actions class="d-flex justify-center">
+                                        <v-btn text @click="removeImage(i)" v-if="previewImages[i]">削除</v-btn>
+                                        <v-btn text @click="cancelImage(i)" v-if="!previewImages[i]">キャンセル</v-btn>
+                                        <v-btn text @click="addImage(i)">追加</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-col>
+                    </v-row>
 
-                <v-text-field v-model="product.name" label="商品名" placeholder="商品名" required clearable></v-text-field>
-                <v-textarea label="商品の説明" v-model="product.description"
-                    clearable
-                ></v-textarea>
-                <v-text-field v-model="product.price" label="商品の価格" placeholder="価格" required clearable></v-text-field>
-                <v-select :items="categoris" v-model="product.category" label="カテゴリー"
-                ></v-select>
-                <v-select :items="states" v-model="product.state" label="商品の状態"
-                ></v-select>
-
-                <div class="d-flex justify-center">
-                    <v-btn medium outlined @click="sell" :loading="loading" :disabled="loading">出品する</v-btn>
-                </div>
+                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                        <v-text-field v-model="product.name" label="商品名"
+                            placeholder="商品名" required clearable
+                            :error-messages="errors" :success="valid">
+                        </v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                        <v-textarea label="商品の説明" 
+                            v-model="product.description" clearable
+                            :error-messages="errors" :success="valid">
+                        </v-textarea>
+                    </ValidationProvider>
+                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                        <v-text-field v-model="product.price" type="number"
+                            label="商品の価格" placeholder="価格" required
+                            :error-messages="errors" :success="valid">
+                        </v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                        <v-select :items="categoris" v-model="product.category" 
+                            label="カテゴリー" required
+                            :error-messages="errors" :success="valid">
+                        </v-select>
+                    </ValidationProvider>
+                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                        <v-select :items="states" v-model="product.state" 
+                            label="商品の状態" required
+                            :error-messages="errors" :success="valid">
+                        </v-select>
+                    </ValidationProvider>
+                    <div class="d-flex justify-center">
+                        <v-btn medium outlined @click="sell" color="primary"
+                            :loading="loading" :disabled="loading || invalid">
+                            出品する
+                        </v-btn>
+                    </div>
+                </ValidationObserver>
             </v-form>
 
         </v-container>
@@ -55,9 +79,14 @@
 <script>
 import Vue from 'vue'
 import request from '../utils/api.js'
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
 export default {
     name: 'sell',
+    components: {
+        ValidationProvider,
+        ValidationObserver
+    },
     data(){
         return{
             loading: false,
