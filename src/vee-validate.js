@@ -1,5 +1,5 @@
 import { extend } from 'vee-validate'
-import { required, email, min } from "vee-validate/dist/rules"
+import { required, email, min, max } from "vee-validate/dist/rules"
 
 extend("required", {
     ...required,
@@ -15,6 +15,12 @@ extend("price", {
     validate: value => (Number(value) > 0 && Number(value) < 300000),
     message: "不正な価格です."
 })
+
+extend("max", {
+    ...max,
+    message: "{length}文字以内で入力してください.L0"
+})
+
 extend("min", {
     ...min,
     message: "{_field_}は{length}文字以上で入力してください."
