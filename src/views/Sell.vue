@@ -45,7 +45,7 @@
                             :error-messages="errors" :success="valid">
                         </v-textarea>
                     </ValidationProvider>
-                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                    <ValidationProvider rules="required|price" v-slot="{ errors, valid }">
                         <v-text-field v-model="product.price" type="number"
                             label="商品の価格" placeholder="価格" required
                             :error-messages="errors" :success="valid">
@@ -79,7 +79,12 @@
 <script>
 import Vue from 'vue'
 import request from '../utils/api.js'
-import { ValidationProvider, ValidationObserver } from 'vee-validate'
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
+
+extend('price', {
+    validate: value => Number(value) > 0,
+    message: "不正な価格です."
+})
 
 export default {
     name: 'sell',
