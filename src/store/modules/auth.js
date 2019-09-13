@@ -71,25 +71,19 @@ const auth = {
                     })
             })
         },
-        register({ commit }, params){
-            console.log(params)
+        completeSignUp({ commit }){
             return new Promise( (resolve, reject) => {
-                commit('apiRequest')
-                request.post('/api/v1/auth', { params: params })
-                    .then(response => {
-                        console.log(response)
+                request.get('/api/v1/auth/validate_token', { auth: true })
+                    .then( response => {
+                        commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
-                        const headers = response.headers
-                        localStorage.setItem('access-token', headers['access-token'])
-                        localStorage.setItem('client', headers['client'])
-                        localStorage.setItem('uid', headers['uid'])
-                        commit('setToken', headers['access-token'])
-                        commit('apiCompleted')
                         resolve()
                     })
                     .catch( error => {
-                        commit('apiCompleted')
-                        reject(error.response.data)
+                        localStorage.removeItem('access-token')
+                        localStorage.removeItem('client')
+                        localStorage.removeItem('uid')
+                        reject()
                     })
             })
         },
