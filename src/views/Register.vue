@@ -273,62 +273,64 @@
             <v-stepper-content step="4">
                 <v-card>
                     <p class="caption">※こちらの入力をスキップしてアカウント登録後設定することもできます。</p>
-                    <v-form>
-                        <ValidationProvider rules="required|number4" v-slot="{ errors, valid }">
-                            <v-text-field v-model="bank.bank_code" type="number"
-                                label="金融機関コード" placeholder="1110(4ケタ)"
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required|number3" v-slot="{ errors, valid }">
-                            <v-text-field v-model="bank.branch_code" type="number"
-                                label="支店コード" placeholder="000(3ケタ)"
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <ValidationProvider rules="required|number7" v-slot="{ errors, valid }">
-                            <v-text-field v-model="bank.account_number" type="number"
-                                label="口座番号" placeholder="0001234"
-                                :error-messages="errors" :success="valid">
-                            </v-text-field>
-                        </ValidationProvider>
-                        <span class="caption"><a @click="dialog1 = true">※口座番号について</a></span>
-                        <v-dialog v-model="dialog1">
-                            <v-card>
-                                <v-card-text>
-                                    口座番号が7桁未満の場合は先頭に0を付け足して7桁にしてください.<br />
-                                    また、8桁の場合は先頭の数字を外して入力してください.
-                                </v-card-text>
-                                <v-card-actions class="d-flex justify-center">
-                                    <v-btn color="blue darken-1" text @click="dialog1 = false">Close</v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
-                        <v-row>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-text-field v-model="bank.last_name"
-                                        label="名義人（姓）" placeholder="ヤマダ"
-                                        :error-messages="errors" :success="valid">
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </v-col>
-                            <v-col :cols="6">
-                                <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                    <v-text-field v-model="bank.first_name"
-                                        label="名義人（名）" placeholder="タロウ"
-                                        :error-messages="errors" :success="valid">
-                                    </v-text-field>
-                                </ValidationProvider>
-                            </v-col>
-                        </v-row>
-                        
-                        <v-btn small @click="createBankAccount" color="primary"
-                            :loading="loading" :disabled="loading">
-                            次へ進む
-                        </v-btn>
-                        <v-btn small @click="stepper += 1" color="primary" class="ml-2" >スキップする</v-btn>
-                    </v-form>
+                    <ValidationObserver v-slot="{ invalid }">
+                        <v-form>
+                            <ValidationProvider rules="required|number4" v-slot="{ errors, valid }">
+                                <v-text-field v-model="bank.bank_code" type="number"
+                                    label="金融機関コード" placeholder="1110(4ケタ)"
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required|number3" v-slot="{ errors, valid }">
+                                <v-text-field v-model="bank.branch_code" type="number"
+                                    label="支店コード" placeholder="000(3ケタ)"
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider rules="required|number7" v-slot="{ errors, valid }">
+                                <v-text-field v-model="bank.account_number" type="number"
+                                    label="口座番号" placeholder="0001234"
+                                    :error-messages="errors" :success="valid">
+                                </v-text-field>
+                            </ValidationProvider>
+                            <span class="caption"><a @click="dialog1 = true">※口座番号について</a></span>
+                            <v-dialog v-model="dialog1">
+                                <v-card>
+                                    <v-card-text>
+                                        口座番号が7桁未満の場合は先頭に0を付け足して7桁にしてください.<br />
+                                        また、8桁の場合は先頭の数字を外して入力してください.
+                                    </v-card-text>
+                                    <v-card-actions class="d-flex justify-center">
+                                        <v-btn color="blue darken-1" text @click="dialog1 = false">Close</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                            <v-row>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-text-field v-model="bank.last_name"
+                                            label="名義人（姓）" placeholder="ヤマダ"
+                                            :error-messages="errors" :success="valid">
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                                <v-col :cols="6">
+                                    <ValidationProvider rules="required" v-slot="{ errors, valid }">
+                                        <v-text-field v-model="bank.first_name"
+                                            label="名義人（名）" placeholder="タロウ"
+                                            :error-messages="errors" :success="valid">
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                </v-col>
+                            </v-row>
+                            
+                            <v-btn small @click="createBankAccount" color="primary"
+                                :loading="loading" :disabled="loading || invalid">
+                                次へ進む
+                            </v-btn>
+                            <v-btn small @click="stepper += 1" color="primary" class="ml-2" >スキップする</v-btn>
+                        </v-form>
+                    </ValidationObserver>
                 </v-card>
 
             </v-stepper-content>
@@ -364,7 +366,7 @@ export default {
     data() {
         return {
             card: null,
-            stepper: 4,
+            stepper: 1,
             show1: false,
             show2: false,
             loading: false,
