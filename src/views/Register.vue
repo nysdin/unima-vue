@@ -3,7 +3,7 @@
         <!-- Unimaアカウントの情報 -->
 
         <v-stepper v-model="stepper" vertical>
-            <v-stepper-step :complete="stepper > 1" step="1">
+            <v-stepper-step :complete="stepper > 1" step="1" editable>
                 会員情報　<small>アカウントの詳細情報</small>
             </v-stepper-step>
 
@@ -13,8 +13,8 @@
                         <ValidationObserver v-slot="{ invalid }">
                             <ValidationProvider name="ニックネーム" rules="required" v-slot="{ errors, valid }">
                                 <v-text-field v-model="user.name" label="ニックネーム" 
-                                    placeholder="アカウント名" :success="valid" required
-                                    :error-messages="errors">
+                                    placeholder="アカウント名" required
+                                    :success="valid" :error-messages="errors">
                                 </v-text-field>
                             </ValidationProvider>
                             <ValidationProvider name="メールアドレス" rules="required|email" v-slot="{ errors, valid }">
@@ -50,7 +50,7 @@
 
             <!-- Stripeアカウントの情報 -->
 
-            <v-stepper-step :complete="stepper > 2" step="2">
+            <v-stepper-step :complete="stepper > 2" step="2" editable>
                 本人確認情報　<small>決済に関する必要な情報</small>
             </v-stepper-step>
 
@@ -61,15 +61,16 @@
                             <v-row>
                                 <v-col :cols="6">
                                     <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                        <v-text-field v-model="individual.last_name_kanji" 
-                                            label="苗字（漢字）" placeholder="山田" required
-                                            :error-messages="errors" :success="valid">
+                                        <v-text-field v-model="individual.last_name_kanji" id="last-name"
+                                            label="苗字（漢字）" placeholder="山田" required 
+                                            :error-messages="errors" :success="valid"
+                                            @input="inputLastKanaName">
                                         </v-text-field>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col :cols="6">
                                     <ValidationProvider rules="required" v-slot="{ errors, valid }">
-                                        <v-text-field v-model="individual.first_name_kanji" 
+                                        <v-text-field v-model="individual.first_name_kanji" id="first-name"
                                             label="名前（漢字）" placeholder="太朗" required
                                             :error-messages="errors" :success="valid">
                                         </v-text-field>
@@ -79,7 +80,7 @@
                             <v-row>
                                 <v-col :cols="6">
                                     <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
-                                        <v-text-field v-model="individual.last_name_kana" 
+                                        <v-text-field v-model="individual.last_name_kana" id="last-kana-name"
                                             label="苗字（カナ）" placeholder="ヤマダ" required
                                             :error-messages="errors" :success="valid">
                                         </v-text-field>
@@ -87,7 +88,7 @@
                                 </v-col>
                                 <v-col :cols="6">
                                     <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
-                                        <v-text-field v-model="individual.first_name_kana" 
+                                        <v-text-field v-model="individual.first_name_kana" id="first-kana-name"
                                             label="名前（カナ）" placeholder="タロウ" required
                                             :error-messages="errors" :success="valid">
                                         </v-text-field>
@@ -354,8 +355,10 @@
 
 <script>
 import request from '../utils/api.js'
+import * as AutoKana from 'vanilla-autokana'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
+let lastKanaName
 
 export default {
     name: 'Register',
@@ -542,6 +545,9 @@ export default {
                         console.log(error)
                     })
             }
+        },
+        inputLastKanaName(){
+            this.individual.last_name_kana = lastKanaName.getFurigana()
         }
     },
     mounted(){
@@ -564,6 +570,8 @@ export default {
                 displayError.textContent = ''
             }
         })
+
+        lastKanaName = AutoKana.bind('#last-name', '#last-kana-name')
     }
     
 }
