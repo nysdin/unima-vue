@@ -3,7 +3,7 @@
         <!-- Unimaアカウントの情報 -->
 
         <v-stepper v-model="stepper" vertical>
-            <v-stepper-step :complete="stepper > 1" step="1" editable>
+            <v-stepper-step :complete="stepper > 1" step="1">
                 会員情報　<small>アカウントの詳細情報</small>
             </v-stepper-step>
 
@@ -40,7 +40,8 @@
                             </ValidationProvider>
 
                             <v-btn medium @click="validateUser" color="primary"
-                                :loading="loading" :disabled="loading || invalid">
+                                :loading="loading" class="mb-2"
+                                :disabled="loading || invalid">
                                 次へ進む
                             </v-btn>
                         </ValidationObserver>
@@ -50,7 +51,7 @@
 
             <!-- Stripeアカウントの情報 -->
 
-            <v-stepper-step :complete="stepper > 2" step="2" editable>
+            <v-stepper-step :complete="stepper > 2" step="2">
                 本人確認情報　<small>決済に関する必要な情報</small>
             </v-stepper-step>
 
@@ -72,7 +73,8 @@
                                     <ValidationProvider rules="required" v-slot="{ errors, valid }">
                                         <v-text-field v-model="individual.first_name_kanji" id="first-name"
                                             label="名前（漢字）" placeholder="太朗" required
-                                            :error-messages="errors" :success="valid">
+                                            :error-messages="errors" :success="valid"
+                                            @input="inputFirstKanaName">
                                         </v-text-field>
                                     </ValidationProvider>
                                 </v-col>
@@ -139,64 +141,76 @@
                                     </ValidationProvider>
                                 </v-col>
                             </v-row>
+
                             <ValidationProvider rules="required|postalCode" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kanji.postal_code" 
-                                    label="郵便番号(ハイフンなし)" placeholder="1500001" type="number"
-                                    :error-messages="errors" :success="valid" required>
+                                    label="郵便番号(ハイフンなし)" placeholder="1500001"
+                                    :error-messages="errors" :success="valid" required
+                                    type="number" :loading="getting">
                                 </v-text-field>
                             </ValidationProvider>
+                            
                             <ValidationProvider rules="required" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kanji.state" 
                                     label="都道府県名" placeholder="東京都" required
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kana.state"
                                     label="都道府県名（カナ）" placeholder="トウキョウト" required
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <ValidationProvider rules="required" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kanji.city"
                                     label="市区町村" placeholder="渋谷区" required
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <ValidationProvider rules="required|katakana" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kana.city"
                                     label="市区町村（カナ）" placeholder="シブヤク" required
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <ValidationProvider rules="required" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kanji.town"
                                     label="町名(丁目まで)" placeholder="神宮前　１丁目" required
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <ValidationProvider rules="required" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kana.town"
-                                    label="町名(カナ）" placeholder="ジングウマエ　1-" required
+                                    label="町名(カナ）" placeholder="ジングウマエ　1-" required id="kana-town"
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <ValidationProvider rules="required" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kanji.line1"
                                     label="番地、号" placeholder="5-8" required
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <ValidationProvider rules="required" v-slot="{ errors, valid }">
                                 <v-text-field v-model="individual.address_kana.line1"
                                     label="番地、号（カナ）" placeholder="5-8" required
                                     :error-messages="errors" :success="valid">
                                 </v-text-field>
                             </ValidationProvider>
+
                             <v-text-field v-model="individual.address_kanji.line2"
-                                label="建物・部屋番号・その他" placeholder="神宮前タワービルディング22F" 
+                                label="建物・部屋番号・その他" placeholder="神宮前タワービルディング 22F" 
                                 required>
                             </v-text-field>
+
                             <v-text-field v-model="individual.address_kana.line2"
                                 label="建物・部屋番号・その他（カナ）" placeholder="ジングウマエタワービルディングﾞ22F"
                                 required>
@@ -355,10 +369,44 @@
 
 <script>
 import request from '../utils/api.js'
+import axios from 'axios'
+import axiosJsonpAdapter from 'axios-jsonp'
 import * as AutoKana from 'vanilla-autokana'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 
-let lastKanaName
+let lastKanaName, firstKanaName
+
+const hankana2zenkana = function (str) {
+    const kanaMap = {
+        'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
+        'ｻﾞ': 'ザ', 'ｼﾞ': 'ジ', 'ｽﾞ': 'ズ', 'ｾﾞ': 'ゼ', 'ｿﾞ': 'ゾ',
+        'ﾀﾞ': 'ダ', 'ﾁﾞ': 'ヂ', 'ﾂﾞ': 'ヅ', 'ﾃﾞ': 'デ', 'ﾄﾞ': 'ド',
+        'ﾊﾞ': 'バ', 'ﾋﾞ': 'ビ', 'ﾌﾞ': 'ブ', 'ﾍﾞ': 'ベ', 'ﾎﾞ': 'ボ',
+        'ﾊﾟ': 'パ', 'ﾋﾟ': 'ピ', 'ﾌﾟ': 'プ', 'ﾍﾟ': 'ペ', 'ﾎﾟ': 'ポ',
+        'ｳﾞ': 'ヴ', 'ﾜﾞ': 'ヷ', 'ｦﾞ': 'ヺ',
+        'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
+        'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
+        'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
+        'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
+        'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
+        'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
+        'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
+        'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
+        'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
+        'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
+        'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
+        'ｯ': 'ッ', 'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ',
+        '｡': '。', '､': '、', 'ｰ': 'ー', '｢': '「', '｣': '」', '･': '・'
+    }
+
+    const reg = new RegExp('(' + Object.keys(kanaMap).join('|') + ')', 'g')
+    return str
+            .replace(reg, function (match) {
+                return kanaMap[match]
+            })
+            .replace(/ﾞ/g, '゛')
+            .replace(/ﾟ/g, '゜')
+}
 
 export default {
     name: 'Register',
@@ -369,10 +417,11 @@ export default {
     data() {
         return {
             card: null,
-            stepper: 1,
+            stepper: 3,
             show1: false,
             show2: false,
             loading: false,
+            getting: false,
             dialog: false,
             dialog1: false,
             user: {
@@ -384,18 +433,18 @@ export default {
             individual: {
                 address_kanji: {
                     postal_code: '1500001',
-                    state: '東京都',
-                    city: '渋谷区',
-                    town: '神宮前 １丁目',
-                    line1: '5-8',
+                    state: '',
+                    city: '',
+                    town: '',
+                    line1: '',
                     line2: '',
                 },
                 address_kana: {
                     postal_code: '',
-                    state: 'トウキョウト',
-                    city: 'シブヤク',
-                    town: 'ジングウマエ 1-',
-                    line1: '5-8',
+                    state: '',
+                    city: '',
+                    town: '',
+                    line1: '',
                     line2: '',
                 },
                 dob: {
@@ -426,6 +475,37 @@ export default {
         },
         days(){
             return [...Array(31)].map((v,i) => ++i)
+        }
+    },
+    watch: {
+        'individual.address_kanji.postal_code'(val){
+            if(val.length === 7){
+                this.getting = true
+                const url = 'http://zipcloud.ibsnet.co.jp/api/search'
+                const zip = val.slice(0,3) + '-' + val.slice(3,7)
+                axios.get(url, {
+                    adapter: axiosJsonpAdapter,
+                    params: {
+                        zipcode: zip
+                    }
+                })
+                    .then(response => {
+                        const data = response.data
+                        if(data.results){
+                            const result = data.results[0]
+                            this.individual.address_kanji.state = result.address1
+                            this.individual.address_kanji.city = result.address2
+                            this.individual.address_kanji.town = result.address3
+                            this.individual.address_kana.state = hankana2zenkana(result.kana1)
+                            this.individual.address_kana.city = hankana2zenkana(result.kana2)
+                            this.individual.address_kana.town = hankana2zenkana(result.kana3)
+                        }
+                        this.getting = false
+                    })
+                    .catch(error => {
+                        this.getting = false
+                    })
+            }
         }
     },
     methods: {
@@ -548,7 +628,10 @@ export default {
         },
         inputLastKanaName(){
             this.individual.last_name_kana = lastKanaName.getFurigana()
-        }
+        },
+        inputFirstKanaName(){
+            this.individual.first_name_kana = firstKanaName.getFurigana()
+        },
     },
     mounted(){
         const elements = this.$stripe.elements()
@@ -571,7 +654,8 @@ export default {
             }
         })
 
-        lastKanaName = AutoKana.bind('#last-name', '#last-kana-name')
+        lastKanaName = AutoKana.bind('#last-name', '#last-kana-name', { katakana: true })
+        firstKanaName = AutoKana.bind('#first-name', '#first-kana-name', { katakana: true })
     }
     
 }
