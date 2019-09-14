@@ -481,12 +481,11 @@ export default {
         'individual.address_kanji.postal_code'(val){
             if(val.length === 7){
                 this.getting = true
-                const url = 'http://zipcloud.ibsnet.co.jp/api/search'
-                const zip = val.slice(0,3) + '-' + val.slice(3,7)
-                axios.get(url, {
-                    adapter: axiosJsonpAdapter,
+                const zipcode = val.slice(0,3) + '-' + val.slice(3,7)
+                axios.get('/api/v1/user/address', {
+                    baseURL: process.env.VUE_APP_API_ENDPOINT,
                     params: {
-                        zipcode: zip
+                        zipcode
                     }
                 })
                     .then(response => {
