@@ -417,7 +417,7 @@ export default {
     data() {
         return {
             card: null,
-            stepper: 3,
+            stepper: 1,
             show1: false,
             show2: false,
             loading: false,
