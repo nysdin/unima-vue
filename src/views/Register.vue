@@ -146,7 +146,7 @@
                                 <v-text-field v-model="individual.address_kanji.postal_code" 
                                     label="郵便番号(ハイフンなし)" placeholder="1500001"
                                     :error-messages="errors" :success="valid" required
-                                    type="number" :loading="getting">
+                                    :loading="getting">
                                 </v-text-field>
                             </ValidationProvider>
                             
@@ -432,7 +432,7 @@ export default {
             },
             individual: {
                 address_kanji: {
-                    postal_code: '1500001',
+                    postal_code: '',
                     state: '',
                     city: '',
                     town: '',
@@ -461,7 +461,7 @@ export default {
                 first_name: '',
                 last_name: '',
             },
-            phone: '09012345678',
+            phone: '',
             isCard: false,
             isBank: false,
         }
