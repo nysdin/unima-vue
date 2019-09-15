@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <v-container fluid>
+    <Display :products="products" />
+    <!-- <v-container fluid>
       <v-row dense>
         <v-col :cols="4" v-for="product in products" :key="product.id">
           <v-card outlined class="product" @click="showProduct(product.id)">
@@ -28,16 +29,21 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
+    </v-container> -->
+
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import request from '../utils/api.js'
+import Display from '../components/Display'
 
 export default {
   name: 'home',
+  components: {
+    Display
+  },
   data(){
     return {
       products: []
