@@ -3,19 +3,28 @@
         <v-container fluid>
             <v-row dense>
                 <v-col :cols="4" v-for="product in products" :key="product.id">
-                <v-card flat class="product" @click="showProduct(product.id)">
-                    <v-img  aspect-ratio="1"
-                    :src="product.images[0].url"
-                    ></v-img>
-                    <v-card-title class="pa-0 title font-weight-regular">{{ product.name }}</v-card-title>
-                    <div class="d-flex justify-space-between">
-                    <div class="pa-0 font-weight-light subtitle-1">¥ {{ product.price }}</div>
-                    <div>
-                        <v-icon :size="16" color="red" v-if="product.likes_count">favorite</v-icon>
-                        <span class="ml-1">{{ product.likes_count }}</span>
-                    </div>
-                    </div>
-                </v-card>
+                    <v-card outlined class="product" @click="showProduct(product.id)">
+
+                        <v-img  aspect-ratio="1"
+                        :src="product.images[0].url"
+                        ></v-img>
+
+                        <v-card-title class="px-1 pt-1 pb-0 font-weight-regular subtitle-2">
+                            <p class="omission mb-0">{{ product.name }}</p>
+                        </v-card-title>
+
+                        <v-card-text class="px-1 pt-0 pb-1">
+                            <div class="d-flex justify-space-between">
+                                <div class="pa-0 font-weight-regular subtitle-1">
+                                ¥ {{ product.price }}
+                                </div>
+                                <div>
+                                    <v-icon :size="16" v-if="product.likes_count">favorite</v-icon>
+                                    <span class="ml-1" v-if="product.likes_count">{{ product.likes_count }}</span>
+                                </div>
+                            </div>
+                        </v-card-text>
+                    </v-card>
                 </v-col>
             </v-row>
         </v-container>
@@ -34,3 +43,11 @@ export default {
     }
 }
 </script>
+
+<style>
+.omission{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+</style>
