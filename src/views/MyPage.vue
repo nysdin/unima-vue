@@ -10,7 +10,7 @@
                 </v-col>
                 <v-col :cols="9">
                     <p class="mt-2 subtitle-1 font-weight-bold">{{ name }}</p>
-                    <router-link to="/u/edit">プロフィール変更</router-link>
+                    <router-link :to="`/u/${$store.state.user.user.id}`">プロフィールを見る</router-link>
                 </v-col>
             </v-row>
         </v-container>
