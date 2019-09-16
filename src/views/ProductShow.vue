@@ -61,7 +61,7 @@
                 <p class="font-weight-bold py-0 pl-3 ma-0">出品者</p>
             </v-sheet>
             <v-list class="pa-0" flat>
-                    <v-list-item @click="$router.push('/mypage')">
+                    <v-list-item @click="$router.push(`/u/${product.seller_id}`)">
                         <v-list-item-avatar>
                             <v-img :src="product.seller.avatar.url"></v-img>
                         </v-list-item-avatar>
