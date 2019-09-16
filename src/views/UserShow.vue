@@ -45,7 +45,7 @@
                                         <p class="ma-0 text-center body-2">出品</p>
                                         <p class="ma-0 text-center">{{ this.products.length }}</p>
                                     </v-col>
-                                    <v-col :cols="4" class="py-0" @click="dialog = true">
+                                    <v-col :cols="4" class="py-0" @click="displayFollowingUser">
                                         <p class="ma-0 text-center body-2">フォロー</p>
                                         <p class="ma-0 text-center">{{ this.following.length }}</p>
                                     </v-col>
@@ -150,6 +150,11 @@ export default {
         toUserProfile(id){
             this.dialog = false
             this.$router.push(`/u/${id}`)
+        },
+        displayFollowingUser(){
+            if(this.following.length){
+                this.dialog = true
+            }
         }
     },
     mounted(){
