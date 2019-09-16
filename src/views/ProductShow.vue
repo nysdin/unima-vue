@@ -14,7 +14,13 @@
                 <div class="d-flex justify-space-between mb-2">
                     <div class="display-1">¥ {{ product.price }}</div>
                     <div>
-                        <v-btn outlined rounded @click="like">
+                        <a :href="tweetURL"
+                            class="twitter-share-button">
+                            <v-icon color="primary" :size="40">
+                                mdi-twitter-box
+                            </v-icon>
+                        </a>
+                        <v-btn outlined rounded @click="like" class="ml-3">
                             <v-icon left :color="favoriteColor">favorite</v-icon> いいね
                         </v-btn>
                         <span class="ml-3">{{ product.likes_count }}</span>
@@ -153,6 +159,11 @@ export default {
         },
         favoriteColor(){
             return this.liked ? 'red' : 'grey'
+        },
+        tweetURL(){
+            const url = `https://unima.netlify.com/product/${this.$route.params.id}`
+            const encodedUrl = encodeURIComponent(url)
+            return `https://twitter.com/intent/tweet?text=${this.product.name}(¥${this.product.price})を『Unima』で販売中！%0a&url=${url}`
         }
     },
     created(){
@@ -169,6 +180,7 @@ export default {
                 this.comments = data.comments
             })
             .catch( error => {
+                this.$router.push('/')
                 console.log('error')
             })
     },
@@ -246,6 +258,10 @@ export default {
     border-right: 18px solid #edf1ee;
     -webkit-transform: rotate(35deg);
     transform: rotate(35deg);
+}
+
+.twitter-share-button{
+    text-decoration: none;
 }
 </style>
 
