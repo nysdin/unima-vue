@@ -12,34 +12,66 @@
                         <p class="text-center subtitle-1 headline mb-0 mt-2">{{ user.name }}</p>
                     </v-col>
                     <v-col :cols="8">
-                        <template v-if="currentUser">
-                            <v-btn outlined small class="mt-4" v-if="currentUser"
-                                color="primary" @click="$router.push('/u/edit')">
-                                プロフィールの編集
-                            </v-btn>
-                        </template>
-                        <template v-else>
-                            <v-btn outlined small class="mt-4" v-show="!following"
-                                color="primary" @click="follow"
-                                :loading="loading" :disabled="loading">
-                                フォローする
-                            </v-btn>
-                            <v-btn small class="mt-4" v-show="following"
-                                color="primary" @click="unfollow"
-                                :loading="loading" :disabled="loading">
-                                フォロー中
-                            </v-btn>
-                        </template>
-                        <div class="mt-4">
+                        <div class="d-flex">
+                            <template v-if="currentUser">
+                                <v-btn outlined small class="mt-4" v-if="currentUser"
+                                    color="primary" @click="$router.push('/u/edit')">
+                                    プロフィールの編集
+                                </v-btn>
+                            </template>
+                            <template v-else>
+                                <v-btn outlined small class="mt-4" v-show="!isFollowing"
+                                    color="primary" @click="follow"
+                                    :loading="loading" :disabled="loading">
+                                    フォローする
+                                </v-btn>
+                                <v-btn small class="mt-4" v-show="isFollowing"
+                                    color="primary" @click="unfollow"
+                                    :loading="loading" :disabled="loading">
+                                    フォロー中
+                                </v-btn>
+                            </template>
                             <a :href="tweetURL"
-                                class="twitter-share-button">
+                                class="twitter-share-button mt-3 ml-3">
                                 <v-icon color="primary" :size="40">
                                     mdi-twitter-box
                                 </v-icon>
                             </a>
                         </div>
+                        <template v-if="currentUser">
+                            <div class="mt-4">
+                                <v-row>
+                                    <v-col :cols="3" class="py-0 border-right">
+                                        <p class="ma-0 text-center body-2">出品</p>
+                                        <p class="ma-0 text-center">{{ this.products.length }}</p>
+                                    </v-col>
+                                    <v-col :cols="4" class="py-0" @click="dialog = true">
+                                        <p class="ma-0 text-center body-2">フォロー</p>
+                                        <p class="ma-0 text-center">{{ this.following.length }}</p>
+                                    </v-col>
+                                </v-row>
+                            </div>
+                        </template>
                     </v-col>
                 </v-row>
+
+                <v-dialog v-model="dialog" scrollable>
+                    <v-card>
+                        <v-card-title>フォロー中</v-card-title>
+                        <v-divider></v-divider>
+                        <v-card-text>
+                            <v-list-item v-for="user in following"
+                                :key="user.id" @click="toUserProfile(user.id)">
+                                <v-list-item-avatar>
+                                    <v-img :src="user.avatar.url"></v-img>
+                                </v-list-item-avatar>
+                                <v-list-item-content>
+                                    <v-list-item-title v-text="user.name"></v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
             </v-container>
         </v-card>
         <v-sheet tile color="grey lighten-3" height="30">
@@ -64,8 +96,10 @@ export default {
                 avatar: { url: '' }
             },
             products: [],
-            following: false,
+            following: [],
+            isFollowing: false,
             loading: false,
+            dialog: false,
         }
     },
     computed: {
@@ -79,7 +113,7 @@ export default {
             const url = `https://unima.netlify.com/u/${this.$route.params.id}`
             const encodedUrl = encodeURIComponent(url)
             return `https://twitter.com/intent/tweet?text=大学内フリマアプリ『Unima』で販売中！%0a&url=${url}`
-        }
+        },
     },
     methods: {
         follow(){
@@ -91,7 +125,7 @@ export default {
                 auth: true
             })
                 .then(response => {
-                    this.following = true
+                    this.isFollowing = true
                     this.loading = false
                     console.log(response)
                 })
@@ -104,7 +138,7 @@ export default {
             this.loading = true
             request.delete(`/api/v1/relationships/${this.$route.params.id}`, { auth: true })
                 .then(response => {
-                    this.following = false
+                    this.isFollowing = false
                     this.loading = false
                     console.log(response)
                 })
@@ -113,6 +147,10 @@ export default {
                     console.log(error)
                 })
         },
+        toUserProfile(id){
+            this.dialog = false
+            this.$router.push(`/u/${id}`)
+        }
     },
     mounted(){
         request.get(`/api/v1/users/${this.$route.params.id}`, { auth: true })
@@ -121,17 +159,39 @@ export default {
                 this.user = data.user
                 this.products = data.products
                 this.following = data.following
+                this.isFollowing = data.followed
                 console.log(response)
             })
             .catch( error => {
                 console.log(error.response)
             })
-    }
+    },
+    watch: {
+        '$route' (to, from){
+            const id = to.params.id 
+            request.get(`/api/v1/users/${id}`, { auth: true })
+                .then(response => {
+                    const data = response.data
+                    this.user = data.user
+                    this.products = data.products
+                    this.following = data.following
+                    this.isFollowing = data.followed
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+    },
 }
 </script>
 
 <style>
 .twitter-share-button{
     text-decoration: none;
+}
+
+.border-right{
+    border-right: 1px solid rgba(0, 0, 0, 0.2)
 }
 </style>
