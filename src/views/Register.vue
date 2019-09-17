@@ -516,7 +516,7 @@ export default {
                     this.loading = false
                 })
                 .catch(error => {
-                    this.renderError('アカウントを登録し直すか、ログインを行ってください.')
+                    //this.renderError('アカウントを登録し直すか、ログインを行ってください.')
                     this.loading = false
                 })
         },
@@ -537,11 +537,7 @@ export default {
                 .catch(error => {
                     console.log(error.response)
                     const errors = error.response.data.errors
-                    errors.forEach(error => {
-                    setTimeout( () => {
-                            this.renderError(error)
-                        }, 0)
-                    })
+                    consle.log(errors)
                     this.loading = false
                 })
         },
@@ -558,21 +554,10 @@ export default {
             })
             .catch(error => {
                 const errors = error.response.data.errors
-                errors.forEach(error => {
-                    setTimeout( () => {
-                        this.renderError(error)
-                    }, 0)
-                })
+                console.log(error)
                 this.loading = false
                 console.log(error.response)
             })
-        },
-        renderError(error){
-            this.$notify({
-                title: 'Warning',
-                message: error,
-                type: 'warning'
-            });
         },
         async createCregitToken(){
             this.loading = true

@@ -44,24 +44,13 @@ export default {
                 })
                 .catch( errors => {
                     this.loading =false
-                    errors.forEach(error => {
-                        setTimeout( () => {
-                            this.renderError(error)
-                        }, 0)
-                    })
+                    console.log(errors)
                 })
         },
         toResetPassword(){
             console.log('ok')
             this.$router.push('/password/edit')
             console.log('no')
-        },
-        renderError(error){
-            this.$notify({
-                title: 'Warning',
-                message: error,
-                type: 'warning'
-            });
         },
     },
     
