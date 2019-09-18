@@ -52,14 +52,19 @@ const auth = {
                     .then( response => {
                         //返ってきたuser情報をstoreにセットするcommit
                         console.log(response)
-                        commit('user/setUser', response.data.data, { root: true })
                         const headers = response.headers
+                        const token = headers['access-token']
+                        const uid = headers['uid']
+                        const client = headers['client']
                         //localStorageにheadersの情報をセット
-                        localStorage.setItem('access-token', headers['access-token'])
-                        localStorage.setItem('client', headers['client'])
-                        localStorage.setItem('uid', headers['uid'])
-                        commit('setToken', headers['access-token'])
+                        localStorage.setItem('access-token', token)
+                        localStorage.setItem('client', client)
+                        localStorage.setItem('uid', uid)
+                        commit('setToken', token)
                         //認証apiの成功
+                        commit('user/setUser', response.data.data, { root: true })
+                        commit('setNotifications', response.data.data.notifications, { root: true })
+                        commit('connect', { token, uid, client }, { root: true })
                         commit('apiCompleted')
                         resolve()
                     })
@@ -67,7 +72,7 @@ const auth = {
                         //認証apiの失敗
                         //Object.keys(error).forEach( value => console.log(value))
                         commit('apiCompleted')
-                        reject(error.response.data.errors)
+                        reject(error.response.data)
                     })
             })
         },
@@ -77,6 +82,10 @@ const auth = {
                     .then( response => {
                         commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
+                        const token = localStorage.getItem('access-token')
+                        const uid = localStorage.getItem('uid')
+                        const client = localStorage.getItem('client')
+                        commit('connect', { token, uid, client }, { root: true })
                         resolve()
                     })
                     .catch( error => {
@@ -93,13 +102,14 @@ const auth = {
                     .then( response => {
                         commit('removeToken')
                         commit('user/removeUser', null, { root: true})
+                        commit('disconnect', null, { root: true })
                         localStorage.removeItem('access-token')
                         localStorage.removeItem('client')
                         localStorage.removeItem('uid')
                         resolve()
                     })
                     .catch( error => {
-                        console.log(error)
+                        console.log(error.response)
                         reject()
                     })
             }) 
@@ -113,6 +123,11 @@ const auth = {
                         console.log(response)
                         commit('setToken', response.headers['access-token'])
                         commit('user/setUser', response.data.data, { root: true })
+                        const token = localStorage.getItem('access-token')
+                        const uid = localStorage.getItem('uid')
+                        const client = localStorage.getItem('client')
+                        commit('connect', { token, uid, client }, { root: true })
+                        commit('setNotifications', response.data.data.notifications, { root: true })
                         commit('initialized')
                         commit('apiCompleted')
                     })
