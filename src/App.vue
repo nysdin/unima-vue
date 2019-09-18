@@ -10,6 +10,36 @@
                     <v-btn icon class="mr-1" v-if="isLoggedIn">
                         <v-icon @click="$router.push('/sell')">mdi-camera-plus</v-icon>
                     </v-btn>
+                    <v-menu offset-y>
+                        <template v-slot:activator="{ on }">
+                            <v-btn icon class="mr-1" v-if="isLoggedIn" v-on="on">
+                                <v-badge overlap color="red">
+                                    <template v-slot:badge>
+                                        <span v-if="checkedNumber">{{ checkedNumber }}</span>
+                                    </template>
+                                    <v-icon>mdi-bell</v-icon>
+                                </v-badge>
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item
+                                v-for="notice in notifications"
+                                :key="notice.id">
+                                <v-list-item-avatar tile :size="48">
+                                    <v-img :src="notice.product.images[0].url"></v-img>
+                                </v-list-item-avatar>
+                                <v-list-item-content v-if="notice.action === 'comment'">
+                                    <p class="ma-0 notification-text">{{ notice.sender.name }}さんが「{{ notice.product.name }}」にコメントをしました。</p>
+                                </v-list-item-content>
+                                <v-list-item-content v-if="notice.action === 'purchase'">
+                                    <p class="ma-0">
+                                        「{{ notice.product.name }}」が{{ notice.sender.name }}さんに
+                                        購入されました。
+                                    </p>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
                     <v-btn icon @click="$router.push('/mypage')" v-if="isLoggedIn">
                         <v-avatar :size="42">
                             <v-img :src="$store.state.user.user.avatar.url" class="avatar"></v-img>
@@ -114,6 +144,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import axios from 'axios'
 import qs from 'qs'
 
@@ -127,10 +158,13 @@ export default {
             minPrice: null,
             maxPrice: null,
             categoris: [ 'すべて', '一般', '文系', '理系'],
-            states: ['すべて', '新品、未使用', '目立った傷や汚れなし', 'やや傷れや汚れあり', '全体的に状態が悪い']
+            states: ['すべて', '新品、未使用', '目立った傷や汚れなし', 'やや傷れや汚れあり', '全体的に状態が悪い'],
         }
     },
     computed: {
+        ...mapState({
+            notifications: state => state.cable.notifications
+        }),
         initialized(){
             return this.$store.getters['auth/init']
         },
@@ -139,6 +173,13 @@ export default {
         },
         isLoggedIn(){
             return !!this.$store.state.auth.token
+        },
+        checkedNumber(){
+            let number = 0
+            this.notifications.forEach( notice => {
+                if(!notice.checked) number++
+            })
+            return number
         }
     },
     created(){
@@ -160,8 +201,8 @@ export default {
                 }
             })
             this.searched = false
-        }
-    }
+        },
+    },
 }
 </script>
 
@@ -208,4 +249,7 @@ export default {
     z-index: 20;
 }
 
+.notification-text{
+    line-height: 1.3!important;
+}
 </style>
