@@ -24,7 +24,9 @@
                         <v-list>
                             <v-list-item
                                 v-for="notice in notifications"
-                                :key="notice.id">
+                                :key="notice.id"
+                                :class="{ checked: !notice.checked }"
+                                @click="goPage(notice)">
                                 <v-list-item-avatar tile :size="48">
                                     <v-img :src="notice.product.images[0].url"></v-img>
                                 </v-list-item-avatar>
@@ -202,6 +204,14 @@ export default {
             })
             this.searched = false
         },
+        goPage(notice){
+            const id = notice.product.id
+            if(notice.action === 'comment'){
+                this.$router.push(`/product/${id}`)
+            }else if(notice.action === 'purchase'){
+                this.$router.push(`/product/${id}/trade`)
+            }
+        }
     },
 }
 </script>
@@ -251,5 +261,9 @@ export default {
 
 .notification-text{
     line-height: 1.3!important;
+}
+
+.checked{
+    background-color: #e7f5ff;
 }
 </style>
