@@ -27,7 +27,11 @@
                     </div>
                 </div>
 
-                <v-btn color="error" block samll @click="$router.push(`/payment/${product.id}`)" v-if="!seller && open">購入手続きへ進む</v-btn>
+                <v-btn color="error" block samll 
+                    @click="$router.push(`/payment/${product.id}`)"
+                    v-if="!seller && open">
+                    購入手続きへ進む
+                </v-btn>
                 <v-btn color="error" block samll v-if="seller && open"
                     @click="$router.push(`/sell/${$route.params.id}/edit`)" >
                     商品の編集
@@ -172,7 +176,7 @@ export default {
             .then( response => {
                 console.log(response)
                 const data = response.data
-                if(!(data.product.images.length === 1)){
+                if(data.product.images.length === 1){
                     this.isHidden = false
                 }
                 this.product = data.product
@@ -185,11 +189,6 @@ export default {
             })
     },
     methods: {
-        trade(){
-            request.post(`/api/v1/products/${this.product.id}/trade`, { auth: true })
-                .then( response => console.log("success"))
-                .catch( errors => console.log("error"))
-        },
         like(){
             if(this.liked){
                 request.delete(`/api/v1/products/${this.product.id}/likes`, { auth: true })
@@ -218,6 +217,10 @@ export default {
                 .then( response => {
                     this.content = ''
                     this.comments.push(response.data.comments)
+                    if(this.$store.state.user.user.id === this.product.seller_id) return
+                    const recipientId = this.product.seller_id
+                    const productId = this.product.id
+                    this.$store.commit('sendNotification', { recipientId, productId, action: 'comment' })
                 })
                 .catch(error => {
                     console.log('error')
@@ -237,16 +240,16 @@ export default {
 </script>
 
 <style>
-    .product-toolbar{
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        left: 0;
-    }
+.product-toolbar{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
 
-    .comment{
-        border-radius: 10px;
-    }
+.comment{
+    border-radius: 10px;
+}
 
 .comment:after {
     content: "";
