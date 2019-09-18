@@ -73,6 +73,7 @@ export default {
                 image: '',
                 name: '',
                 price: '',
+                seller_id: '',
             },
             card: {
                 barnd: '',
@@ -87,6 +88,9 @@ export default {
             request.post(`api/v1/products/${this.$route.params.id}/trade`, { auth: true })
                 .then(response => {
                     console.log('success')
+                    const recipientId = this.product.seller_id
+                    const productId = this.product.id
+                    this.$store.commit('sendNotification', { recipientId, productId, action: 'purchase' })
                     this.$router.push(`/product/${this.product.id}/trade`, { auth: true })
                 })
                 .catch(error => {
@@ -107,6 +111,7 @@ export default {
                     this.product.image = product.images[0].url
                     this.product.name = product.name
                     this.product.price = product.price
+                    this.product.seller_id = product.seller_id
                     if(card){
                         this.card.brand = card.brand
                         this.card.last4 = '**** **** **** ' + card.last4
