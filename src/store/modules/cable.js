@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import ActionCable from 'actioncable'
+import request from '../../utils/api'
 
 const cable = {
     state: {
@@ -42,6 +43,27 @@ const cable = {
                 product_id: productId,
                 action_type: action,
             })
+        },
+        check(state, ids){
+            state.notifications.forEach( notification => {
+                if(ids.includes(notification.id)){
+                    notification.checked = true
+                }
+            })
+        }
+    },
+    actions: {
+        checkNotification({ commit }, ids){
+            request.post('/api/v1/notifications/check', {
+                params: { ids: ids },
+                auth: true
+            })
+                .then(response => {
+                    commit('check', ids)
+                })
+                .catch(error => {
+                    console.log('error')
+                })
         }
     }
 }
