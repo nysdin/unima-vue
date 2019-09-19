@@ -10,9 +10,9 @@
                     <v-btn icon class="mr-1" v-if="isLoggedIn">
                         <v-icon @click="$router.push('/sell')">mdi-camera-plus</v-icon>
                     </v-btn>
-                    <v-menu offset-y>
+                    <v-menu offset-y v-if="isLoggedIn">
                         <template v-slot:activator="{ on }">
-                            <v-btn icon class="mr-1" v-if="isLoggedIn" v-on="on">
+                            <v-btn icon class="mr-1" v-on="on" @click="checkNotification">
                                 <v-badge overlap color="red">
                                     <template v-slot:badge>
                                         <span v-if="checkedNumber">{{ checkedNumber }}</span>
@@ -21,26 +21,35 @@
                                 </v-badge>
                             </v-btn>
                         </template>
-                        <v-list>
-                            <v-list-item
-                                v-for="notice in notifications"
-                                :key="notice.id"
-                                :class="{ checked: !notice.checked }"
-                                @click="goPage(notice)">
-                                <v-list-item-avatar tile :size="48">
-                                    <v-img :src="notice.product.images[0].url"></v-img>
-                                </v-list-item-avatar>
-                                <v-list-item-content v-if="notice.action === 'comment'">
-                                    <p class="ma-0 notification-text">{{ notice.sender.name }}さんが「{{ notice.product.name }}」にコメントをしました。</p>
-                                </v-list-item-content>
-                                <v-list-item-content v-if="notice.action === 'purchase'">
-                                    <p class="ma-0">
-                                        「{{ notice.product.name }}」が{{ notice.sender.name }}さんに
-                                        購入されました。
-                                    </p>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list>
+                        <template v-if="notifications.length">
+                            <v-list class="menu-scroll pa-0">
+                                <v-list-item
+                                    v-for="notice in notifications"
+                                    :key="notice.id"
+                                    @click="goPage(notice)">
+                                    <v-list-item-avatar tile :size="48">
+                                        <v-img :src="notice.product.images[0].url"></v-img>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content v-if="notice.action === 'comment'">
+                                        <p class="ma-0 notification-text">{{ notice.sender.name }}さんが「{{ notice.product.name }}」にコメントをしました。</p>
+                                        <span class="caption font-weight-thin">
+                                            {{ $moment(notice.created_at, 'YYYY-MM-DDTHH:mm:ssZ').fromNow() }}
+                                        </span>
+                                    </v-list-item-content>
+                                    <v-list-item-content v-if="notice.action === 'purchase'">
+                                        <p class="ma-0">
+                                            「{{ notice.product.name }}」が{{ notice.sender.name }}さんに
+                                            購入されました。
+                                        </p>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                        </template>
+                        <template v-else>
+                            <div class="empty-notification d-flex justify-center align-center">
+                                <p>現在、通知はありません</p>
+                            </div>
+                        </template>
                     </v-menu>
                     <v-btn icon @click="$router.push('/mypage')" v-if="isLoggedIn">
                         <v-avatar :size="42">
@@ -211,6 +220,17 @@ export default {
             }else if(notice.action === 'purchase'){
                 this.$router.push(`/product/${id}/trade`)
             }
+        },
+        checkNotification(){
+            if(this.checkedNumber){
+                const ids = []
+                this.notifications.forEach(notice => {
+                    if(!notice.checked){
+                        ids.push(notice.id)
+                    }
+                })
+                this.$store.dispatch('checkNotification', ids)
+            }
         }
     },
 }
@@ -263,7 +283,14 @@ export default {
     line-height: 1.3!important;
 }
 
-.checked{
-    background-color: #e7f5ff;
+.empty-notification{
+    background-color: rgb(252, 252, 252);
+    width: 200px;
+    height: 200px;
+}
+
+.menu-scroll{
+    height: 300px;
+    overflow: auto;
 }
 </style>
