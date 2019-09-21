@@ -2,63 +2,71 @@
     <div id="search">
         <v-container fluid>
             <p class="ma-0"><span class="title mr-1">{{ $route.query.keyword }}</span>の検索結果</p>
-            <v-row dense>
-                <v-col :cols="4" v-for="product in products" :key="product.id">
-                <v-card flat class="product" @click="showProduct(product.id)">
-                    <v-img  aspect-ratio="1"
-                    :src="product.images[0].url"
-                    ></v-img>
-                    <v-card-title class="pa-0 title font-weight-regular">{{ product.name }}</v-card-title>
-                    <div class="d-flex justify-space-between">
-                    <div class="pa-0 font-weight-light subtitle-1">¥ {{ product.price }}</div>
-                    <div>
-                        <v-icon :size="16" color="red" v-if="product.likes_count">favorite</v-icon>
-                        <span class="ml-1">{{ product.likes_count }}</span>
-                    </div>
-                    </div>
-                </v-card>
-                </v-col>
-            </v-row>
         </v-container>
+
+        <Display :products="products" />
+
+        <div class="d-flex justify-center">
+            <v-pagination v-model="pagy.page"
+                :length="pagy.pages"
+                :total-visible="7"
+                @next="nextPage"
+                @previous="previousPage"
+                @input="changePage"
+                v-if="pagy.pages !== 1">
+            </v-pagination>
+        </div>
     </div>
 </template>
 
 <script>
 import qs from 'qs'
 import axios from 'axios'
+import Display from '../components/Display'
 
 export default {
     name: 'search',
+    components: {
+        Display,
+    },
     data(){
         return {
-            products: []
+            products: [],
+            pagy: {},
         }
     },
     methods: {
         showProduct(id){
             this.$router.push({ path: `/product/${id}`})
         },
-    },
-    watch: {
-        '$route' (to, from){
-            let category = to.query.category
-            let state = to.query.state
-            if(category === 'すべて'){
-                category = ''
-            }
-            if(state === 'すべて'){
-                state = ''
-            }
+        nextPage(){
+            let { keyword, min_price, max_price, state, category } = this.$route.query
+            this.searchRequest(keyword, min_price, max_price, state, category, this.pagy.next)
+        },
+        previousPage(){
+            let { keyword, min_price, max_price, state, category } = this.$route.query
+            this.searchRequest(keyword, min_price, max_price, state, category, this.pagy.prev)
+        },
+        changePage(page){
+            let { keyword, min_price, max_price, state, category } = this.$route.query
+            this.searchRequest(keyword, min_price, max_price, state, category, page)
+        },
+        searchRequest(nameCont, priceGteq, priceLteq, stateEq, categoryNameCont, page){
+            if(categoryNameCont === 'すべて') category = ''
+            if(stateEq === 'すべて') state = ''
+
+            if(!page) page = 1
             axios.get('/api/v1/products/search', {
                 baseURL: process.env.VUE_APP_API_ENDPOINT,
                 params:{
                     q: {
-                        name_cont: to.query.keyword,
-                        price_gteq: to.query.min_price,
-                        price_lteq: to.query.max_price,
-                        state_eq: state,
-                        category_name_cont: category
-                    }
+                        name_cont: nameCont,
+                        price_gteq: priceGteq,
+                        price_lteq: priceLteq,
+                        state_eq: stateEq,
+                        category_name_cont: categoryNameCont
+                    },
+                    page: page
                 },
                 paramsSerializer(params){
                     return qs.stringify(params, {arrayFormat: 'brackets'})
@@ -66,44 +74,23 @@ export default {
             })
             .then(response => {
                 console.log(response)
-                this.products = response.data
+                this.products = response.data.products
+                this.pagy = response.data.pagy
             })
             .catch(error => {
                 console.log(error)
             })
         }
     },
-    created(){
-        let category = this.$route.query.category
-        let state = this.$route.query.state
-        if(category === 'すべて'){
-            category = ''
+    watch: {
+        '$route' (to, from){
+            let { keyword, min_price, max_price, state, category } = to.query
+            this.searchRequest(keyword, min_price, max_price, state, category)
         }
-        if(state === 'すべて'){
-            state = ''
-        }
-        axios.get('/api/v1/products/search', {
-                baseURL: process.env.VUE_APP_API_ENDPOINT,
-                params:{
-                    q: {
-                        name_cont: this.$route.query.keyword,
-                        price_gteq: this.$route.query.min_price,
-                        price_lteq: this.$route.query.max_price,
-                        state_eq: state,
-                        category_name_eq: category
-                    }
-                },
-                paramsSerializer(params){
-                    return qs.stringify(params, {arrayFormat: 'brackets'})
-                }
-            })
-            .then(response => {
-                console.log(response)
-                this.products = response.data
-            })
-            .catch(error => {
-                console.log(error)
-            })
+    },
+    mounted(){
+        let { keyword, min_price, max_price, state, category } = this.$route.query
+        this.searchRequest(keyword, min_price, max_price, state, category)
     }
 }
 </script>

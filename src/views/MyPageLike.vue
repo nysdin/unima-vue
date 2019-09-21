@@ -4,6 +4,17 @@
             <div class="font-weight-bold">いいねした商品</div>
         </v-sheet>
         <Display :products="situatedProduct" />
+
+        <div class="d-flex justify-center">
+            <v-pagination v-model="pagy.page"
+                :length="pagy.pages"
+                :total-visible="7"
+                @next="nextPage"
+                @previous="previousPage"
+                @input="changePage"
+                v-if="pagy.pages !== 1">
+            </v-pagination>
+        </div>
     </div>
 </template>
 
@@ -19,6 +30,7 @@ export default {
     data(){
         return {
             products: [],
+            pagy: {},
             status: 'open'
             
         }
@@ -39,13 +51,49 @@ export default {
         },
         close(){
             this.status = 'close'
+        },
+        nextPage(){
+            request.get(this.pagy.next_url, {})
+                .then(response => {
+                console.log(response)
+                this.products = response.data.products
+                this.pagy = response.data.pagy
+                })
+                .catch(error => {
+                console.log('error')
+                })
+        },
+        previousPage(){
+            request.get(this.pagy.prev_url, {})
+                .then(response => {
+                console.log(response)
+                this.products = response.data.products
+                this.pagy = response.data.pagy
+                })
+                .catch(error => {
+                console.log('error')
+                })
+            console.log('previous')
+        },
+        changePage(page){
+            const pageUrl = this.pagy.scaffold_url.replace(/__pagy_page__/, page)
+            request.get(pageUrl, { auth: true })
+                .then(response => {
+                console.log(response)
+                this.products = response.data.products
+                this.pagy = response.data.pagy
+                })
+                .catch(error => {
+                console.log('error')
+                })
         }
     },
     created(){
         request.get('/api/v1/user/like', { auth: true })
             .then(response => {
                 console.log(response.data)
-                this.products = response.data
+                this.products = response.data.products
+                this.pagy = response.data.pagy
             })
             .catch(error => console.log('error'))
     }
