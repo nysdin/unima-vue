@@ -514,6 +514,7 @@ export default {
                 .then(response => {
                     console.log('complete')
                     this.loading = false
+                    this.$router.push('/')
                 })
                 .catch(error => {
                     //this.renderError('アカウントを登録し直すか、ログインを行ってください.')
