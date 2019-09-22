@@ -28,10 +28,12 @@ const cable = {
             })
         },
         disconnect(state){
-            state.cable.subscriptions.consumer.disconnect()
-            state.notificationChannel = null
-            state.cable = null
-            state.notifications = []
+            if(state.notificationChannel){
+                state.cable.subscriptions.consumer.disconnect()
+                state.notificationChannel = null
+                state.cable = null
+                state.notifications = []
+            }
         },
         setNotifications(state, data){
             state.notifications = data
