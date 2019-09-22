@@ -23,7 +23,7 @@ const cable = {
                 },
                 received(data){
                     console.log(data)
-                    state.notifications.push(data)
+                    state.notifications.unshift(data)
                 }
             })
         },
