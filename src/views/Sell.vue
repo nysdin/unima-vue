@@ -5,33 +5,34 @@
             <v-form>
                 <ValidationObserver v-slot="{ invalid }">
                     <v-row>
-                        <v-col :cols="3" v-for="(image, i) in images" :key="i" class="pb-0">
-                            <v-dialog v-model="dialogs[i].dialog" :key="i">
-                                <template v-slot:activator="{ on }">
-                                    <v-sheet :width="eachSize" :height="eachSize"
-                                        @click="dialogs[i].dialog = true" style="cursor: pointer;">
-                                            <v-icon class="camera-icon">mdi-camera</v-icon>
-                                        <v-img :width="eachSize" :hight="eachSize" v-if="previewImages[i]"
-                                            contain :src="previewImages[i]"></v-img>
-                                    </v-sheet>
-                                </template>
-                                <v-card>
-                                    <div class="d-flex justify-center">
-                                        <v-card-title>商品画像を追加</v-card-title>
-                                    </div>
-                                    <div class="d-flex justify-center" ref="modalView">
-                                        <croppa v-model="images[i]" :width="modalImageSize" :height="modalImageSize"
-                                        :placeholder="`画像${i+1}`"></croppa>
-                                    </div>
-                                    <v-card-actions class="d-flex justify-center">
-                                        <v-btn text @click="removeImage(i)" v-if="previewImages[i]">削除</v-btn>
-                                        <v-btn text @click="cancelImage(i)" v-if="!previewImages[i]">キャンセル</v-btn>
-                                        <v-btn text @click="addImage(i)">追加</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
+                        <v-col :cols="3" v-for="(n,i) in 4" :key="i" class="pb-0">
+                            <v-sheet :width="eachSize" :height="eachSize"
+                                @click="openDialog(i)">
+                                    <v-icon class="camera-icon" v-show="i === photoIndex">mdi-camera</v-icon>
+                                <v-img :width="eachSize" :hight="eachSize" v-if="previewImages[i]"
+                                    contain :src="previewImages[i]">
+                                </v-img>
+                            </v-sheet>
                         </v-col>
                     </v-row>
+
+                    <v-dialog v-for="(image, i) in images"
+                        v-model="dialogs[i].dialog" :key="i">
+                        <v-card>
+                            <div class="d-flex justify-center">
+                                <v-card-title>商品画像を追加</v-card-title>
+                            </div>
+                            <div class="d-flex justify-center" ref="modalView">
+                                <croppa v-model="images[i]" :width="modalImageSize" :height="modalImageSize"
+                                :placeholder="`画像${i+1}`"></croppa>
+                            </div>
+                            <v-card-actions class="d-flex justify-center">
+                                <v-btn text @click="removeImage(i)" v-show="previewImages[i]">削除</v-btn>
+                                <v-btn text @click="cancelImage(i)" v-show="!previewImages[i]">キャンセル</v-btn>
+                                <v-btn text @click="addImage(i)">追加</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
 
                     <ValidationProvider rules="required|max:40" v-slot="{ errors, valid }">
                         <v-text-field v-model="product.name" label="商品名"
@@ -91,6 +92,7 @@ export default {
     data(){
         return{
             loading: false,
+            photoIndex: 0,
             dialogs: [
                 {dialog: false},
                 {dialog: false},
@@ -148,24 +150,32 @@ export default {
         },
         addImage(index){
             this.dialogs[index].dialog = false
+            const preview = this.previewImages[index]
             let image = this.images[index]
             let url = image.generateDataUrl()
-            Vue.set(this.previewImages, index, url)
+            if(url){
+                Vue.set(this.previewImages, index, url)
+                if(!preview) this.photoIndex++
+            }
         },
         cancelImage(index){
             this.dialogs[index].dialog = false
-            let image = this.images[index]
-            image.remove()
         },
         removeImage(index){
             this.dialogs[index].dialog = false
             let image = this.images[index]
             image.remove()
             Vue.set(this.previewImages, index, '')
+            this.photoIndex--
         },
         handleResize(){
             this.size = window.innerWidth
         },
+        openDialog(index){
+            if(index <= this.photoIndex){
+                this.dialogs[index].dialog = true
+            }
+        }
     },
     mounted(){
         window.addEventListener('resize', this.handleResize)
